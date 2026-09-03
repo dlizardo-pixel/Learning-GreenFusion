@@ -1,0 +1,378 @@
+import type { Course, Item } from '../../engine/types'
+
+const KB = {
+  label: 'Knowledge Base: Umlagefähigkeit der Kosten von Green Fusion zur Heizungsoptimierung',
+  url: 'https://knowledge.green-fusion.de/umlagef%C3%A4higkeit-der-kosten-von-green-fusion-zur-heizungsoptimierung',
+}
+const SPEC5 = {
+  label: 'Product Specification 1.0, Abschnitt 5 Data Management & Compliance',
+  url: 'https://app.notion.com/p/36d8e7b69be5818bbff9e11b126cb984',
+}
+const DECK = { label: 'Angebots-Deck: Umlagefähigkeit – rechtliche Grundlage' }
+
+export const rechtCourse: Course = {
+  id: 'recht',
+  title: 'Recht & Regulatorik',
+  subtitle: 'Umlagefähigkeit, GEG, Datenschutz',
+  icon: '⚖️',
+  color: '#216377',
+  units: [
+    {
+      id: 'recht-1',
+      courseId: 'recht',
+      title: 'Umlagefähigkeit',
+      goal: 'Du kannst erklären, welche unserer Kosten umlagefähig sind und warum – und einem Mieter-Widerspruch begründet antworten.',
+      icon: '🧾',
+    },
+    {
+      id: 'recht-2',
+      courseId: 'recht',
+      title: 'GEG & Prüfpflichten',
+      goal: 'Du kennst §60b und §71a GEG und weisst, was unsere TÜV-Zertifizierung dem Kunden konkret erspart.',
+      icon: '📜',
+    },
+    {
+      id: 'recht-3',
+      courseId: 'recht',
+      title: 'Daten & KI',
+      goal: 'Du kannst Fragen von IT und Datenschutz beantworten, ohne ins Schwimmen zu kommen.',
+      icon: '🔐',
+    },
+  ],
+}
+
+export const rechtItems: Item[] = [
+  // ───────────────────────── recht-1
+  {
+    id: 'r1-grundregel',
+    courseId: 'recht',
+    unitId: 'recht-1',
+    level: 1,
+    type: 'multi',
+    concepts: ['Umlagefähigkeit', 'Investition vs. laufende Kosten'],
+    prompt: 'Was ist umlagefähig, was nicht? Wähle alles Umlagefähige aus.',
+    options: [
+      'Die laufenden monatlichen Kosten für Monitoring und Optimierung (SaaS)',
+      'Installationskosten, wenn sie als Installation as a Service abgerechnet werden',
+      'Einmalige Hardwarekosten für Gateways und Sensoren',
+      'Einmalige Installationskosten als Einmalzahlung',
+    ],
+    answer: [0, 1],
+    why: 'Die Trennlinie ist "wiederkehrend gegen einmalig". Laufende monatliche Kosten für Monitoring, Optimierung und aktive Betriebsführung sind umlagefähig – also SaaS- und IaaS-Gebühren. Einmalige Investitionskosten trägt der Vermieter, sofern sie nicht als IaaS laufen. Genau diese Trennung muss auf der Betriebskostenabrechnung sichtbar sein.',
+    source: KB,
+  },
+  {
+    id: 'r1-betrkv',
+    courseId: 'recht',
+    unitId: 'recht-1',
+    level: 1,
+    type: 'cloze',
+    concepts: ['§2 BetrKV'],
+    template:
+      'Die Betriebskostenverordnung erlaubt in § 2 Nr. {{0}} BetrKV die Umlage von Kosten für die Bedienung, {{1}} und Pflege der Heizungsanlage. Ein Gutachten von {{2}} und dena kommt zum Ergebnis, dass auch die kontinuierliche digitale Überwachung inklusive Optimierung darunter fällt.',
+    blanks: ['4', 'Überwachung', 'KEDi'],
+    distractors: ['2', 'Wartung', 'TÜV'],
+    why: 'Das Gutachten wurde im Juli 2025 im Auftrag von KEDi und der Deutschen Energie-Agentur (dena) veröffentlicht. Wichtig zur Einordnung: die Umlagefähigkeit digitaler Monitoring- und Optimierungslösungen ist weder gesetzlich eindeutig geregelt noch gibt es ein Grundsatzurteil – die Anhaltspunkte verdichten sich aber deutlich.',
+    source: KB,
+  },
+  {
+    id: 'r1-wirtschaftlichkeit',
+    courseId: 'recht',
+    unitId: 'recht-1',
+    level: 2,
+    type: 'mc',
+    concepts: ['Wirtschaftlichkeitsgebot', '§556 BGB'],
+    prompt:
+      'Warum ist das Wirtschaftlichkeitsgebot nach § 556 Abs. 3 BGB bei uns erfüllt?',
+    options: [
+      'Weil die Maßnahme insgesamt zu einer Reduzierung der Betriebskosten beiträgt – die Energieeinsparung übersteigt die Softwarekosten in der Regel',
+      'Weil unsere Kosten unter einer gesetzlichen Obergrenze liegen',
+      'Weil Mietende der Umlage zustimmen müssen',
+      'Weil es sich um eine Modernisierung handelt',
+    ],
+    answer: 0,
+    why: 'Die KI-gestützte Optimierung senkt den Verbrauch; die Einsparungen übersteigen die Softwarekosten nicht selten, sodass Mietende sogar entlastet werden. Zusätzlich ersetzt die digitale Überwachung teilweise kostenpflichtige manuelle Prüfpflichten nach dem GEG und vermeidet unnötige Anfahrten.',
+    source: KB,
+  },
+  {
+    id: 'r1-abgleich-abgrenzung',
+    courseId: 'recht',
+    unitId: 'recht-1',
+    level: 2,
+    type: 'scenario',
+    concepts: ['Abgrenzung Einmalleistung', 'Mieterwiderspruch'],
+    persona: 'Mieter, in einem Widerspruch zur Betriebskostenabrechnung',
+    quote:
+      'Ein hydraulischer Abgleich darf auch nicht umgelegt werden. Warum soll das bei Green Fusion anders sein?',
+    prompt: 'Welche Begründung trägt?',
+    options: [
+      'Ein hydraulischer Abgleich ist eine einmalige handwerkliche Leistung. Green Fusion erbringt eine fortlaufende, tägliche Leistung durch Monitoring und permanente Anpassung – nur wiederkehrende Leistungen sind als Betriebskosten abrechenbar.',
+      'Green Fusion ist teurer, deshalb gelten andere Regeln.',
+      'Der hydraulische Abgleich ist Instandhaltung, Green Fusion ist Modernisierung.',
+      'Beim hydraulischen Abgleich fehlt die Zustimmung der Mietenden.',
+    ],
+    answer: 0,
+    optionFeedback: [
+      'Richtig: das ist die tragende Argumentation – Kontinuität der Leistung statt Einmalmaßnahme.',
+      'Der Preis spielt für die rechtliche Einordnung keine Rolle.',
+      'Verwechselt die Kategorien. Die laufende Servicegebühr wird gerade *nicht* als Modernisierung umgelegt, sondern als Betriebskosten.',
+      'Eine Zustimmung ist nicht das Kriterium – entscheidend ist, ob die Kosten wiederkehrend sind und vertraglich klar geregelt.',
+    ],
+    why: 'Eine dauerhafte Überwachung und fortlaufende Optimierung rechtfertigt laut Gutachten die Einordnung als laufende Betriebskosten. Die Rechtsprechung stützt das, zum Beispiel das Amtsgericht Charlottenburg (2020).',
+    source: KB,
+  },
+  {
+    id: 'r1-mietvertrag',
+    courseId: 'recht',
+    unitId: 'recht-1',
+    level: 3,
+    type: 'truefalse',
+    concepts: ['Mietvertrag', 'Ankündigung'],
+    statement:
+      'Bei bestehenden Mietverhältnissen kann man die neue Position einfach ohne Hinweis in die nächste Abrechnung aufnehmen.',
+    answer: false,
+    why: 'Die Kosten müssen wiederkehrend und vertraglich klar geregelt sein. Bei bestehenden Mietverträgen empfiehlt sich eine Ankündigung und gegebenenfalls ein Nachtrag – mindestens jedoch eine transparente Erläuterung. Für die einmalige Installation als Modernisierungsumlage ist die Ankündigung nach § 555c BGB zwingend.',
+    source: KB,
+  },
+  {
+    id: 'r1-rechtsgrundlagen',
+    courseId: 'recht',
+    unitId: 'recht-1',
+    level: 3,
+    type: 'match',
+    concepts: ['Rechtsgrundlagen'],
+    prompt: 'Welche Kostenart wird über welchen Weg umgelegt?',
+    pairs: [
+      { left: 'Einmalige Installation', right: 'Modernisierungsumlage, § 559 BGB' },
+      {
+        left: 'Monatliche Servicegebühr',
+        right: 'Betriebskosten, § 556 BGB und § 2 Nr. 4 BetrKV',
+      },
+      { left: 'Ankündigung gegenüber Mietenden', right: 'zwingend, § 555c BGB' },
+    ],
+    why: 'Und der Satz, der in jedes Kundengespräch gehört: diese Informationen dienen der allgemeinen Orientierung und sind keine Rechtsberatung. Für eine verbindliche Prüfung gehört die Rücksprache mit einem Anwalt oder dem Vermieterverband dazu. Wer das weglässt, übernimmt eine Haftung, die er nicht tragen kann.',
+    source: DECK,
+  },
+  {
+    id: 'r1-deepdive',
+    courseId: 'recht',
+    unitId: 'recht-1',
+    level: 3,
+    type: 'readSummarize',
+    concepts: ['Umlagefähigkeit', 'Argumentationskette'],
+    title: 'Die vier Säulen der Umlagefähigkeit',
+    passage: [
+      'Wenn ein Mieter der Betriebskostenabrechnung widerspricht, steht und fällt unsere Antwort mit vier Punkten. Sie bauen aufeinander auf.',
+      'Erstens die rechtliche Einordnung: § 2 Nr. 4 BetrKV erlaubt die Umlage von Kosten für Bedienung, Überwachung und Pflege der Heizungsanlage. Das im Juli 2025 von KEDi und dena veröffentlichte Gutachten kommt zum Ergebnis, dass auch die kontinuierliche digitale Überwachung inklusive Optimierung darunter fällt, sofern es sich um regelmässig wiederkehrende Kosten handelt.',
+      'Zweitens die Abgrenzung: umgelegt werden ausschliesslich die laufenden monatlichen Kosten. Einmalige Investitions- und Hardwarekosten trägt der Vermieter vollständig, es sei denn, sie werden als Installation as a Service abgerechnet und sind damit selbst laufend.',
+      'Drittens das Wirtschaftlichkeitsgebot nach § 556 Abs. 3 BGB: die Maßnahme senkt die Energiekosten, und die Einsparungen übersteigen die Softwarekosten nicht selten, sodass Mietende finanziell entlastet werden. Zusätzlich ersetzt die digitale Überwachung teilweise kostenpflichtige manuelle Prüfpflichten nach dem GEG.',
+      'Viertens die Kontinuität der Leistung: im Gegensatz zu einer einmaligen Maßnahme wie einem hydraulischen Abgleich handelt es sich um eine fortlaufende Dienstleistung. Die Rechtsprechung stützt diese Einordnung, zum Beispiel das Amtsgericht Charlottenburg 2020.',
+      'Wichtig bleibt die Einordnung: es gibt keine eindeutige gesetzliche Regelung und kein Grundsatzurteil. Wir argumentieren mit verdichteten Anhaltspunkten, nicht mit Gewissheit – und verweisen für eine verbindliche Prüfung immer auf Anwalt oder Vermieterverband.',
+    ],
+    prompt:
+      'Ein Kunde ruft an: ein Mieter hat der Abrechnung widersprochen. Fasse in eigenen Worten zusammen, wie du die Umlagefähigkeit begründest.',
+    rubric: [
+      {
+        concept: 'BetrKV als Grundlage',
+        keywords: ['betrkv', 'betriebskostenverordnung', 'bedienung', 'überwachung', 'ueberwachung'],
+        hint: 'Die rechtliche Grundlage: § 2 Nr. 4 BetrKV – Bedienung, Überwachung, Pflege.',
+      },
+      {
+        concept: 'Laufend statt einmalig',
+        keywords: ['laufend', 'monatlich', 'einmalig', 'investition', 'wiederkehrend'],
+        hint: 'Die Abgrenzung: nur laufende monatliche Kosten, keine Einmalinvestition.',
+      },
+      {
+        concept: 'Wirtschaftlichkeitsgebot',
+        keywords: ['wirtschaftlichkeit', '556', 'einsparung übersteigt', 'betriebskosten sinken', 'entlastet'],
+        hint: 'Das Wirtschaftlichkeitsgebot: die Einsparung übersteigt die Kosten.',
+      },
+      {
+        concept: 'Kontinuität der Leistung',
+        keywords: ['fortlaufend', 'kontinuierlich', 'hydraulischer abgleich', 'einmalleistung', 'täglich'],
+        hint: 'Die Kontinuität: fortlaufende Dienstleistung, anders als der hydraulische Abgleich.',
+      },
+      {
+        concept: 'Ehrliche Einordnung',
+        keywords: [
+          'kein grundsatzurteil',
+          'nicht eindeutig',
+          'keine rechtsberatung',
+          'anwalt',
+          'vermieterverband',
+          'anhaltspunkte',
+        ],
+        hint: 'Die Grenze: kein Grundsatzurteil, keine Rechtsberatung – Verweis auf Anwalt oder Verband.',
+      },
+    ],
+    modelAnswer:
+      'Grundlage ist § 2 Nr. 4 BetrKV, der die Umlage von Kosten für Bedienung, Überwachung und Pflege der Heizungsanlage erlaubt; ein Gutachten von KEDi und dena aus Juli 2025 ordnet auch die kontinuierliche digitale Überwachung inklusive Optimierung darunter ein. Umgelegt werden ausschliesslich die laufenden monatlichen Kosten – einmalige Hardware- und Installationskosten trägt der Vermieter, sofern sie nicht als IaaS laufen. Das Wirtschaftlichkeitsgebot nach § 556 Abs. 3 BGB ist erfüllt, weil die Maßnahme die Energiekosten senkt und die Einsparungen die Softwarekosten in der Regel übersteigen, die Mietenden also entlastet werden. Und im Unterschied zu einer Einmalmaßnahme wie dem hydraulischen Abgleich ist unsere Leistung fortlaufend, was die Einordnung als laufende Betriebskosten rechtfertigt. Dazu gehört die ehrliche Einordnung: es gibt kein Grundsatzurteil, und für eine verbindliche Prüfung verweisen wir auf Anwalt oder Vermieterverband.',
+    passRatio: 0.6,
+    why: 'Diese vier Säulen in dieser Reihenfolge sind die Antwort auf fast jeden Mieter-Widerspruch. In der Knowledge Base liegen dazu ein FAQ für Mietende und ein fertiger Mustertext für das Antwortschreiben.',
+    source: KB,
+  },
+
+  // ───────────────────────── recht-2
+  {
+    id: 'r2-60b-71a',
+    courseId: 'recht',
+    unitId: 'recht-2',
+    level: 1,
+    type: 'mc',
+    concepts: ['§60b GEG', '§71a GEG', 'TÜV'],
+    prompt:
+      'Was bedeutet unsere TÜV-Zertifizierung nach §71a GEG für den Kunden konkret?',
+    options: [
+      'Für zertifizierte Gebäude entfällt die Heizungsprüfung nach §60b GEG',
+      'Der Kunde bekommt einen Zuschuss vom Staat',
+      'Die Anlage muss nicht mehr gewartet werden',
+      'Der Energieausweis verlängert sich automatisch',
+    ],
+    answer: 0,
+    why: 'Green Fusion ist seit dem 26.02.2025 zertifiziert. Die §60b-Prüfung kostet 200 bis 600 € pro Liegenschaft – bei 200 Liegenschaften ist das eine Zahl, die im Vorstand ankommt. Wartung ersetzt das ausdrücklich nicht: die macht weiter die Heizungsfirma.',
+    source: SPEC5,
+  },
+  {
+    id: 'r2-regulatorik-use-case',
+    courseId: 'recht',
+    unitId: 'recht-2',
+    level: 2,
+    type: 'truefalse',
+    concepts: ['GEG', 'EED'],
+    statement:
+      'Die Unterstützung bei regulatorischen Anforderungen aus GEG und EED ist einer unserer offiziellen Use Cases.',
+    answer: true,
+    why: 'Ja – neben der digitalen Anlagenübersicht, der Parameteroptimierung, Alarmierung und der Datenerfassung als Vorbereitung auf erneuerbare Wärme. Regulatorik ist oft das Critical Event im Sales-Gespräch: nicht der Wunsch zu sparen bringt Kunden zur Entscheidung, sondern eine Frist.',
+    source: {
+      label: 'Product Specification 1.0, Abschnitt 1 Produktüberblick',
+      url: 'https://app.notion.com/p/36d8e7b69be5818bbff9e11b126cb984',
+    },
+  },
+  {
+    id: 'r2-60b-kosten',
+    courseId: 'recht',
+    unitId: 'recht-2',
+    level: 1,
+    type: 'estimate',
+    concepts: ['§60b GEG', 'Kostenersparnis'],
+    prompt:
+      'Was kostet eine Heizungsprüfung nach §60b GEG typischerweise pro Liegenschaft? Schätze die Mitte der Spanne.',
+    unit: '€',
+    min: 0,
+    max: 1200,
+    step: 50,
+    answer: 400,
+    tolerance: 200,
+    why: 'Die Spanne liegt bei 200 bis 600 € pro Liegenschaft. Diese Zahl gehört in jede Wirtschaftlichkeitsrechnung – nicht in die Summe, aber daneben: bei 200 Liegenschaften sind das 40.000 bis 120.000 €, die nicht anfallen.',
+    source: DECK,
+  },
+  {
+    id: 'r2-was-bleibt',
+    courseId: 'recht',
+    unitId: 'recht-2',
+    level: 2,
+    type: 'mc',
+    concepts: ['Abgrenzung', 'Wartung'],
+    prompt:
+      'Was ersetzt unsere TÜV-Zertifizierung ausdrücklich *nicht*?',
+    options: [
+      'Die Wartung der Heizungsanlage – die macht weiterhin die Heizungs- oder Wartungsfirma',
+      'Die Heizungsprüfung nach §60b GEG',
+      'Die manuelle Kontrolle der Reglereinstellungen',
+      'Die jährliche Auswertung der Verbrauchsdaten',
+    ],
+    answer: 0,
+    why: 'Heizungstausch und Wartung stehen ausdrücklich nicht in unserem Leistungsumfang – das bleibt bei der Heizungsfirma des Kunden. Wer im Gespräch "wir übernehmen die Anlage" andeutet, erzeugt eine Erwartung, die im ersten Störfall platzt. Was entfällt, ist die Prüfung nach §60b.',
+    source: {
+      label: 'Product Specification 1.0, Abschnitt 1 (Out of Scope) & Abschnitt 5',
+      url: 'https://app.notion.com/p/36d8e7b69be5818bbff9e11b126cb984',
+    },
+  },
+  {
+    id: 'r2-abgrenzung-monitoring',
+    courseId: 'recht',
+    unitId: 'recht-2',
+    level: 3,
+    type: 'mc',
+    concepts: ['Prüfpflicht', 'Argumentation'],
+    prompt:
+      'Warum ist der Wegfall der §60b-Prüfung auch ein Argument in der Umlagefähigkeits-Diskussion?',
+    options: [
+      'Weil die digitale Überwachung eine kostenpflichtige manuelle Prüfpflicht ersetzt und damit das Wirtschaftlichkeitsgebot stützt',
+      'Weil der Gesetzgeber die Umlage in diesem Fall vorschreibt',
+      'Weil Mietende dann nicht widersprechen dürfen',
+      'Weil es die Kosten von Betriebs- auf Investitionskosten verschiebt',
+    ],
+    answer: 0,
+    why: 'Das Wirtschaftlichkeitsgebot fragt, ob die Maßnahme die Betriebskosten insgesamt senkt. Eine vermiedene kostenpflichtige Prüfung ist genau so eine Senkung – zusätzlich zur eingesparten Energie und zu weniger Anfahrten des Wartungsunternehmens.',
+    source: KB,
+  },
+
+  // ───────────────────────── recht-3
+  {
+    id: 'r3-datenhaltung',
+    courseId: 'recht',
+    unitId: 'recht-3',
+    level: 1,
+    type: 'multi',
+    concepts: ['Datensicherheit', 'DSGVO'],
+    prompt:
+      'Die IT-Abteilung eines Kunden fragt nach der Datenhaltung. Was kannst du zusagen? (Mehrfachauswahl)',
+    options: [
+      'Speicherung in Europa, Rechenzentrum Frankfurt',
+      'Nächtliche verschlüsselte Backups mit 7 Tagen Aufbewahrung',
+      'Verarbeitung ausschliesslich in EU/EWR',
+      'Zugriff beschränkt auf autorisiertes Personal',
+      'Kundendaten werden zur Modellverbesserung an Dritte weitergegeben',
+    ],
+    answer: [0, 1, 2, 3],
+    why: 'Weitergabe an Dritte nur mit Zustimmung. Anonymisierte Daten dürfen für Benchmarking genutzt werden – das ist ein wichtiger Unterschied. Kundendaten sind sicher getrennt, die Wiederherstellungszeit liegt bei rund 60 Minuten (manuell), die Verfügbarkeits-SLA der AWS-Dienste über 99,95 %.',
+    source: SPEC5,
+  },
+  {
+    id: 'r3-ai-act',
+    courseId: 'recht',
+    unitId: 'recht-3',
+    level: 2,
+    type: 'mc',
+    concepts: ['EU AI Act'],
+    prompt:
+      'Wie ist unsere KI-Nutzung nach dem EU AI Act eingeordnet – und warum?',
+    options: [
+      'Minimal Risk: nur technische Sensordaten, keine personenbezogenen Daten, B2B, Entscheidungsunterstützung statt autonomer Steuerung',
+      'High Risk, weil sie in Gebäudeinfrastruktur eingreift',
+      'Nicht eingeordnet, weil der AI Act für uns nicht gilt',
+      'Limited Risk, weil Kundinnen und Kunden mit einem Chatbot sprechen',
+    ],
+    answer: 0,
+    why: 'Minimal Risk für beide Produkte, Energiespar-Pilot und Sektorkopplung. Der Kern der Begründung: Empfehlungen brauchen eine Freigabe des Kunden (oder eine jederzeit widerrufbare Generelle Freigabe), und in der Sektorkopplung erzwingt die GreenBox harte Sicherheitsgrenzen, die die Cloud-KI nicht überschreiben kann – bleibt ein gültiger Fahrplan aus, fällt sie automatisch auf lokale Regelsteuerung zurück.',
+    source: SPEC5,
+  },
+  {
+    id: 'r3-freigabe-kontrolle',
+    courseId: 'recht',
+    unitId: 'recht-3',
+    level: 2,
+    type: 'truefalse',
+    concepts: ['Generelle Freigabe', 'Kontrolle'],
+    statement:
+      'Die Generelle Freigabe für automatische Übernahme von Empfehlungen kann der Kunde jederzeit widerrufen.',
+    answer: true,
+    why: 'Jederzeit widerrufbar, für ausgewählte Gebäude und Parameter einstellbar. Für neue Kunden und neu aufgeschaltete Gebäude ist sie standardmässig aktiv – mit der Begründung, dass der Kunde Green Fusion gekauft hat, um seine Gebäude optimieren zu lassen. Diese Kombination aus Standard-an und Jederzeit-aus ist genau der Punkt, der die AI-Act-Einordnung als Entscheidungsunterstützung trägt.',
+    source: SPEC5,
+  },
+  {
+    id: 'r3-zertifikate',
+    courseId: 'recht',
+    unitId: 'recht-3',
+    level: 3,
+    type: 'cloze',
+    concepts: ['Zertifizierungen'],
+    template:
+      'Unsere Rechenzentrumsinfrastruktur läuft auf {{0}} mit Zertifizierungen wie ISO/IEC {{1}}. Für die DSGVO relevant sind vor allem Art. 5 und Art. {{2}} – Datenminimierung und Datenschutz durch Technikgestaltung.',
+    blanks: ['AWS', '27001', '25'],
+    distractors: ['Azure', '9001', '9'],
+    why: 'Dazu kommen ISO/IEC 27017, 27018, 27701, 22301 und 9001 sowie CSA STAR CCM v4.0. Ein IT-Gespräch verläuft deutlich schneller, wenn man das IT-Sicherheitskonzept anbieten kann statt es zu suchen – die vollständige technische Dokumentation gibt es intern auf Anfrage oder über support@green-fusion.de.',
+    source: SPEC5,
+  },
+]

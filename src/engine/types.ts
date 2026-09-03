@@ -1,0 +1,191 @@
+/**
+ * Inhaltsmodell der Lernapp.
+ *
+ * Leitgedanke: Ein Item ist eine *Prüfung eines Konzepts*, nicht nur eine Frage.
+ * Darum tragen alle Items `concepts` (was wird geprüft), `why` (die Erklärung,
+ * die nach der Antwort erscheint) und `source` (Herkunft in unseren Quellen).
+ * Ohne `why` und `source` darf kein Item in die App — Lernen ohne Begründung
+ * erzeugt Ratewissen, und Wissen ohne Quelle veraltet unbemerkt.
+ */
+
+export type CourseId = 'technik' | 'produkt' | 'vertrieb' | 'recht'
+
+export interface Source {
+  /** Menschenlesbarer Name, z. B. "Product Specification 1.0 (08.26), Abschnitt 2.3" */
+  label: string
+  /** Link in Notion / Knowledge Base / Blog. Optional, weil manche Quellen nur intern zitiert werden. */
+  url?: string
+}
+
+interface ItemBase {
+  id: string
+  courseId: CourseId
+  /** Lektions-Bündel innerhalb des Kurses, z. B. "technik-1" */
+  unitId: string
+  /** 1 = Einstieg, 2 = Aufbau, 3 = Vertiefung. Steuert die Reihenfolge im Lernpfad. */
+  level: 1 | 2 | 3
+  /** Konzepte, die dieses Item prüft. Grundlage für Wiederholung und Lücken-Analyse. */
+  concepts: string[]
+  /** Erklärung, die nach der Antwort erscheint — immer, auch bei richtiger Antwort. */
+  why: string
+  source: Source
+}
+
+export interface MultipleChoiceItem extends ItemBase {
+  type: 'mc'
+  prompt: string
+  options: string[]
+  /** Index in `options` */
+  answer: number
+}
+
+export interface MultiSelectItem extends ItemBase {
+  type: 'multi'
+  prompt: string
+  options: string[]
+  /** Indizes in `options`; Reihenfolge irrelevant */
+  answer: number[]
+}
+
+export interface TrueFalseItem extends ItemBase {
+  type: 'truefalse'
+  /** Eine Behauptung, die stimmt oder nicht stimmt. */
+  statement: string
+  answer: boolean
+}
+
+export interface ClozeItem extends ItemBase {
+  type: 'cloze'
+  /** Text mit Platzhaltern {{0}}, {{1}} … in aufsteigender Reihenfolge. */
+  template: string
+  /** Korrekte Füllung je Platzhalter. */
+  blanks: string[]
+  /** Zusätzliche falsche Kacheln, damit es nicht trivial wird. */
+  distractors: string[]
+}
+
+export interface MatchItem extends ItemBase {
+  type: 'match'
+  prompt: string
+  pairs: { left: string; right: string }[]
+}
+
+export interface OrderItem extends ItemBase {
+  type: 'order'
+  prompt: string
+  /** Schritte in der *korrekten* Reihenfolge; die App mischt sie. */
+  steps: string[]
+}
+
+export interface HotspotItem extends ItemBase {
+  type: 'hotspot'
+  prompt: string
+  /** Welches Schema gezeigt wird — siehe components/Schematic.tsx */
+  schematic: 'gasboiler' | 'districtheating' | 'heatpump-pv'
+  /** ID des korrekten Bauteils im Schema. */
+  answer: string
+}
+
+export interface EstimateItem extends ItemBase {
+  type: 'estimate'
+  prompt: string
+  unit: string
+  min: number
+  max: number
+  step: number
+  answer: number
+  /** Erlaubte Abweichung nach oben/unten, damit Schätzen nicht Glücksspiel ist. */
+  tolerance: number
+}
+
+export interface ScenarioItem extends ItemBase {
+  type: 'scenario'
+  /** Wer spricht, z. B. "Technische Leiterin einer Genossenschaft" */
+  persona: string
+  /** Was die Person sagt — wortnahe Kundensprache. */
+  quote: string
+  prompt: string
+  options: string[]
+  answer: number
+  /** Warum die *anderen* Antworten schlechter sind. Je Option ein kurzer Satz. */
+  optionFeedback: string[]
+}
+
+export interface ReadSummarizeItem extends ItemBase {
+  type: 'readSummarize'
+  title: string
+  /** Lesetext in Absätzen. Zielgröße 150–350 Wörter — eine Kaffeepause. */
+  passage: string[]
+  prompt: string
+  /**
+   * Konzepte, die eine gute Zusammenfassung abdecken muss.
+   * `keywords` enthält Synonyme/Schreibweisen, die als Treffer zählen.
+   */
+  rubric: { concept: string; keywords: string[]; hint: string }[]
+  /** Musterlösung, die nach der Abgabe gezeigt wird. */
+  modelAnswer: string
+  /** Anteil der Rubrik-Punkte, ab dem die Aufgabe als bestanden gilt. */
+  passRatio: number
+}
+
+export type Item =
+  | MultipleChoiceItem
+  | MultiSelectItem
+  | TrueFalseItem
+  | ClozeItem
+  | MatchItem
+  | OrderItem
+  | HotspotItem
+  | EstimateItem
+  | ScenarioItem
+  | ReadSummarizeItem
+
+export type ItemType = Item['type']
+
+export interface Unit {
+  id: string
+  courseId: CourseId
+  title: string
+  /** Ein Satz: was kann ich danach, was ich vorher nicht konnte. */
+  goal: string
+  icon: string
+}
+
+export interface Course {
+  id: CourseId
+  title: string
+  subtitle: string
+  icon: string
+  /** Akzentfarbe aus dem Green Fusion Design System. */
+  color: string
+  units: Unit[]
+}
+
+/** Lernstand pro Item — die Grundlage der verteilten Wiederholung. */
+export interface ItemProgress {
+  itemId: string
+  /** Leitner-Box 0–5. 0 = neu/falsch, 5 = sitzt. */
+  box: number
+  /** ISO-Datum, ab wann das Item wieder fällig ist. */
+  dueAt: string
+  lastSeenAt: string
+  timesCorrect: number
+  timesWrong: number
+}
+
+export interface Progress {
+  version: 1
+  xp: number
+  /** Aktuelle Serie in Tagen. */
+  streak: number
+  longestStreak: number
+  /** ISO-Datum (YYYY-MM-DD) des letzten abgeschlossenen Lerntages. */
+  lastActiveDay: string | null
+  /** Tagesziel in XP. */
+  dailyGoal: number
+  /** XP pro Tag, für Serie und Wochenansicht. */
+  xpByDay: Record<string, number>
+  items: Record<string, ItemProgress>
+  /** Abgeschlossene Lektionen: unitId -> Anzahl fehlerfreier Durchläufe. */
+  unitsCompleted: Record<string, number>
+}
