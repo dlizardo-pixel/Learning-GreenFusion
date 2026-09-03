@@ -11,6 +11,11 @@ export const emptyProgress = (): Progress => ({
   xpByDay: {},
   items: {},
   unitsCompleted: {},
+  freezes: 1,
+  freezeGrantedWeek: null,
+  frozenDays: [],
+  lostStreak: null,
+  challenge: null,
 })
 
 /**

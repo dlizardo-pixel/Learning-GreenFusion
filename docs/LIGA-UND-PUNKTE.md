@@ -127,12 +127,81 @@ Top 10 plus **immer die eigene Zeile**, auch auf Platz 47. Es gibt
 **keine** öffentliche Liste der Letzten. Wer unten steht, weiss es selbst;
 es allen zu zeigen bringt nichts ausser Scham.
 
+## Schutztage für die Serie
+
+**Ein Schutztag pro Woche, automatisch, höchstens zwei auf Vorrat.**
+
+Der häufigste Abbruchgrund in Apps dieser Art ist eine verlorene lange
+Serie: wer 60 Tage aufgebaut und an einem Krankheitstag verloren hat,
+kommt oft nicht mehr zurück. Ein verpasster Tag wird deshalb automatisch
+überbrückt — in der Wochenansicht als ❄ markiert, damit niemand denkt, er
+hätte an dem Tag gelernt.
+
+Zwei Regeln halten die Serie trotzdem bedeutungsvoll:
+
+- **Gedeckelt bei zwei.** Sonst hätte jemand nach drei Monaten Pause zwölf
+  Schutztage und behielte eine Serie, die er nie gelebt hat.
+- **Alles-oder-nichts.** Reicht der Vorrat nicht für die ganze Lücke, wird
+  gar keiner verbraucht. Halb überbrücken hilft niemandem.
+
+Bewusst **geschenkt** und nicht verkauft oder erarbeitet: das hier ist ein
+Arbeitswerkzeug, kein Spiel mit Währung.
+
+### Serie retten
+
+Ist die Serie doch gerissen, gibt es zwei Tage lang ein Angebot: **das
+Doppelte des Tagesziels lernen, dann kommt die alte Serie zurück.** Der
+Aufwand muss echt sein — eine Serie, die man mit einem Klick
+zurückbekommt, ist keine Serie mehr. Angeboten wird das nur ab zwei Tagen
+Serie; für eine Ein-Tages-Serie wäre es Bürokratie.
+
+## Aufgabe des Tages
+
+Eine wechselnde Tagesaufgabe zusätzlich zum festen Tagesziel: „Beantworte
+drei Aufgaben aus Recht & Regulatorik richtig", „Fünf fällige
+Wiederholungen", „Eine Lesen-und-Zusammenfassen-Aufgabe". 30 bis 45 XP.
+
+Der Zweck ist nicht die Belohnung, sondern der Grund, die App überhaupt zu
+öffnen. Ein gleichbleibendes Ziel wird nach zwei Wochen zur Routine, die
+man auch überspringen kann; eine wechselnde Aufgabe erzeugt jeden Tag eine
+kleine neue Frage — „welche ist es heute?".
+
+Zwei Details:
+
+- **Die Aufgabe ist aus dem Datum abgeleitet**, also für alle gleich. Das
+  macht sie im Team besprechbar („hast du die heutige schon?") und
+  verhindert, dass ein Neuladen eine leichtere Aufgabe auswürfelt.
+- **Die Aufgabe wechselt, die Belohnung ist fest.** Zufalls-Multiplikatoren
+  funktionieren, fühlen sich im Arbeitswerkzeug aber manipulativ an und
+  kosten mehr Vertrauen als sie Engagement bringen.
+
+Nebeneffekt, der zählt: die Aufgaben schieben regelmässig in Kurse, die
+man von allein nie öffnen würde. Wer nur Vertrieb lernt, landet
+irgendwann bei der Umlagefähigkeit.
+
+## Mastery-Abzeichen
+
+Bronze, Silber, Gold je Kurs — bei einem Drittel, zwei Dritteln und allen
+Aufgaben des Kurses.
+
+**Das einzige Element, das im Unternehmen als echtes Kompetenzsignal
+taugt.** Deshalb hängt es an Beherrschung, nicht an Punkten: XP misst
+Aufwand, ein Abzeichen soll Können bedeuten. Wer viel klickt, bekommt
+viele Punkte — aber kein Gold.
+
+Die Schwelle ist **Leitner-Box 4**: vier richtige Antworten in wachsenden
+Abständen über mindestens 27 Tage. Strenger als das „sitzt" in der
+Kursübersicht (Box 3), und nicht an einem Nachmittag zu erarbeiten. Genau
+das ist der Punkt — ein Abzeichen, das man an einem Tag holen kann, sagt
+nichts aus.
+
 ## Was wir bewusst nicht bauen
 
 | Mechanik | Warum nicht |
 |---|---|
 | **Herzen / Leben** | Rauswurf bei Fehlern erzeugt Vermeidung. Details im [Lernkonzept](LERNKONZEPT.md). |
 | **Zufalls-Multiplikatoren, Lootboxen** | Funktioniert, fühlt sich im Arbeitswerkzeug aber manipulativ an und kostet Vertrauen. |
+| **Schutztage kaufen oder erarbeiten** | Funktioniert in einer App mit Bezahlmodell. Hier wäre es Bürokratie — sie werden geschenkt. |
 | **Schuld-Erinnerungen** | „Du enttäuschst …" ist von einem Konsumprodukt frech und von einem Arbeitgeber schädlich. |
 | **Öffentliche Verlierer-Listen** | Siehe oben. |
 | **Punkte-Abzug** | Siehe oben. |
@@ -168,7 +237,10 @@ besteht. Das ist vor dem Rollout zu klären, nicht danach.
 |---|---|
 | `src/engine/scoring.ts` | Punkte je Antwort, Boni, Serien-Multiplikator |
 | `src/engine/liga.ts` | Wochengrenze, Rangbildung, Zonen, Team-Wertung |
-| `src/engine/leaderboard.ts` | Datenquelle (heute Beispieldaten, später API) |
+| `src/engine/leaderboard.ts` | Datenquelle (Beispieldaten oder Supabase) |
+| `src/engine/srs.ts` | Serie, Schutztage, Rettung |
+| `src/engine/challenge.ts` | Aufgabe des Tages |
+| `src/engine/badges.ts` | Mastery-Abzeichen |
 | `src/screens/Liga.tsx` | Die drei Tabs Punkte / Serie / Teams |
 
 Alle Regeln sind mit Tests belegt, die die *Absicht* prüfen — zum Beispiel,

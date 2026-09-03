@@ -1,152 +1,125 @@
 # Von der App zur Website mit Login
 
-Was fehlt, um aus dem heutigen Stand eine echte Mitarbeiterplattform zu
-machen: Konten, Anmeldung, geräteübergreifender Lernstand und eine echte
-Liga.
+Konten, Anmeldung, geräteübergreifender Lernstand und eine echte Liga.
 
-Die Oberfläche muss sich dafür **nicht** ändern. Zwei Schnittstellen sind
-schon gezogen:
+**Der Code dafür ist fertig.** Es fehlen nur ein Supabase-Projekt und zwei
+Umgebungsvariablen — bis die gesetzt sind, läuft die App unverändert im
+lokalen Modus weiter.
 
-| Schnittstelle | Datei | Ersetzt heute |
-|---|---|---|
-| `StorageAdapter` | `src/engine/progress.ts` | `localStorage` → API |
-| `LeaderboardSource` | `src/engine/leaderboard.ts` | Beispieldaten → API |
+| Baustein | Datei |
+|---|---|
+| Anmeldung (E-Mail und Passwort) | `src/screens/Login.tsx`, `src/backend/useAuth.ts` |
+| Lernstand in der Datenbank | `src/backend/supabaseStorage.ts` |
+| Liga aus der Datenbank | `src/backend/supabaseLeaderboard.ts` |
+| Tabellen, Rechte, Wochenwechsel | `supabase/migrations/0001_init.sql` |
 
-## Zwei Wege
+## Entschieden: Supabase, Region Frankfurt
 
-### Weg A — Supabase, Region Frankfurt
+Gehostetes Postgres mit Anmeldung, Rechteverwaltung und API in einem. Die
+Anbindung ist **fertig implementiert** — es fehlen nur das Projekt und die
+Zugangsdaten.
 
-Gehostetes Postgres mit Anmeldung, Rechteverwaltung und API in einem.
+Bewusst so: in einem Tag lauffähig, kostenlos in der Grössenordnung von
+100 Nutzenden, und die Zugriffslogik liegt in der Datenbank statt im
+Frontend. Der Preis ist ein weiterer Anbieter und ein zweites
+Benutzerverzeichnis neben Keycloak.
 
-**Dafür:** in einem Tag lauffähig. Anmeldung per E-Mail und Passwort,
-beschränkbar auf `@green-fusion.de`. Row Level Security in Postgres, also
-liegt die Zugriffslogik in der Datenbank und nicht im Frontend. Kostenlos
-in der Grössenordnung von 100 Nutzenden.
+**Region zwingend `eu-central-1` (Frankfurt).** Die Product Specification
+schreibt Verarbeitung ausschliesslich in EU/EWR fest, und das gilt auch
+für interne Werkzeuge.
 
-**Dagegen:** ein weiterer Anbieter, ein zweites Benutzerverzeichnis neben
-Keycloak, und ein Auftragsverarbeitungsvertrag mehr. **Region zwingend
-`eu-central-1` (Frankfurt)** — die Product Specification schreibt
-Verarbeitung ausschliesslich in EU/EWR fest, und das gilt auch für interne
-Werkzeuge.
+### Einrichtung in sieben Schritten
 
-**Wann:** um in zwei Wochen zu wissen, ob die Belegschaft das überhaupt
-nutzt.
+1. **Projekt anlegen** auf supabase.com. Region **Frankfurt
+   (eu-central-1)**. Region lässt sich später nicht ändern.
 
-### Weg B — eigenes AWS Frankfurt, Anmeldung über bestehendes Keycloak
+2. **Migration einspielen.** Inhalt von
+   `supabase/migrations/0001_init.sql` in den SQL-Editor kopieren und
+   ausführen. Legt Tabellen, Zeilen-Rechte, die Liga-Sicht, die
+   Serienberechnung und den Wochenwechsel an — und den Trigger, der nur
+   Adressen auf `@green-fusion.de` durchlässt.
 
-Dieselbe statische Oberfläche, dahinter ein kleiner Dienst im vorhandenen
-AWS-Konto; die Anmeldung läuft über das Keycloak, das die Kundenplattform
-schon nutzt.
+3. **Anmeldung konfigurieren** (Authentication → Providers): "Email"
+   aktivieren, "Confirm email" eingeschaltet lassen. Andere Provider aus.
+   Unter URL Configuration die Adresse der ausgelieferten App als Site URL
+   eintragen, sonst führen die Bestätigungslinks ins Leere.
 
-**Dafür:** kein neuer Anbieter, kein zweites Benutzerverzeichnis, kein
-zusätzlicher AVV. Passt zur bestehenden DSGVO-Linie und zum
-IT-Sicherheitskonzept. Wer schon Zugriff auf die Plattform hat, ist
-automatisch angemeldet.
+4. **Zugangsdaten hinterlegen.** `.env.example` nach `.env` kopieren und
+   füllen — Projekt-URL und der öffentliche `anon`-Key aus
+   Settings → API. Der anon-Key ist kein Geheimnis; die Rechte kommen aus
+   den Zeilen-Regeln, nicht aus der Geheimhaltung des Keys.
 
-**Dagegen:** mehr Arbeit — Dienst, Datenbank, Deployment, Betrieb.
+   ```
+   VITE_SUPABASE_URL=https://dein-projekt.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJ...
+   ```
 
-**Wann:** wenn die App bleiben soll.
+   Ohne diese Werte läuft die App weiter im lokalen Modus. Das ist Absicht:
+   eine vergessene Konfiguration macht sie nicht kaputt.
 
-### Empfehlung
+5. **Ausliefern.** `npm run build` erzeugt `dist/`. Bei Vercel oder Netlify
+   das Repository verbinden, Build-Kommando `npm run build`,
+   Ausgabeverzeichnis `dist`, und die beiden Variablen in den
+   Projekt-Einstellungen hinterlegen. **Nicht öffentlich indexierbar
+   lassen** — die App enthält Rabattuntergrenzen, Profitabilitätsgrenzen,
+   Zielkundenprofil und bekannte Produktlücken.
 
-**A zum Validieren, B zum Betreiben.** Das Datenmodell unten ist für beide
-identisch, deshalb ist der Wechsel später ein Austausch der beiden
-Adapter, keine Neuentwicklung. Wichtig ist nur, die Entscheidung *bewusst*
-zu treffen: ein internes Werkzeug, das mit Klarnamen und Leistungsdaten
-bei einem neuen Anbieter landet, ist keine reine Technikfrage.
+6. **Wochenwechsel einrichten.** Montags früh muss
+   `close_liga_week(letzter_montag)` laufen — mit der Erweiterung
+   `pg_cron`:
+
+   ```sql
+   select cron.schedule(
+     'liga-wochenwechsel', '5 2 * * 1',
+     $$select close_liga_week((current_date - 7)::date)$$
+   );
+   ```
+
+   Für den Anfang genügt auch ein wöchentlicher Aufruf von Hand.
+
+7. **Erste Leute einladen.** Konto anlegen geht selbst über den
+   Anmeldebildschirm; es braucht keine Nutzerverwaltung. Team-Zuordnung
+   (`app_user.team`) setzt man einmalig per SQL — davon hängt die
+   Team-Wertung ab.
+
+### Später: Umzug auf eigenes AWS und Keycloak
+
+Wenn die App bleibt, ist der saubere Zielzustand ein kleiner Dienst im
+vorhandenen AWS-Konto mit Anmeldung über das Keycloak, das die
+Kundenplattform schon nutzt: kein zweiter Anbieter, kein zweites
+Benutzerverzeichnis, kein zusätzlicher AVV.
+
+Das Datenmodell unten ist identisch, deshalb ist der Umzug ein Austausch
+von zwei Dateien — `src/backend/supabaseStorage.ts` und
+`src/backend/supabaseLeaderboard.ts` — plus eine Datenübernahme. Die
+Oberfläche bleibt unberührt.
 
 ## Datenmodell
 
-Identisch für beide Wege.
+Vollständig und ausführbar in **`supabase/migrations/0001_init.sql`** —
+dort steht die verbindliche Fassung, damit dieselbe Definition nicht an
+zwei Stellen gepflegt wird. Im Überblick:
 
-```sql
--- Personen. Bei Weg B kommt die Identität aus Keycloak,
--- dann ist id die Keycloak-Subject-ID.
-create table app_user (
-  id            uuid primary key,
-  email         text not null unique,
-  display_name  text not null,
-  team          text,                  -- Sales, Customer Success, Product, …
-  tier          text not null default 'bronze',
-  created_at    timestamptz not null default now()
-);
+| Tabelle | Inhalt |
+|---|---|
+| `app_user` | Person, Team, Ligastufe, Tagesziel, Schutztage, Challenge-Stand |
+| `item_progress` | Leitner-Box und Fälligkeit je Person und Aufgabe |
+| `daily_activity` | XP je Person und Tag — Grundlage für Serie und Wochen-XP |
+| `lesson_completion` | abgeschlossene Lektionen je Person |
+| `liga_membership` | Ligastufe und Gruppe je Person und Woche |
+| `liga_week` (Sicht) | berechnete Rangliste: Name, Team, Wochen-XP, Serie |
 
--- Lernstand je Person und Aufgabe. Ersetzt localStorage.
-create table item_progress (
-  user_id        uuid not null references app_user(id) on delete cascade,
-  item_id        text not null,        -- z. B. 't2-heizkurve-was'
-  box            smallint not null default 0,   -- Leitner-Box 0–5
-  due_at         date not null,
-  last_seen_at   date not null,
-  times_correct  int not null default 0,
-  times_wrong    int not null default 0,
-  primary key (user_id, item_id)
-);
+Drei Entscheidungen darin sind erklärungswürdig:
 
--- Ein Datensatz pro Person und Tag. Grundlage für Serie und Wochen-XP.
-create table daily_activity (
-  user_id  uuid not null references app_user(id) on delete cascade,
-  day      date not null,
-  xp       int  not null default 0,
-  primary key (user_id, day)
-);
-
--- Abgeschlossene Lektionen, für den Lernpfad.
-create table lesson_completion (
-  user_id  uuid not null references app_user(id) on delete cascade,
-  unit_id  text not null,
-  count    int  not null default 0,
-  primary key (user_id, unit_id)
-);
-
--- Wöchentliche Liga-Zuordnung. Eine Zeile je Person und Woche.
-create table liga_membership (
-  user_id     uuid not null references app_user(id) on delete cascade,
-  week_start  date not null,           -- immer ein Montag
-  tier        text not null,
-  group_no    smallint not null,       -- Gruppe innerhalb der Ligastufe
-  primary key (user_id, week_start)
-);
-
--- Die Rangliste wird nicht gespeichert, sondern berechnet.
-create view liga_week as
-select
-  m.week_start, m.tier, m.group_no,
-  u.id as user_id, u.display_name, u.team,
-  coalesce(sum(a.xp), 0) as weekly_xp
-from liga_membership m
-join app_user u on u.id = m.user_id
-left join daily_activity a
-  on a.user_id = m.user_id
- and a.day >= m.week_start
- and a.day <  m.week_start + 7
-group by m.week_start, m.tier, m.group_no, u.id, u.display_name, u.team;
-```
-
-Die aktuelle Serie wird ebenfalls berechnet, nicht gespeichert — aus
-zusammenhängenden Tagen in `daily_activity`. Ein gespeicherter Zähler
-läuft unweigerlich aus dem Takt.
-
-### Rechte (Weg A, Row Level Security)
-
-```sql
-alter table item_progress   enable row level security;
-alter table daily_activity  enable row level security;
-
--- Eigenen Lernstand lesen und schreiben, fremden nicht.
-create policy own_progress on item_progress
-  using (user_id = auth.uid()) with check (user_id = auth.uid());
-
-create policy own_activity on daily_activity
-  using (user_id = auth.uid()) with check (user_id = auth.uid());
-
--- Die Liga darf jede angemeldete Person lesen: Name, Team, Wochen-XP.
--- Bewusst nicht: welche Aufgaben jemand falsch beantwortet hat.
-grant select on liga_week to authenticated;
-```
-
-Die letzte Zeile ist wichtig. Die Liga zeigt Punkte, nie Fehler. Wer welche
-Aufgabe nicht konnte, gehört niemandem ausser der Person selbst.
+- **Die Serie wird berechnet, nicht gespeichert** (`current_streak`). Ein
+  gespeicherter Zähler läuft unweigerlich aus dem Takt, sobald ein
+  Schreibvorgang verloren geht oder zwei Geräte gleichzeitig speichern.
+- **Die Rangliste ist eine Sicht, keine Tabelle.** Was berechnet wird,
+  kann nicht veralten.
+- **Die Zeilen-Rechte geben den eigenen Lernstand frei, die Liga-Sicht die
+  Punkte aller.** Was jemand falsch beantwortet hat, sieht niemand ausser
+  der Person selbst — das ist bewusst so geschnitten und nicht bloss
+  vergessen.
 
 ## API-Vertrag
 
@@ -194,6 +167,19 @@ In beiden Fällen: nicht öffentlich indexierbar. Die App enthält interne
 Zahlen — Rabattuntergrenzen, Profitabilitätsgrenzen, Zielkundenprofil,
 bekannte Produktlücken. Sie gehört hinter die Anmeldung, nicht ins offene
 Netz.
+
+## Was der lokale Modus offenlässt
+
+Zwei Eigenschaften der Anbindung sind absichtlich so gebaut und sollten
+bekannt sein:
+
+- **Schreiben blockiert das Lernen nicht.** Jeder Stand wird zuerst lokal
+  gespeichert, dann zum Server geschickt. Schlägt das fehl, lernt man
+  weiter und der Stand geht beim nächsten Speichern mit. Eine Lektion darf
+  nie an einem Netzwackler scheitern.
+- **Die Liga fällt sichtbar zurück.** Ist die Rangliste nicht erreichbar,
+  zeigt der Bildschirm Beispieldaten *und* den Hinweis darauf. Erfundene
+  Namen dürfen nie wie echte Kolleg:innen aussehen.
 
 ## Vor dem Rollout zu klären
 

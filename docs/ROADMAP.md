@@ -3,27 +3,28 @@
 Was diese Version kann, steht in der [README](../README.md). Hier steht,
 was fehlt — sortiert danach, was den grössten Unterschied macht.
 
-## Zuerst: Backend und Login
+## Erledigt
 
-Ohne Backend liegt der Lernstand im Browser. Das reicht, um das Konzept zu
-prüfen, aber nicht für eine Mitarbeiterplattform: wer das Gerät wechselt,
-fängt neu an, und es gibt keine Auswertung fürs Team.
-
-Was dafür nötig ist, ist überschaubar, weil die Grenzen schon gezogen sind:
-
-- `StorageAdapter` in `src/engine/progress.ts` gegen eine API
-  implementieren. Die Oberfläche kennt nur dieses Interface.
-- Login über das bestehende Keycloak, das die Kundenplattform nutzt — kein
-  zweites Benutzerverzeichnis.
-- Serverseitig sollte die Bewertung liegen, wenn das Ergebnis irgendwann
-  zählen soll. Solange es reines Selbstlernen ist, ist die Bewertung im
-  Browser in Ordnung.
+- **Backend und Login** — Supabase (Region Frankfurt) ist implementiert:
+  Anmeldung mit E-Mail und Passwort, beschränkt auf `@green-fusion.de`,
+  Lernstand geräteübergreifend, echte Liga. Es fehlen nur das Projekt und
+  zwei Umgebungsvariablen → [BACKEND.md](BACKEND.md).
+- **Green Fusion Liga** — wöchentlicher Reset, Ligastufen mit Auf- und
+  Abstieg, Serien- und Team-Wertung → [LIGA-UND-PUNKTE.md](LIGA-UND-PUNKTE.md).
+- **Schutztage und Serien-Rettung**, **Aufgabe des Tages**,
+  **Mastery-Abzeichen** je Kurs.
 
 ## Danach: die Inhaltsmenge
 
 Aktuell 97 Aufgaben in 17 Lektionen. Das reicht für rund zwei Wochen
-täglicher Lektionen, bevor sich Wiederholungen dominieren. Für „jeden Tag
-neue Fragen" über Monate braucht es eher 400 bis 500.
+täglicher Lektionen, bevor Wiederholungen dominieren. Für „jeden Tag neue
+Fragen" über Monate braucht es eher 400 bis 500.
+
+**Das ist jetzt der wichtigste offene Punkt.** Alle Mechaniken stehen —
+was den Unterschied macht, ob die App nach drei Wochen noch geöffnet wird,
+ist die Menge an Material. Die Anleitung dafür steht in
+[INHALTE-PFLEGEN.md](INHALTE-PFLEGEN.md); es braucht keine
+Entwicklungsarbeit, sondern Fachwissen.
 
 Ungleich verteilt sind bisher besonders:
 
@@ -48,6 +49,20 @@ Aufgaben zur Durchsicht meldet.
 Das ist deutlich wertvoller als automatisch erzeugte Fragen — die
 Begründung steht in
 [INHALTE-PFLEGEN.md](INHALTE-PFLEGEN.md#warum-die-inhalte-nicht-automatisch-aus-notion-kommen).
+
+## Duell-Modus
+
+Fünf Fragen gegen eine Kollegin oder einen Kollegen, freiwillig, 24 Stunden
+Zeit. Braucht das Backend, das jetzt steht — also eine Tabelle für Duelle
+und eine Benachrichtigung. Günstig zu bauen, hoher Engagement-Effekt.
+
+## Wochen-Post in Slack
+
+Top 3, wie viele gelernt haben, und der häufigste Stolperstein der Woche.
+Der Stolperstein ist der wertvolle Teil: er treibt Engagement und liefert
+gleichzeitig ein echtes Enablement-Signal fürs Team. Braucht eine
+Slack-App und einen wöchentlichen Job — die Liga-Sicht liefert die Zahlen
+schon.
 
 ## LLM-Bewertung für Zusammenfassungen
 
@@ -80,8 +95,9 @@ Was funktionieren könnte:
 
 ## Kleinere Dinge
 
-- **Erinnerungen**: braucht Backend und eine Entscheidung über den Ton.
-  Eine Erinnerung, die nach Vorgesetztem klingt, ruiniert die Serie-Mechanik.
+- **Erinnerungen**: das Backend steht jetzt, es fehlt die Entscheidung über
+  den Ton. Eine Erinnerung, die nach Vorgesetztem klingt, ruiniert die
+  Serien-Mechanik.
 - **Als App installierbar** (Manifest + Service Worker), damit es vom
   Homescreen startet und offline läuft.
 - **Bilder aus echten Kellern**: eigene Fotos statt gezeichneter Schemata

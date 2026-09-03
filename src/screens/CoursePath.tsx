@@ -1,6 +1,8 @@
 import type { Course, Progress } from '../engine/types'
 import { itemsInUnit } from '../data'
 import { masteredCount, masteryRatio } from '../engine/progress'
+import { badgeFor, BADGE_ICON, BADGE_LABEL } from '../engine/badges'
+import { itemsInCourse } from '../data'
 
 interface Props {
   course: Course
@@ -19,6 +21,11 @@ interface Props {
  * Empfehlung, kein Tor.
  */
 export function CoursePath({ course, progress, onStartUnit, onBack }: Props) {
+  const badge = badgeFor(
+    progress,
+    itemsInCourse(course.id).map((i) => i.id),
+  )
+
   return (
     <div className="app">
       <div className="topbar">
@@ -34,6 +41,25 @@ export function CoursePath({ course, progress, onStartUnit, onBack }: Props) {
       <p className="muted" style={{ marginTop: 0 }}>
         {course.subtitle}
       </p>
+
+      <div className="card badge-card">
+        <span className="badge-big" aria-hidden="true">
+          {BADGE_ICON[badge.level]}
+        </span>
+        <div>
+          <strong>Mastery {BADGE_LABEL[badge.level]}</strong>
+          <div className="small muted">
+            {badge.mastered} von {badge.total} Aufgaben sicher beherrscht
+            {badge.next
+              ? ` · noch ${badge.next.itemsMissing} bis ${BADGE_LABEL[badge.next.level]}`
+              : ' · vollständig'}
+          </div>
+          <div className="tiny muted" style={{ marginTop: 4 }}>
+            Zählt erst ab vier richtigen Antworten in wachsenden Abständen — Abzeichen hängen an
+            Können, nicht an Punkten.
+          </div>
+        </div>
+      </div>
 
       <div className="path" style={{ marginTop: 'var(--gf-space-6)' }}>
         {course.units.map((unit, idx) => {

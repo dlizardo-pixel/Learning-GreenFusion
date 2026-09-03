@@ -41,7 +41,7 @@ npm run smoke
 | Lektionen | 17 |
 | Aufgaben | 97 |
 | Aufgabentypen | 10 |
-| Tests | 74 Unit-Tests + Browser-Smoke-Test |
+| Tests | 102 Unit-Tests + Browser-Smoke-Test |
 
 ### Die vier Kurse
 
@@ -63,6 +63,12 @@ fünf Minuten am Tag gewinnen kann, und eine **Team-Wertung** nach
 Durchschnitt der Aktiven. Die Punktevergabe ist bewusst so gebaut, dass
 Wiederholen mehr einbringt als neues Material — Begründung in
 [docs/LIGA-UND-PUNKTE.md](docs/LIGA-UND-PUNKTE.md).
+
+Dazu drei Mechaniken, die auf Verbleib statt auf Sucht setzen:
+**Schutztage** für die Serie (einer pro Woche, automatisch — ein
+Krankheitstag soll keine 60-Tage-Serie kosten), eine wechselnde
+**Aufgabe des Tages**, und **Mastery-Abzeichen** je Kurs, die an
+Beherrschung hängen statt an Punkten.
 
 Ohne Backend zeigt die Liga Beispieldaten (in der Oberfläche als solche
 gekennzeichnet); nur die eigene Zeile ist echt.
@@ -102,11 +108,16 @@ src/
 │   ├── scoring.ts     Punktevergabe und Serien-Multiplikator
 │   ├── liga.ts        Wochengrenze, Rangbildung, Team-Wertung
 │   ├── leaderboard.ts Datenquelle der Liga (austauschbar)
+│   ├── challenge.ts   Aufgabe des Tages
+│   ├── badges.ts      Mastery-Abzeichen je Kurs
 │   └── progress.ts    Lernstand, XP, Speicher-Abstraktion
 ├── data/courses/      Die Inhalte — eine Datei pro Kurs
 ├── components/        Aufgabentypen und Anlagenschemata
-├── screens/           Übersicht, Lernpfad, Lektion, Abschluss, Liga
+├── screens/           Übersicht, Lernpfad, Lektion, Abschluss, Liga, Login
+├── backend/           Supabase: Anmeldung, Lernstand, Liga
 └── styles/app.css     Green Fusion Design System als CSS-Tokens
+
+supabase/migrations/   Tabellen, Rechte, Liga-Sicht, Wochenwechsel
 ```
 
 Die Engine ist frei von React und vollständig getestet. Wer die Inhalte
@@ -121,11 +132,18 @@ selbst nur für Computer freigegeben ist.
 
 ## Stand dieser Version
 
-Der Lernstand liegt im Browser (`localStorage`). Kein Login, kein Backend,
-keine echte Rangliste, keine Erinnerungen — die Schnittstellen dafür sind
-gezogen (`StorageAdapter`, `LeaderboardSource`, `SummaryGrader`), aber
-nicht implementiert. Der konkrete Weg dorthin samt Datenmodell steht in
-[docs/BACKEND.md](docs/BACKEND.md).
+Die App läuft in zwei Modi, und der Unterschied ist eine Konfiguration:
+
+- **Lokal** (Standard, ohne Einrichtung): Lernstand im Browser, keine
+  Anmeldung, Liga mit Beispieldaten. So kann man sie sofort starten.
+- **Mit Anmeldung**: sind `VITE_SUPABASE_URL` und `VITE_SUPABASE_ANON_KEY`
+  gesetzt, gibt es Konten (nur `@green-fusion.de`), geräteübergreifenden
+  Lernstand und die echte Liga. Der Code dafür ist fertig; es fehlen nur
+  das Supabase-Projekt und die beiden Variablen. Einrichtung in sieben
+  Schritten: [docs/BACKEND.md](docs/BACKEND.md).
+
+Noch nicht da: Erinnerungen, Duell-Modus, LLM-Bewertung der
+Zusammenfassungen. Siehe [Roadmap](docs/ROADMAP.md).
 
 ## Weiterlesen
 

@@ -4,3 +4,5 @@ dist
 *.local
 .vite
 smoke-shots
+.env
+.env.local

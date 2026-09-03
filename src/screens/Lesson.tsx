@@ -4,6 +4,7 @@ import { grade as gradeAnswer, type Grade } from '../engine/grade'
 import { getSummaryGrader } from '../engine/summary'
 import { applyAnswer, completeLesson, xpToday } from '../engine/progress'
 import { applyMultiplier, lessonBonus, xpForAnswer, type XpAward } from '../engine/scoring'
+import { challengeForDay, recordChallengeProgress } from '../engine/challenge'
 import { isDue } from '../engine/srs'
 import { Exercise, hasInput, initialValue, TYPE_HINT } from '../components/exercises'
 import { Feedback } from '../components/Feedback'
@@ -61,6 +62,8 @@ export function Lesson({
   // Beim Start festhalten, ob das Tagesziel schon erreicht war – sonst
   // gäbe es den Zielbonus in jeder weiteren Lektion des Tages erneut.
   const [goalAlreadyReached] = useState(() => xpToday(progress) >= progress.dailyGoal)
+  // XP aus der Tages-Challenge, damit sie in der Abschlussübersicht auftaucht.
+  const [challengeXp, setChallengeXp] = useState(0)
 
   const item = queue[pos]
   const total = queue.length
@@ -94,9 +97,21 @@ export function Lesson({
       repeatInLesson: !firstEncounter,
     })
     const xp = applyMultiplier(earned.xp, progress.streak)
-    setAward({ ...earned, xp })
 
-    onProgress(applyAnswer(progress, item.id, g.correct, xp))
+    // Antwort einarbeiten, dann prüfen, ob sie für die Tages-Challenge zählt.
+    const afterAnswer = applyAnswer(progress, item.id, g.correct, xp)
+    const challenge = recordChallengeProgress(afterAnswer, item, {
+      correct: g.correct,
+      wasDue: !!before && isDue(before),
+    })
+
+    setAward(
+      challenge.justCompleted
+        ? { xp: xp + challenge.awardedXp, reason: `${earned.reason} + Aufgabe des Tages` }
+        : { ...earned, xp },
+    )
+    if (challenge.awardedXp) setChallengeXp((c) => c + challenge.awardedXp)
+    onProgress(challenge.progress)
     setStats((s) => ({
       answered: s.answered + (firstEncounter ? 1 : 0),
       correctFirstTry: s.correctFirstTry + (firstEncounter && g.correct ? 1 : 0),
@@ -117,13 +132,17 @@ export function Lesson({
         correctFirstTry: stats.correctFirstTry,
         goalReachedNow: !goalAlreadyReached && xpToday(progress) >= progress.dailyGoal,
       })
+      if (challengeXp > 0) {
+        bonuses.push({ xp: challengeXp, reason: challengeForDay().title })
+      }
       const bonusXp = bonuses.reduce((sum, b) => sum + b.xp, 0)
-      const finished = completeLesson(progress, unitId, bonusXp)
+      const finished = completeLesson(progress, unitId, bonusXp - challengeXp)
       onProgress(finished)
       onDone({
         title,
         answered: stats.answered,
         correctFirstTry: stats.correctFirstTry,
+        // challengeXp steckt schon im Lernstand; hier nur für die Anzeige.
         xpEarned: stats.xp + bonusXp,
         streak: finished.streak,
         bonuses,

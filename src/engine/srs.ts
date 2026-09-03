@@ -76,22 +76,119 @@ export function dueCount(progress: Progress, now: Date = new Date()): number {
 }
 
 /**
+ * Schutztage für die Serie.
+ *
+ * Der häufigste Abbruchgrund in Apps dieser Art ist eine verlorene lange
+ * Serie: wer 60 Tage aufgebaut und an einem Krankheitstag verloren hat,
+ * kommt oft gar nicht mehr zurück. Ein Schutztag pro Woche überbrückt
+ * genau das, ohne die Serie bedeutungslos zu machen.
+ *
+ * Bewusst geschenkt und nicht verkauft oder erarbeitet: das hier ist ein
+ * Arbeitswerkzeug, kein Spiel mit Währung.
+ */
+export const MAX_FREEZES = 2
+
+/** Montag der Woche – hier lokal gehalten, damit srs.ts unabhängig bleibt. */
+function mondayOf(now: Date): string {
+  const d = new Date(now)
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7))
+  return today(d)
+}
+
+/**
+ * Wöchentlich einen Schutztag gutschreiben, gedeckelt bei MAX_FREEZES.
+ *
+ * Der Deckel verhindert, dass jemand nach drei Monaten Pause zwölf
+ * Schutztage hat und eine Serie behält, die er nie gelebt hat.
+ */
+export function grantWeeklyFreeze(progress: Progress, now: Date = new Date()): Progress {
+  const week = mondayOf(now)
+  if (progress.freezeGrantedWeek === week) return progress
+  return {
+    ...progress,
+    freezes: Math.min(progress.freezes + 1, MAX_FREEZES),
+    freezeGrantedWeek: week,
+  }
+}
+
+/** Zeitfenster, in dem eine verlorene Serie noch zu retten ist. */
+export const REPAIR_WINDOW_DAYS = 2
+
+/** Ist die verlorene Serie noch zu retten? */
+export function canRepairStreak(progress: Progress, now: Date = new Date()): boolean {
+  if (!progress.lostStreak) return false
+  const age = daysBetween(progress.lostStreak.lostOn, today(now))
+  return age >= 0 && age <= REPAIR_WINDOW_DAYS && progress.lostStreak.value >= 2
+}
+
+/**
+ * Verlorene Serie wiederherstellen.
+ *
+ * Aufrufen, wenn die Bedingung erfüllt ist (eine zusätzliche Lektion am
+ * selben Tag). Die Serie wird auf ihren alten Wert plus den heutigen Tag
+ * gesetzt – sie war ja tatsächlich gelaufen.
+ */
+export function repairStreak(progress: Progress, now: Date = new Date()): Progress {
+  if (!canRepairStreak(progress, now)) return progress
+  const restored = progress.lostStreak!.value + 1
+  return {
+    ...progress,
+    streak: restored,
+    longestStreak: Math.max(progress.longestStreak, restored),
+    lastActiveDay: today(now),
+    lostStreak: null,
+  }
+}
+
+/**
  * Serie fortschreiben. Regeln:
  * - gleicher Tag: Serie bleibt
  * - Vortag: Serie +1
- * - älter: Serie startet bei 1
+ * - Lücke, die verfügbare Schutztage abdecken: Serie +1, Schutztage werden
+ *   verbraucht und die überbrückten Tage vermerkt
+ * - grössere Lücke: Serie startet bei 1, die alte Serie wird für ein
+ *   Rettungsfenster festgehalten
  */
 export function bumpStreak(progress: Progress, now: Date = new Date()): Progress {
   const day = today(now)
   if (progress.lastActiveDay === day) return progress
 
   const gap = progress.lastActiveDay ? daysBetween(progress.lastActiveDay, day) : Infinity
-  const streak = gap === 1 ? progress.streak + 1 : 1
+
+  if (gap === 1) {
+    const streak = progress.streak + 1
+    return {
+      ...progress,
+      streak,
+      longestStreak: Math.max(progress.longestStreak, streak),
+      lastActiveDay: day,
+      lostStreak: null,
+    }
+  }
+
+  // Verpasste Tage zwischen letztem Lerntag und heute.
+  const missed = Number.isFinite(gap) ? gap - 1 : Infinity
+  if (missed > 0 && missed <= progress.freezes) {
+    const bridged: string[] = []
+    for (let i = 1; i <= missed; i++) bridged.push(addDays(progress.lastActiveDay!, i))
+    const streak = progress.streak + 1
+    return {
+      ...progress,
+      streak,
+      longestStreak: Math.max(progress.longestStreak, streak),
+      lastActiveDay: day,
+      freezes: progress.freezes - missed,
+      frozenDays: [...progress.frozenDays, ...bridged],
+      lostStreak: null,
+    }
+  }
 
   return {
     ...progress,
-    streak,
-    longestStreak: Math.max(progress.longestStreak, streak),
+    streak: 1,
+    longestStreak: Math.max(progress.longestStreak, 1),
     lastActiveDay: day,
+    // Die alte Serie festhalten, solange sie noch zu retten ist.
+    lostStreak: progress.streak >= 2 ? { value: progress.streak, lostOn: day } : null,
   }
 }

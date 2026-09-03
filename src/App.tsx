@@ -2,9 +2,20 @@ import { useEffect, useState } from 'react'
 import type { CourseId, Item, Progress } from './engine/types'
 import { courses, courseById, unitById, items } from './data'
 import { buildLesson, DEFAULT_LESSON_SIZE } from './engine/lesson'
-import { emptyProgress, localStorageAdapter } from './engine/progress'
+import {
+  emptyProgress,
+  localStorageAdapter,
+  type StorageAdapter,
+} from './engine/progress'
+import { grantWeeklyFreeze } from './engine/srs'
+import { demoSource, setLeaderboardSource } from './engine/leaderboard'
+import { isBackendConfigured, supabase } from './backend/supabase'
+import { supabaseStorageAdapter } from './backend/supabaseStorage'
+import { supabaseLeaderboardSource } from './backend/supabaseLeaderboard'
+import { signOut, useAuth } from './backend/useAuth'
 import { Home } from './screens/Home'
 import { Liga } from './screens/Liga'
+import { Login } from './screens/Login'
 import { CoursePath } from './screens/CoursePath'
 import { Lesson, type LessonResult } from './screens/Lesson'
 import { Done } from './screens/Done'
@@ -16,23 +27,52 @@ type View =
   | { name: 'lesson'; queue: Item[]; unitId: string | null; title: string; from: View }
   | { name: 'done'; result: LessonResult; from: View }
 
-const storage = localStorageAdapter
-
 export default function App() {
+  const auth = useAuth()
+  const [storage, setStorage] = useState<StorageAdapter | null>(null)
   const [progress, setProgress] = useState<Progress>(emptyProgress)
   const [loaded, setLoaded] = useState(false)
   const [view, setView] = useState<View>({ name: 'home' })
 
+  // Datenquellen je nach Anmeldezustand festlegen.
   useEffect(() => {
+    if (auth.status === 'local') {
+      setStorage(localStorageAdapter)
+      setLeaderboardSource(demoSource)
+      return
+    }
+    if (auth.status === 'signedIn') {
+      const userId = auth.session.user.id
+      setStorage(supabaseStorageAdapter(userId))
+      setLeaderboardSource(supabaseLeaderboardSource(userId))
+      // Sicherstellen, dass die Person in der laufenden Woche in einer
+      // Gruppe steht – sonst fehlt sie in der Liga.
+      void supabase?.rpc('ensure_current_membership')
+      return
+    }
+    setStorage(null)
+    setLoaded(false)
+  }, [auth])
+
+  // Lernstand laden und den Wochen-Schutztag gutschreiben.
+  useEffect(() => {
+    if (!storage) return
+    let cancelled = false
     storage.load().then((p) => {
-      setProgress(p)
+      if (cancelled) return
+      const withFreeze = grantWeeklyFreeze(p)
+      setProgress(withFreeze)
       setLoaded(true)
+      if (withFreeze !== p) void storage.save(withFreeze)
     })
-  }, [])
+    return () => {
+      cancelled = true
+    }
+  }, [storage])
 
   function update(p: Progress) {
     setProgress(p)
-    void storage.save(p)
+    void storage?.save(p)
   }
 
   function startLesson(
@@ -47,7 +87,6 @@ export default function App() {
       unitId: unitId ?? undefined,
       size: DEFAULT_LESSON_SIZE,
     })
-
     if (queue.length === 0) return
 
     const title =
@@ -59,6 +98,16 @@ export default function App() {
 
     setView({ name: 'lesson', queue, unitId, title, from })
   }
+
+  if (auth.status === 'loading') {
+    return (
+      <div className="app">
+        <div className="empty">Anmeldung wird geprüft …</div>
+      </div>
+    )
+  }
+
+  if (auth.status === 'signedOut') return <Login />
 
   if (!loaded) {
     return (
@@ -74,10 +123,12 @@ export default function App() {
         <Home
           courses={courses}
           progress={progress}
+          onProgress={update}
           onStartDaily={() => startLesson({ mode: 'daily' }, { name: 'home' })}
           onStartReview={() => startLesson({ mode: 'review' }, { name: 'home' })}
           onOpenCourse={(courseId) => setView({ name: 'course', courseId })}
           onOpenLiga={() => setView({ name: 'liga' })}
+          onSignOut={isBackendConfigured() ? () => void signOut() : undefined}
         />
       )
 

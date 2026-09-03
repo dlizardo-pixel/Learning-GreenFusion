@@ -173,6 +173,21 @@ export interface ItemProgress {
   timesWrong: number
 }
 
+/** Fortschritt der Tages-Challenge. */
+export interface ChallengeProgress {
+  /** Tag, für den gezählt wird. Wechselt der Tag, beginnt die Zählung neu. */
+  day: string
+  count: number
+  /** Belohnung schon vergeben? Verhindert doppelte Gutschrift. */
+  claimed: boolean
+}
+
+/** Eine verlorene Serie, solange sie noch zu retten ist. */
+export interface LostStreak {
+  value: number
+  lostOn: string
+}
+
 export interface Progress {
   version: 1
   xp: number
@@ -188,4 +203,14 @@ export interface Progress {
   items: Record<string, ItemProgress>
   /** Abgeschlossene Lektionen: unitId -> Anzahl fehlerfreier Durchläufe. */
   unitsCompleted: Record<string, number>
+
+  /** Verfügbare Schutztage für die Serie. */
+  freezes: number
+  /** Woche (ISO-Montag), für die der letzte Schutztag gewährt wurde. */
+  freezeGrantedWeek: string | null
+  /** Tage, die ein Schutztag überbrückt hat – für die Wochenansicht. */
+  frozenDays: string[]
+  /** Verlorene Serie, solange das Zeitfenster zur Rettung offen ist. */
+  lostStreak: LostStreak | null
+  challenge: ChallengeProgress | null
 }
