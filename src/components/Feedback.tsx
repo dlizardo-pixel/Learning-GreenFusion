@@ -1,8 +1,11 @@
 import type { Item } from '../engine/types'
+import type { XpAward } from '../engine/scoring'
 
 interface Props {
   item: Item
   correct: boolean
+  /** Vergebene Punkte samt Grund, falls vorhanden. */
+  award?: XpAward | null
   onNext(): void
   isLast: boolean
   /** Wird das Item später in dieser Lektion nochmal gezeigt? */
@@ -17,12 +20,17 @@ interface Props {
  * Kontext. Und jede Erklärung nennt ihre Quelle, damit Wissen überprüfbar
  * bleibt und nicht in der App versauert.
  */
-export function Feedback({ item, correct, onNext, isLast, willRepeat }: Props) {
+export function Feedback({ item, correct, award, onNext, isLast, willRepeat }: Props) {
   return (
     <div className={`feedback ${correct ? 'feedback--ok' : 'feedback--no'}`}>
       <div className="feedback-head">
         <span aria-hidden="true">{correct ? '✓' : '✕'}</span>
         <span>{correct ? 'Richtig' : 'Nicht ganz'}</span>
+        {award && award.xp > 0 && (
+          <span className="xp-chip">
+            +{award.xp} XP · {award.reason}
+          </span>
+        )}
       </div>
       <div className="feedback-why">{item.why}</div>
       <div className="feedback-source">

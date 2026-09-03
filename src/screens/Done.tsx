@@ -42,7 +42,18 @@ export function Done({ result, onHome, onAgain }: Props) {
           </div>
         </div>
 
-        <p style={{ maxWidth: 380, margin: '0 auto var(--gf-space-8)' }}>
+        {result.bonuses.length > 0 && (
+          <div className="card bonus-list">
+            {result.bonuses.map((b) => (
+              <div className="bonus-row" key={b.reason}>
+                <span>{b.reason}</span>
+                <strong>+{b.xp} XP</strong>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <p style={{ maxWidth: 380, margin: 'var(--gf-space-6) auto var(--gf-space-8)' }}>
           {encouragement(ratio)}
         </p>
 

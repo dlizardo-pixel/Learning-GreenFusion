@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react'
 import type { Item, Progress } from '../engine/types'
 import { grade as gradeAnswer, type Grade } from '../engine/grade'
 import { getSummaryGrader } from '../engine/summary'
-import { XP_LESSON_BONUS, XP_PER_CORRECT } from '../engine/lesson'
-import { applyAnswer, completeLesson } from '../engine/progress'
+import { applyAnswer, completeLesson, xpToday } from '../engine/progress'
+import { applyMultiplier, lessonBonus, xpForAnswer, type XpAward } from '../engine/scoring'
+import { isDue } from '../engine/srs'
 import { Exercise, hasInput, initialValue, TYPE_HINT } from '../components/exercises'
 import { Feedback } from '../components/Feedback'
 
@@ -23,6 +24,8 @@ export interface LessonResult {
   correctFirstTry: number
   xpEarned: number
   streak: number
+  /** Aufschlüsselung der Boni – macht sichtbar, wofür es Punkte gab. */
+  bonuses: XpAward[]
 }
 
 /**
@@ -54,6 +57,10 @@ export function Lesson({
   const [checking, setChecking] = useState(false)
   const [seenIds, setSeenIds] = useState<Set<string>>(new Set())
   const [stats, setStats] = useState({ answered: 0, correctFirstTry: 0, xp: 0 })
+  const [award, setAward] = useState<XpAward | null>(null)
+  // Beim Start festhalten, ob das Tagesziel schon erreicht war – sonst
+  // gäbe es den Zielbonus in jeder weiteren Lektion des Tages erneut.
+  const [goalAlreadyReached] = useState(() => xpToday(progress) >= progress.dailyGoal)
 
   const item = queue[pos]
   const total = queue.length
@@ -75,7 +82,19 @@ export function Lesson({
     setResult(g)
 
     const firstEncounter = !seenIds.has(item.id)
-    const xp = g.correct ? XP_PER_CORRECT : 0
+    const before = progress.items[item.id]
+
+    // Der Lernstand *vor* dieser Antwort entscheidet über die Punkte:
+    // eine fällige Wiederholung zählt mehr als eine neue Aufgabe.
+    const earned = xpForAnswer({
+      correct: g.correct,
+      isNew: !before,
+      wasDue: !!before && isDue(before),
+      previouslyWrong: !!before && before.box === 0 && before.timesWrong > 0,
+      repeatInLesson: !firstEncounter,
+    })
+    const xp = applyMultiplier(earned.xp, progress.streak)
+    setAward({ ...earned, xp })
 
     onProgress(applyAnswer(progress, item.id, g.correct, xp))
     setStats((s) => ({
@@ -93,15 +112,21 @@ export function Lesson({
 
   function next() {
     if (pos + 1 >= queue.length) {
-      const finalXp = stats.xp + XP_LESSON_BONUS
-      const finished = completeLesson(progress, unitId, XP_LESSON_BONUS)
+      const bonuses = lessonBonus({
+        answered: stats.answered,
+        correctFirstTry: stats.correctFirstTry,
+        goalReachedNow: !goalAlreadyReached && xpToday(progress) >= progress.dailyGoal,
+      })
+      const bonusXp = bonuses.reduce((sum, b) => sum + b.xp, 0)
+      const finished = completeLesson(progress, unitId, bonusXp)
       onProgress(finished)
       onDone({
         title,
         answered: stats.answered,
         correctFirstTry: stats.correctFirstTry,
-        xpEarned: finalXp,
+        xpEarned: stats.xp + bonusXp,
         streak: finished.streak,
+        bonuses,
       })
       return
     }
@@ -109,6 +134,7 @@ export function Lesson({
     setPos(nextPos)
     setValue(initialValue(queue[nextPos]))
     setResult(null)
+    setAward(null)
   }
 
   const willRepeat = revealed && !result?.correct && queue.filter((q) => q.id === item.id).length > 1
@@ -143,6 +169,7 @@ export function Lesson({
         <Feedback
           item={item}
           correct={!!result?.correct}
+          award={award}
           onNext={next}
           isLast={isLast && !willRepeat}
           willRepeat={willRepeat}

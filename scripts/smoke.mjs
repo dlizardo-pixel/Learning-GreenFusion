@@ -186,6 +186,24 @@ for (const [course, unit] of plan) {
 const xpBefore = await page.locator('.pill--xp').textContent()
 await page.screenshot({ path: `${OUT}/04-home-after.png`, fullPage: true })
 
+// Liga: alle drei Wertungen müssen rendern und die eigene Zeile enthalten.
+await page.click('[data-testid="open-liga"]')
+await page.waitForSelector('.board-row')
+for (const tab of ['Punkte', 'Serie', 'Teams']) {
+  await page.click(`.tab:has-text("${tab}")`)
+  await page.waitForTimeout(150)
+  const rows = await page.locator('.board-row').count()
+  if (rows === 0) errors.push(`Liga-Wertung "${tab}" zeigt keine Zeile`)
+  await page.screenshot({ path: `${OUT}/05-liga-${tab.toLowerCase()}.png`, fullPage: true })
+}
+await page.click('.tab:has-text("Punkte")')
+await page.waitForTimeout(150)
+if (!(await page.locator('.board-row--me').count())) {
+  errors.push('Liga zeigt die eigene Zeile nicht')
+}
+await page.click('[data-testid="back-home"]')
+await page.waitForSelector('[data-testid="start-daily"]')
+
 // Wiederholung muss auftauchen, sobald Items fällig sind – oder korrekt fehlen.
 await page.reload({ waitUntil: 'domcontentloaded' })
 await page.waitForSelector('.pill--xp')

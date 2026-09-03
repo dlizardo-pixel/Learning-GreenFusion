@@ -1,5 +1,6 @@
 import type { Course, Progress } from '../engine/types'
 import { itemsInUnit } from '../data'
+import { masteredCount, masteryRatio } from '../engine/progress'
 
 interface Props {
   course: Course
@@ -36,10 +37,10 @@ export function CoursePath({ course, progress, onStartUnit, onBack }: Props) {
 
       <div className="path" style={{ marginTop: 'var(--gf-space-6)' }}>
         {course.units.map((unit, idx) => {
-          const unitItems = itemsInUnit(unit.id)
-          const mastered = unitItems.filter((i) => (progress.items[i.id]?.box ?? 0) >= 3).length
+          const ids = itemsInUnit(unit.id).map((i) => i.id)
+          const mastered = masteredCount(progress, ids)
           const done = (progress.unitsCompleted[unit.id] ?? 0) > 0
-          const pct = unitItems.length ? (mastered / unitItems.length) * 100 : 0
+          const pct = masteryRatio(progress, ids) * 100
 
           return (
             <button
@@ -63,7 +64,7 @@ export function CoursePath({ course, progress, onStartUnit, onBack }: Props) {
                   <i style={{ width: `${pct}%`, background: course.color }} />
                 </span>
                 <span className="course-meta">
-                  {mastered}/{unitItems.length} sitzen
+                  {mastered}/{ids.length} sitzen
                   {done && ` · ${progress.unitsCompleted[unit.id]}× abgeschlossen`}
                 </span>
               </span>

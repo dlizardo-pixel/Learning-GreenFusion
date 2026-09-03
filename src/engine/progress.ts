@@ -90,6 +90,29 @@ export function completeLesson(
 
 export const xpToday = (p: Progress, now: Date = new Date()) => p.xpByDay[today(now)] ?? 0
 
+/** Ab dieser Leitner-Box gilt ein Item als "sitzt": dreimal richtig in wachsenden Abständen. */
+export const MASTERED_BOX = 3
+
+/**
+ * Beherrschungsgrad einer Item-Menge als Wert zwischen 0 und 1.
+ *
+ * Bewusst mit Teilfortschritt: ein Item in Box 1 zählt ein Drittel, nicht
+ * null. Sonst zeigt der Fortschrittsbalken nach der ersten Lektion noch
+ * 0 % — gemessen richtig, aber als Rückmeldung entmutigend.
+ */
+export function masteryRatio(progress: Progress, itemIds: string[]): number {
+  if (!itemIds.length) return 0
+  const earned = itemIds.reduce(
+    (sum, id) => sum + Math.min(progress.items[id]?.box ?? 0, MASTERED_BOX),
+    0,
+  )
+  return earned / (itemIds.length * MASTERED_BOX)
+}
+
+/** Anzahl Items, die vollständig sitzen. */
+export const masteredCount = (progress: Progress, itemIds: string[]) =>
+  itemIds.filter((id) => (progress.items[id]?.box ?? 0) >= MASTERED_BOX).length
+
 /** Level allein zur Anerkennung — 100 XP je Stufe, ohne Deckel. */
 export const levelFromXp = (xp: number) => Math.floor(xp / 100) + 1
 export const xpIntoLevel = (xp: number) => xp % 100

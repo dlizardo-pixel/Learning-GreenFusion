@@ -25,9 +25,9 @@ export interface Part {
 }
 
 /** Nicht anklickbare Verbindungslinien – nur damit das Bild wie ein Schema aussieht. */
-type Line = [x1: number, y1: number, x2: number, y2: number]
+export type Line = [x1: number, y1: number, x2: number, y2: number]
 
-interface Diagram {
+export interface Diagram {
   parts: Part[]
   connectors: Line[]
   title: string
@@ -38,24 +38,28 @@ const gasboiler: Diagram = {
   parts: [
     { id: 'kessel', label: 'Gaskessel', x: 14, y: 92, w: 84, h: 56 },
     { id: 'gaszaehler', label: 'Gaszähler', x: 14, y: 176, w: 84, h: 34 },
-    { id: 'erz-vorlauf', label: 'Erzeuger-Vorlauf', x: 106, y: 98, w: 110, h: 16, pipe: true, labelAt: 'above' },
-    { id: 'erz-ruecklauf', label: 'Erzeuger-Rücklauf', x: 106, y: 134, w: 110, h: 16, pipe: true, labelAt: 'below' },
-    { id: 'verteiler', label: 'Verteiler', x: 224, y: 86, w: 54, h: 76 },
-    { id: 'hk-vorlauf', label: 'Heizkreis-Vorlauf', x: 286, y: 56, w: 140, h: 16, pipe: true, labelAt: 'above' },
-    { id: 'hk-ruecklauf', label: 'Heizkreis-Rücklauf', x: 286, y: 96, w: 140, h: 16, pipe: true, labelAt: 'above' },
-    { id: 'ww-speicher', label: 'Warmwasser-\nspeicher', x: 300, y: 140, w: 112, h: 48 },
-    { id: 'zirkulation', label: 'Zirkulation', x: 286, y: 204, w: 140, h: 16, pipe: true, labelAt: 'below' },
+    { id: 'erz-vorlauf', label: 'Erzeuger-Vorlauf', x: 106, y: 96, w: 110, h: 16, pipe: true, labelAt: 'above' },
+    { id: 'erz-ruecklauf', label: 'Erzeuger-Rücklauf', x: 106, y: 136, w: 110, h: 16, pipe: true, labelAt: 'below' },
+    { id: 'verteiler', label: 'Verteiler', x: 224, y: 80, w: 54, h: 90 },
+    { id: 'hk-vorlauf', label: 'Heizkreis-Vorlauf', x: 296, y: 52, w: 130, h: 16, pipe: true, labelAt: 'above' },
+    { id: 'hk-ruecklauf', label: 'Heizkreis-Rücklauf', x: 296, y: 100, w: 130, h: 16, pipe: true, labelAt: 'above' },
+    { id: 'ww-speicher', label: 'Warmwasser-\nspeicher', x: 306, y: 142, w: 120, h: 50 },
+    { id: 'zirkulation', label: 'Zirkulation', x: 296, y: 206, w: 130, h: 16, pipe: true, labelAt: 'below' },
   ],
   connectors: [
     [56, 176, 56, 148], // Gaszähler → Kessel
-    [98, 106, 106, 106],
-    [98, 142, 106, 142],
-    [216, 106, 224, 106],
-    [216, 142, 224, 142],
-    [278, 64, 286, 64],
-    [278, 104, 286, 104],
-    [278, 150, 300, 150],
-    [356, 188, 356, 204], // Speicher → Zirkulation
+    [98, 104, 106, 104], // Kessel → Erzeuger-Vorlauf
+    [98, 144, 106, 144], // Erzeuger-Rücklauf → Kessel
+    [216, 104, 224, 104], // Erzeuger-Vorlauf → Verteiler
+    [216, 144, 224, 144], // Verteiler → Erzeuger-Rücklauf
+    // Der Heizkreis-Vorlauf liegt höher als der Verteiler — er wird über
+    // eine Steigleitung angebunden, nicht schwebend danebengesetzt.
+    [278, 92, 286, 92],
+    [286, 92, 286, 60],
+    [286, 60, 296, 60],
+    [278, 108, 296, 108], // Verteiler → Heizkreis-Rücklauf
+    [278, 155, 306, 155], // Verteiler → Warmwasserspeicher
+    [366, 192, 366, 206], // Speicher → Zirkulation
   ],
 }
 
@@ -95,10 +99,10 @@ const heatpumpPv: Diagram = {
   ],
   connectors: [
     [106, 64, 124, 64],
-    [124, 64, 124, 131],
+    [124, 64, 124, 130],
     [106, 130, 140, 130],
     [106, 194, 124, 194],
-    [124, 194, 124, 131],
+    [124, 194, 124, 130],
     [240, 120, 258, 120],
     [258, 120, 258, 88],
     [258, 88, 276, 88],
@@ -113,6 +117,9 @@ const DIAGRAMS: Record<HotspotItem['schematic'], Diagram> = {
   districtheating,
   'heatpump-pv': heatpumpPv,
 }
+
+/** Vollständige Geometrie – für die Integritätsprüfung in den Tests. */
+export const SCHEMATIC_DIAGRAMS: Record<HotspotItem['schematic'], Diagram> = DIAGRAMS
 
 export const SCHEMATICS = Object.fromEntries(
   Object.entries(DIAGRAMS).map(([k, v]) => [k, v.parts]),

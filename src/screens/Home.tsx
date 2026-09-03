@@ -1,7 +1,8 @@
 import type { Course, Progress } from '../engine/types'
 import { itemsInCourse } from '../data'
 import { dueCount, today } from '../engine/srs'
-import { levelFromXp, xpToday } from '../engine/progress'
+import { daysLeftInWeek, xpThisWeek } from '../engine/liga'
+import { levelFromXp, masteredCount, masteryRatio, xpToday } from '../engine/progress'
 import { Ring } from '../components/Ring'
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
   onStartDaily(): void
   onStartReview(): void
   onOpenCourse(courseId: Course['id']): void
+  onOpenLiga(): void
 }
 
 const WEEKDAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
@@ -27,20 +29,30 @@ function lastSevenDays(): string[] {
   return out
 }
 
-export function Home({ courses, progress, onStartDaily, onStartReview, onOpenCourse }: Props) {
+export function Home({
+  courses,
+  progress,
+  onStartDaily,
+  onStartReview,
+  onOpenCourse,
+  onOpenLiga,
+}: Props) {
   const due = dueCount(progress)
   const todayXp = xpToday(progress)
   const goalReached = todayXp >= progress.dailyGoal
   const week = lastSevenDays()
   const currentDay = today()
+  const weekXp = xpThisWeek(progress)
 
   const courseStats = courses.map((c) => {
-    const all = itemsInCourse(c.id)
-    // "Sitzt" = mindestens Box 3 erreicht, also dreimal richtig in
-    // wachsenden Abständen.
-    const mastered = all.filter((i) => (progress.items[i.id]?.box ?? 0) >= 3).length
-    const touched = all.filter((i) => progress.items[i.id]).length
-    return { course: c, total: all.length, mastered, touched }
+    const ids = itemsInCourse(c.id).map((i) => i.id)
+    return {
+      course: c,
+      total: ids.length,
+      mastered: masteredCount(progress, ids),
+      touched: ids.filter((id) => progress.items[id]).length,
+      ratio: masteryRatio(progress, ids),
+    }
   })
 
   return (
@@ -106,6 +118,25 @@ export function Home({ courses, progress, onStartDaily, onStartReview, onOpenCou
         ))}
       </div>
 
+      <div className="section-label">Green Fusion Liga</div>
+      <button className="course-card" data-testid="open-liga" onClick={onOpenLiga}
+        style={{ borderLeftColor: '#E0A32E' }}>
+        <span className="course-icon" style={{ background: '#FDF3DC' }} aria-hidden="true">
+          🏆
+        </span>
+        <span className="course-body">
+          <span className="course-title">{weekXp} XP diese Woche</span>
+          <span className="course-meta">
+            {daysLeftInWeek() === 1
+              ? 'Letzter Tag – am Montag beginnt alles neu'
+              : `Noch ${daysLeftInWeek()} Tage, dann startet die Woche neu`}
+          </span>
+        </span>
+        <span aria-hidden="true" className="muted">
+          ›
+        </span>
+      </button>
+
       {due > 0 && (
         <>
           <div className="section-label">Wiederholung</div>
@@ -135,7 +166,7 @@ export function Home({ courses, progress, onStartDaily, onStartReview, onOpenCou
 
       <div className="section-label">Kurse</div>
       <div className="course-grid">
-        {courseStats.map(({ course, total, mastered, touched }) => (
+        {courseStats.map(({ course, total, mastered, touched, ratio }) => (
           <button
             key={course.id}
             className="course-card"
@@ -150,7 +181,7 @@ export function Home({ courses, progress, onStartDaily, onStartReview, onOpenCou
               <span className="course-title">{course.title}</span>
               <span className="course-meta">{course.subtitle}</span>
               <span className="bar">
-                <i style={{ width: `${total ? (mastered / total) * 100 : 0}%`, background: course.color }} />
+                <i style={{ width: `${ratio * 100}%`, background: course.color }} />
               </span>
               <span className="course-meta">
                 {mastered} von {total} sitzen
@@ -166,7 +197,9 @@ export function Home({ courses, progress, onStartDaily, onStartReview, onOpenCou
 
       <div className="section-label">Serie</div>
       <div className="card small">
-        <strong>{progress.streak} Tage in Folge</strong>
+        <strong>
+          {progress.streak} {progress.streak === 1 ? 'Tag' : 'Tage'} in Folge
+        </strong>
         {progress.longestStreak > progress.streak && (
           <span className="muted"> · Bestwert {progress.longestStreak}</span>
         )}

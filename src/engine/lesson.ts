@@ -104,6 +104,3 @@ export function interleave(items: Item[], rnd: () => number = Math.random): Item
   }
   return out
 }
-
-export const XP_PER_CORRECT = 10
-export const XP_LESSON_BONUS = 20

@@ -4,12 +4,14 @@ import { courses, courseById, unitById, items } from './data'
 import { buildLesson, DEFAULT_LESSON_SIZE } from './engine/lesson'
 import { emptyProgress, localStorageAdapter } from './engine/progress'
 import { Home } from './screens/Home'
+import { Liga } from './screens/Liga'
 import { CoursePath } from './screens/CoursePath'
 import { Lesson, type LessonResult } from './screens/Lesson'
 import { Done } from './screens/Done'
 
 type View =
   | { name: 'home' }
+  | { name: 'liga' }
   | { name: 'course'; courseId: CourseId }
   | { name: 'lesson'; queue: Item[]; unitId: string | null; title: string; from: View }
   | { name: 'done'; result: LessonResult; from: View }
@@ -75,8 +77,12 @@ export default function App() {
           onStartDaily={() => startLesson({ mode: 'daily' }, { name: 'home' })}
           onStartReview={() => startLesson({ mode: 'review' }, { name: 'home' })}
           onOpenCourse={(courseId) => setView({ name: 'course', courseId })}
+          onOpenLiga={() => setView({ name: 'liga' })}
         />
       )
+
+    case 'liga':
+      return <Liga progress={progress} onBack={() => setView({ name: 'home' })} />
 
     case 'course': {
       const course = courseById.get(view.courseId)

@@ -5,7 +5,9 @@ import type { ExerciseProps } from './common'
 /** Zuordnung: links die Begriffe, rechts die Antworten aus einem Vorrat. */
 export function Match({ item, value, onChange, revealed }: ExerciseProps<MatchItem>) {
   const map = (value as Record<string, string>) ?? {}
-  const [activeLeft, setActiveLeft] = useState<string | null>(null)
+  // Die erste offene Zeile ist von Anfang an aktiv: so kann man einfach
+  // die Antworten der Reihe nach antippen, ohne vorher jede Zeile zu wählen.
+  const [activeLeft, setActiveLeft] = useState<string | null>(item.pairs[0]?.left ?? null)
 
   const pool = useMemo(() => {
     const rights = item.pairs.map((p) => p.right)
@@ -60,7 +62,7 @@ export function Match({ item, value, onChange, revealed }: ExerciseProps<MatchIt
                 setActiveLeft(p.left)
               }}
             >
-              {map[p.left] ?? 'antippen, dann Antwort wählen'}
+              {map[p.left] ?? (activeLeft === p.left ? 'Antwort unten wählen' : '—')}
             </button>
           </div>
         ))}

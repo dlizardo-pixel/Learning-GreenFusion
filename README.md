@@ -41,7 +41,7 @@ npm run smoke
 | Lektionen | 17 |
 | Aufgaben | 97 |
 | Aufgabentypen | 10 |
-| Tests | 42 Unit-Tests + Browser-Smoke-Test |
+| Tests | 74 Unit-Tests + Browser-Smoke-Test |
 
 ### Die vier Kurse
 
@@ -54,6 +54,18 @@ npm run smoke
   Business Case, die häufigsten Einwände, SPICED und Sales-Prozess
 - ⚖️ **Recht & Regulatorik** — Umlagefähigkeit, GEG-Prüfpflichten,
   Datenschutz und EU AI Act
+
+### Green Fusion Liga
+
+Wöchentliche Rangliste in Ligastufen (Bronze bis Diamant) mit Auf- und
+Abstieg, plus zwei weitere Wertungen: eine **Serien-Rangliste**, die man mit
+fünf Minuten am Tag gewinnen kann, und eine **Team-Wertung** nach
+Durchschnitt der Aktiven. Die Punktevergabe ist bewusst so gebaut, dass
+Wiederholen mehr einbringt als neues Material — Begründung in
+[docs/LIGA-UND-PUNKTE.md](docs/LIGA-UND-PUNKTE.md).
+
+Ohne Backend zeigt die Liga Beispieldaten (in der Oberfläche als solche
+gekennzeichnet); nur die eigene Zeile ist echt.
 
 ### Die zehn Aufgabentypen
 
@@ -81,17 +93,20 @@ Aufgaben, sondern erst geklärt.
 
 ```
 src/
-├── engine/          Lern-Engine, ohne React
-│   ├── types.ts     Inhaltsmodell aller Aufgabentypen
-│   ├── srs.ts       Verteilte Wiederholung (Leitner) und Serie
-│   ├── lesson.ts    Lektionsaufbau: Wiederholung zuerst, Typen gemischt
-│   ├── grade.ts     Bewertung je Aufgabentyp
-│   ├── summary.ts   Bewertung freier Zusammenfassungen (austauschbar)
-│   └── progress.ts  Lernstand, XP, Speicher-Abstraktion
-├── data/courses/    Die Inhalte — eine Datei pro Kurs
-├── components/      Aufgabentypen und Anlagenschemata
-├── screens/         Übersicht, Lernpfad, Lektion, Abschluss
-└── styles/app.css   Green Fusion Design System als CSS-Tokens
+├── engine/            Lern-Engine, ohne React
+│   ├── types.ts       Inhaltsmodell aller Aufgabentypen
+│   ├── srs.ts         Verteilte Wiederholung (Leitner) und Serie
+│   ├── lesson.ts      Lektionsaufbau: Wiederholung zuerst, Typen gemischt
+│   ├── grade.ts       Bewertung je Aufgabentyp
+│   ├── summary.ts     Bewertung freier Zusammenfassungen (austauschbar)
+│   ├── scoring.ts     Punktevergabe und Serien-Multiplikator
+│   ├── liga.ts        Wochengrenze, Rangbildung, Team-Wertung
+│   ├── leaderboard.ts Datenquelle der Liga (austauschbar)
+│   └── progress.ts    Lernstand, XP, Speicher-Abstraktion
+├── data/courses/      Die Inhalte — eine Datei pro Kurs
+├── components/        Aufgabentypen und Anlagenschemata
+├── screens/           Übersicht, Lernpfad, Lektion, Abschluss, Liga
+└── styles/app.css     Green Fusion Design System als CSS-Tokens
 ```
 
 Die Engine ist frei von React und vollständig getestet. Wer die Inhalte
@@ -107,9 +122,10 @@ selbst nur für Computer freigegeben ist.
 ## Stand dieser Version
 
 Der Lernstand liegt im Browser (`localStorage`). Kein Login, kein Backend,
-keine Bestenliste, keine Erinnerungen — die Schnittstellen dafür sind
-gezogen (`StorageAdapter`, `SummaryGrader`), aber nicht implementiert.
-Details in der [Roadmap](docs/ROADMAP.md).
+keine echte Rangliste, keine Erinnerungen — die Schnittstellen dafür sind
+gezogen (`StorageAdapter`, `LeaderboardSource`, `SummaryGrader`), aber
+nicht implementiert. Der konkrete Weg dorthin samt Datenmodell steht in
+[docs/BACKEND.md](docs/BACKEND.md).
 
 ## Weiterlesen
 
@@ -118,5 +134,10 @@ Details in der [Roadmap](docs/ROADMAP.md).
   Begründung hinter jeder Entscheidung
 - **[docs/INHALTE-PFLEGEN.md](docs/INHALTE-PFLEGEN.md)** — Aufgaben
   schreiben, ändern, aussortieren; die Qualitätsschwelle
-- **[docs/ROADMAP.md](docs/ROADMAP.md)** — was für eine echte
-  Mitarbeiterplattform fehlt
+- **[docs/LIGA-UND-PUNKTE.md](docs/LIGA-UND-PUNKTE.md)** — die
+  Punktevergabe und die Liga, mit Begründung je Regel; auch was wir
+  bewusst nicht bauen und warum Punkte keine Führungskennzahl werden dürfen
+- **[docs/BACKEND.md](docs/BACKEND.md)** — der Weg zur Website mit Login:
+  zwei Optionen, Datenmodell, API-Vertrag, und was vor dem Rollout zu
+  klären ist
+- **[docs/ROADMAP.md](docs/ROADMAP.md)** — was darüber hinaus fehlt
