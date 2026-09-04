@@ -121,7 +121,46 @@ Empfehlung, kein Tor. Innerhalb einer Lektion sorgt die Levelstufe
 (Einstieg → Aufbau → Vertiefung) dafür, dass neues Material trotzdem in
 sinnvoller Ordnung kommt.
 
-## Die zehn Aufgabentypen
+## Vom Kurs zum Führerschein
+
+Die App ist als **Zertifikat** aufgebaut, nicht als Themensammlung: acht
+Module, 43 Lektionen, danach Prüfungen. Das ist mehr als Kosmetik — es
+löst ein Problem, das reine Lernpfade haben: sie haben kein Ende.
+
+Ohne Abschluss bleibt „ich lerne gerade Heizungstechnik" ein Dauerzustand
+ohne Punkt, an dem man sagen kann: das kann ich jetzt. Mit acht
+Modulprüfungen und einer Abschlussprüfung gibt es acht solche Punkte und
+ein Ziel.
+
+**Eine Prüfung ist keine Lektion.** Drei Unterschiede, jeder mit Absicht:
+
+| | Lektion | Prüfung |
+|---|---|---|
+| Fehler | kommen am Ende nochmal | zählen beim ersten Versuch |
+| Auflösung | nach jeder Antwort | erst im Debrief am Ende |
+| Auswahl | Wiederholung zuerst, dann Neues | Querschnitt über alle Lektionen |
+
+Der zweite Punkt ist der wichtigste: wer nach jeder Frage die Auflösung
+sieht, macht eine Übung. Damit die Prüfung trotzdem lehrt, erscheinen alle
+Erklärungen samt Quellen vollständig im Debrief — sortiert nach dem, was
+nicht saß.
+
+Der dritte verhindert einen echten Fehler: eine Prüfung, die zufällig aus
+dem Topf zieht, kann eine halbe Ausbildung auslassen. Gezogen wird deshalb
+reihum über die Lektionen — und bei der Abschlussprüfung zweistufig, erst
+über die Module, dann innerhalb. Genau daran ist die erste Fassung
+gescheitert: sie deckte nur vier von acht Modulen ab, und ein Test hat es
+gefunden.
+
+**Die Abschlussprüfung ist die einzige Sperre in der App.** Sie öffnet erst,
+wenn alle acht Modulprüfungen bestanden sind. Beim freien Lernen wäre eine
+Sperre falsch — bei einer Prüfungsreihenfolge ist sie der Sinn der Sache.
+
+**Ein Fehlversuch kostet nichts.** Der beste Wert bleibt stehen, das
+Bestehen kann man nicht wieder verlieren. Wer Angst vor dem Antreten hat,
+tritt nicht an.
+
+## Die dreizehn Aufgabentypen
 
 Jeder Typ prüft eine andere Art von Wissen. Das ist der Punkt: wer nur
 Multiple-Choice baut, prüft nur Wiedererkennen.
@@ -138,8 +177,30 @@ Multiple-Choice baut, prüft nur Wiedererkennen.
 | **Schätzen** (`estimate`) | Größenordnungen | „Was kostet das Komfort-Paket?" |
 | **Kundengespräch** (`scenario`) | Urteilsvermögen | Einwand + vier Reaktionen, jede mit Begründung |
 | **Lesen & zusammenfassen** (`readSummarize`) | Echtes Verständnis | Text lesen, in eigenen Worten zusammenfassen |
+| **Einsortieren** (`buckets`) | Zuständigkeiten, Systematik | „Wer macht das?" – Green Fusion / Partner / Kunde |
+| **Karte beurteilen** (`card`) | Urteil aus Merkmalen | Reglerkarte → fernoptimierbar oder nicht? |
+| **Gespräch** (`dialogue`) | Gesprächsführung über mehrere Züge | „Herr Kamp fragt nach Umlagefähigkeit" |
 
-Die letzten beiden sind die wertvollsten und die aufwendigsten.
+**Einsortieren** unterscheidet sich von der Zuordnung darin, dass mehrere
+Begriffe in denselben Korb gehören — bei Zuständigkeiten ist das der
+Normalfall, und daran scheitert eine Paar-Zuordnung. Ein Korb, der immer
+leer bleibt, ist übrigens ein Fehler und wird vom Test gefunden: er
+frustriert, ohne etwas zu prüfen.
+
+**Karte beurteilen** ersetzt den Entscheidungsbaum aus dem Lehrplan. Ein
+Baum prüft, ob man dem Baum folgen kann; eine Karte prüft, ob man aus
+Merkmalen die Folge ableitet. Letzteres ist die Fähigkeit, die im Termin
+gebraucht wird.
+
+**Gespräch** ist der aufwendigste Typ und der einzige, der Gesprächsführung
+trainiert. Entscheidend ist der Zeitpunkt der Rückmeldung: während des
+Gesprächs sieht man nur, **wie die Person reagiert** — nicht, ob die
+Antwort gut war. Die Auswertung kommt am Ende, Zug für Zug. In einem echten
+Termin sagt niemand mitten im Satz, dass man es vergeigt hat; man merkt es
+an der Reaktion und erfährt es im Debrief. Wer nach jedem Zug ein grünes
+Häkchen bekommt, trainiert Multiple-Choice.
+
+Die aufwendigsten Typen sind gleichzeitig die wertvollsten.
 
 **Kundengespräch-Aufgaben** haben eine Besonderheit: nach der Antwort wird
 zu *jeder* Option gesagt, warum sie besser oder schlechter ist. Der

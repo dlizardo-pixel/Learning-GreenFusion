@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react'
-import type { CourseId, Item, Progress } from './engine/types'
-import { courses, courseById, unitById, items } from './data'
+import type { Item, ModuleId, Progress } from './engine/types'
+import { modules, moduleById, unitById, items } from './data'
 import { buildLesson, DEFAULT_LESSON_SIZE } from './engine/lesson'
-import {
-  emptyProgress,
-  localStorageAdapter,
-  type StorageAdapter,
-} from './engine/progress'
+import { buildExam, FINAL } from './engine/exam'
+import { emptyProgress, localStorageAdapter, type StorageAdapter } from './engine/progress'
 import { grantWeeklyFreeze } from './engine/srs'
 import { demoSource, setLeaderboardSource } from './engine/leaderboard'
 import { isBackendConfigured, supabase } from './backend/supabase'
@@ -16,15 +13,19 @@ import { signOut, useAuth } from './backend/useAuth'
 import { Home } from './screens/Home'
 import { Liga } from './screens/Liga'
 import { Login } from './screens/Login'
-import { CoursePath } from './screens/CoursePath'
+import { ModulePath } from './screens/ModulePath'
 import { Lesson, type LessonResult } from './screens/Lesson'
+import { Exam } from './screens/Exam'
+import { Certificate } from './screens/Certificate'
 import { Done } from './screens/Done'
 
 type View =
   | { name: 'home' }
   | { name: 'liga' }
-  | { name: 'course'; courseId: CourseId }
+  | { name: 'certificate' }
+  | { name: 'module'; moduleId: ModuleId }
   | { name: 'lesson'; queue: Item[]; unitId: string | null; title: string; from: View }
+  | { name: 'exam'; queue: Item[]; examId: string; title: string; from: View }
   | { name: 'done'; result: LessonResult; from: View }
 
 export default function App() {
@@ -34,7 +35,6 @@ export default function App() {
   const [loaded, setLoaded] = useState(false)
   const [view, setView] = useState<View>({ name: 'home' })
 
-  // Datenquellen je nach Anmeldezustand festlegen.
   useEffect(() => {
     if (auth.status === 'local') {
       setStorage(localStorageAdapter)
@@ -45,8 +45,6 @@ export default function App() {
       const userId = auth.session.user.id
       setStorage(supabaseStorageAdapter(userId))
       setLeaderboardSource(supabaseLeaderboardSource(userId))
-      // Sicherstellen, dass die Person in der laufenden Woche in einer
-      // Gruppe steht – sonst fehlt sie in der Liga.
       void supabase?.rpc('ensure_current_membership')
       return
     }
@@ -54,7 +52,6 @@ export default function App() {
     setLoaded(false)
   }, [auth])
 
-  // Lernstand laden und den Wochen-Schutztag gutschreiben.
   useEffect(() => {
     if (!storage) return
     let cancelled = false
@@ -99,6 +96,16 @@ export default function App() {
     setView({ name: 'lesson', queue, unitId, title, from })
   }
 
+  function startExam(examId: string, from: View) {
+    const queue = buildExam({ items, examId })
+    if (queue.length === 0) return
+    const title =
+      examId === FINAL
+        ? 'Abschlussprüfung'
+        : `Modulprüfung ${moduleById.get(examId as ModuleId)?.title ?? ''}`.trim()
+    setView({ name: 'exam', queue, examId, title, from })
+  }
+
   if (auth.status === 'loading') {
     return (
       <div className="app">
@@ -121,13 +128,14 @@ export default function App() {
     case 'home':
       return (
         <Home
-          courses={courses}
+          modules={modules}
           progress={progress}
           onProgress={update}
           onStartDaily={() => startLesson({ mode: 'daily' }, { name: 'home' })}
           onStartReview={() => startLesson({ mode: 'review' }, { name: 'home' })}
-          onOpenCourse={(courseId) => setView({ name: 'course', courseId })}
+          onOpenModule={(moduleId) => setView({ name: 'module', moduleId })}
           onOpenLiga={() => setView({ name: 'liga' })}
+          onOpenCertificate={() => setView({ name: 'certificate' })}
           onSignOut={isBackendConfigured() ? () => void signOut() : undefined}
         />
       )
@@ -135,15 +143,25 @@ export default function App() {
     case 'liga':
       return <Liga progress={progress} onBack={() => setView({ name: 'home' })} />
 
-    case 'course': {
-      const course = courseById.get(view.courseId)
-      if (!course) return <div className="app">Kurs nicht gefunden.</div>
+    case 'certificate':
       return (
-        <CoursePath
-          course={course}
+        <Certificate
+          progress={progress}
+          onBack={() => setView({ name: 'home' })}
+          onStartFinal={() => startExam(FINAL, { name: 'certificate' })}
+        />
+      )
+
+    case 'module': {
+      const mod = moduleById.get(view.moduleId)
+      if (!mod) return <div className="app">Modul nicht gefunden.</div>
+      return (
+        <ModulePath
+          module={mod}
           progress={progress}
           onBack={() => setView({ name: 'home' })}
           onStartUnit={(unitId) => startLesson({ mode: 'unit', unitId }, view)}
+          onStartExam={() => startExam(mod.id, view)}
         />
       )
     }
@@ -159,6 +177,19 @@ export default function App() {
           onProgress={update}
           onExit={() => setView(view.from)}
           onDone={(result) => setView({ name: 'done', result, from: view.from })}
+        />
+      )
+
+    case 'exam':
+      return (
+        <Exam
+          key={view.examId + view.queue.length}
+          queue={view.queue}
+          examId={view.examId}
+          title={view.title}
+          progress={progress}
+          onProgress={update}
+          onExit={() => setView(view.from)}
         />
       )
 

@@ -1,63 +1,33 @@
-import type { Course, Item } from '../../engine/types'
+import type { Item } from '../../engine/types'
+import {
+  BENCH,
+  DECK,
+  ICP,
+  PLAYBOOK,
+} from '../sources'
 
-const DECK = { label: 'Sales Materials – Pitch- & Angebots-Deck (Preise, Benchmarks, Case Studies)' }
-const PLAYBOOK = {
-  label: 'Angeboterstellung & Das Preismodell (Commercial Playbook)',
-  url: 'https://app.notion.com/p/1948e7b69be580a68abbe01a38a1ed4e',
-}
-const ICP = { label: 'Green Fusion Sales Expert – Zielkunden (ICP) & Sales-Prozess' }
-
-export const vertriebCourse: Course = {
-  id: 'vertrieb',
-  title: 'Wirtschaft & Vertrieb',
-  subtitle: 'Preise, Pakete, Kunden, Einwände',
-  icon: '💼',
-  color: '#0054B1',
-  units: [
-    {
-      id: 'vertrieb-1',
-      courseId: 'vertrieb',
-      title: 'Wen wir suchen',
-      goal: 'Du erkennst in zwei Minuten, ob ein Kontakt in unser Zielkundenprofil passt – und wer im Haus mitentscheidet.',
-      icon: '🎯',
-    },
-    {
-      id: 'vertrieb-2',
-      courseId: 'vertrieb',
-      title: 'Preise & Pakete',
-      goal: 'Du kannst ein Angebot korrekt aufbauen und kennst die Rabattgrenzen, ohne im Preisblatt nachzusehen.',
-      icon: '💸',
-    },
-    {
-      id: 'vertrieb-3',
-      courseId: 'vertrieb',
-      title: 'Business Case',
-      goal: 'Du kannst die Wirtschaftlichkeit im Kopf grob rechnen und die sekundären Einsparungen benennen.',
-      icon: '🧮',
-    },
-    {
-      id: 'vertrieb-4',
-      courseId: 'vertrieb',
-      title: 'Einwände',
-      goal: 'Du hast auf die fünf häufigsten Einwände eine Antwort, die eine Frage zurückgibt statt zu verteidigen.',
-      icon: '🛡️',
-    },
-    {
-      id: 'vertrieb-5',
-      courseId: 'vertrieb',
-      title: 'Prozess & SPICED',
-      goal: 'Du weisst, was in welcher Stage passieren muss und wie ein Meeting bewertet wird.',
-      icon: '🗺️',
-    },
-  ],
-}
-
-export const vertriebItems: Item[] = [
-  // ───────────────────────── vertrieb-1
+export const m6Items: Item[] = [
+  {
+    id: 't3-einsparung-match',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u1',
+    level: 1,
+    type: 'match',
+    concepts: ['Einsparbenchmarks'],
+    prompt: 'Welche durchschnittliche Energieeinsparung nennen wir je Anlagentyp?',
+    pairs: [
+      { left: 'Gaskessel', right: 'ca. 16 %' },
+      { left: 'Fernwärme', right: 'ca. 16,5 %' },
+      { left: 'Wärmepumpe', right: 'ca. 18 %' },
+      { left: 'PV + Wärmepumpe (Sektorkopplung)', right: 'bis 25 %' },
+    ],
+    why: 'Merksatz für Gespräche: wir *rechnen* im Business Case immer mit 10 %, weil das konservativ ist – der Durchschnitt liegt darüber. Alles über dem Break-even ist direkte Einsparung für Kundschaft und Mietende.',
+    source: BENCH,
+  },
   {
     id: 'v1-icp-groesse',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-1',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u1',
     level: 1,
     type: 'mc',
     concepts: ['ICP', 'Portfoliogröße'],
@@ -74,8 +44,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v1-personas',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-1',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u1',
     level: 1,
     type: 'match',
     concepts: ['Buying Center', 'Personas'],
@@ -99,8 +69,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v1-disqualifikation',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-1',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u1',
     level: 2,
     type: 'multi',
     concepts: ['Qualifizierung', 'Disqualifikation'],
@@ -118,30 +88,9 @@ export const vertriebItems: Item[] = [
     source: ICP,
   },
   {
-    id: 'v1-fakten',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-1',
-    level: 2,
-    type: 'multi',
-    concepts: ['Unternehmensfakten', 'Vertrauensaufbau'],
-    prompt: 'Welche Belege können wir im Erstgespräch nennen? (Mehrfachauswahl)',
-    options: [
-      'Über 4.000 Anlagen live',
-      'Marktführer laut GdW 2024',
-      'Forschungspartnerschaft mit der TU Berlin / Hermann-Rietschel-Institut',
-      'Förderung aus dem BMWK-Energieforschungsprogramm',
-      'Börsennotiert seit 2023',
-    ],
-    answer: [0, 1, 2, 3],
-    why: 'Green Fusion wurde 2021 als GmbH gegründet, die Forschung dahinter läuft seit 2015 – die Gründer sind Energieingenieure der TU Berlin mit EXIST-Stipendium. Für skeptische Genossenschaften wirkt die Forschungsherkunft oft stärker als jede Einsparzahl.',
-    source: DECK,
-  },
-
-  // ───────────────────────── vertrieb-2
-  {
     id: 'v2-komfort-preis',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-2',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u2',
     level: 1,
     type: 'estimate',
     concepts: ['Komfort-Paket', 'Listenpreis'],
@@ -157,8 +106,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v2-installation',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-2',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u2',
     level: 1,
     type: 'cloze',
     concepts: ['Installationskosten', 'IaaS'],
@@ -171,8 +120,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v2-komfort-inhalt',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-2',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u2',
     level: 2,
     type: 'multi',
     concepts: ['Komfort-Paket', 'Leistungsumfang'],
@@ -192,8 +141,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v2-line-items',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-2',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u3',
     level: 3,
     type: 'match',
     concepts: ['Angebotsstruktur', 'Line Items'],
@@ -210,8 +159,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v2-rabatt',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-2',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u3',
     level: 2,
     type: 'multi',
     concepts: ['Rabattrichtlinien', 'Deal Desk'],
@@ -229,8 +178,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v2-vertragsstart',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-2',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u3',
     level: 3,
     type: 'scenario',
     concepts: ['Vertragsstart', 'Revenue Scheduling'],
@@ -254,12 +203,10 @@ export const vertriebItems: Item[] = [
     why: 'Der Vertragsstart ist der Beginn der kostenpflichtigen fünf Jahre, nicht der Tag der Unterschrift. Ausserdem gehört zur Aufgabe im Vertrieb, die Abrechnungseinheit hart zu verhandeln – in der Regel Pauschale pro Anlage. Ein Quadratmeterpreis ist eine starke Ausnahme.',
     source: PLAYBOOK,
   },
-
-  // ───────────────────────── vertrieb-3
   {
     id: 'v3-rechnen-mit-10',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-3',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u1',
     level: 1,
     type: 'mc',
     concepts: ['Business Case', 'Konservative Annahme'],
@@ -272,8 +219,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v3-formel',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-3',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u1',
     level: 2,
     type: 'order',
     concepts: ['Einsparpotenzial-Rechnung'],
@@ -289,8 +236,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v3-sekundaer',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-3',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u1',
     level: 2,
     type: 'match',
     concepts: ['Sekundäre Einsparungen'],
@@ -305,8 +252,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v3-breakeven',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-3',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u1',
     level: 2,
     type: 'estimate',
     concepts: ['Break-even'],
@@ -323,8 +270,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v3-cases',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-3',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u4',
     level: 3,
     type: 'match',
     concepts: ['Case Studies'],
@@ -350,39 +297,10 @@ export const vertriebItems: Item[] = [
     why: 'Eine passende Referenz beantwortet einen Einwand schneller als jedes Argument, weil sie den Kunden aus der Rolle des Ersten holt. Die 8 % bei DHU Hamburg sind deshalb wertvoll: eine ehrlich niedrige Zahl, die genau den Neubau-Einwand trifft.',
     source: DECK,
   },
-
-  // ───────────────────────── vertrieb-4
-  {
-    id: 'v4-kein-unterschied',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-4',
-    level: 1,
-    type: 'scenario',
-    concepts: ['Wettbewerbseinwand'],
-    persona: 'Technische Leiterin einer Wohnungsgenossenschaft',
-    quote:
-      'Ehrlich gesagt sehe ich keinen Unterschied zu KUGU oder Vodafone. Am Ende ist das doch alles das Gleiche.',
-    prompt: 'Wie reagierst du?',
-    options: [
-      '"Das höre ich öfter. Was läuft gut bei denen – und was würden Sie sich anders wünschen?"',
-      '"Die haben deutlich schlechtere Technik als wir."',
-      '"Wir sind die einzigen mit KI-Optimierung."',
-      '"Dann vergleichen Sie am besten die Preise."',
-    ],
-    answer: 0,
-    optionFeedback: [
-      'Richtig: die Gegenfrage bringt dich in die Diagnose statt in die Verteidigung – und die Antwort liefert dir die Lücke, in die du stösst.',
-      'Negativsprache über Wettbewerber ist ein Marken-No-Go und wirkt unsicher.',
-      'Eine unbelegte Alleinstellungsbehauptung. Sie ist leicht widerlegbar und beschädigt die Glaubwürdigkeit.',
-      'Damit machst du dich zur billigsten Option – und gibst den einzigen Hebel auf, den du hast.',
-    ],
-    why: 'Erst diagnostizieren, dann differenzieren. Die belastbaren Unterschiede: Zusammenarbeit statt Software-Lieferung (eigener CSM, Optimierungstermine), alle Anlagentypen auf einer Plattform, TÜV-Zertifizierung, eigene Installateure. Bei KUGU gezielt nach TÜV-Zertifizierung, CSM-Modell und Wärmepumpen-Strategie fragen lassen.',
-    source: ICP,
-  },
   {
     id: 'v4-alte-anlagen',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-4',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u4',
     level: 2,
     type: 'scenario',
     concepts: ['Einwand alte Anlagen'],
@@ -408,8 +326,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v4-was-kostet',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-4',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u4',
     level: 2,
     type: 'scenario',
     concepts: ['Preisfrage zu früh'],
@@ -433,60 +351,9 @@ export const vertriebItems: Item[] = [
     source: ICP,
   },
   {
-    id: 'v4-mieter',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-4',
-    level: 3,
-    type: 'scenario',
-    concepts: ['Einwand Mietende', 'Umlagefähigkeit'],
-    persona: 'Vorstand einer Genossenschaft',
-    quote:
-      'Für unsere Mitglieder rechnet sich das nicht. Wir legen ja am Ende nur neue Kosten auf sie um.',
-    prompt: 'Welche Antwort ist die stärkste?',
-    options: [
-      'Umlagefähigkeit erklären und zeigen, dass die Einsparung bei den Energiekosten die Softwarekosten in der Regel übersteigt – die Warmmiete sinkt also',
-      'Anbieten, die Kosten nicht umzulegen',
-      'Auf das Wirtschaftlichkeitsgebot verweisen und das Thema wechseln',
-      'Erklären, dass die Mietenden das nicht merken werden',
-    ],
-    answer: 0,
-    optionFeedback: [
-      'Richtig: das ist genau die Logik des Wirtschaftlichkeitsgebots – die Maßnahme senkt die Betriebskosten insgesamt.',
-      'Möglich, aber es verschenkt das Argument und macht aus einem Gewinn für alle eine Belastung für den Vermieter.',
-      'Der Verweis ist richtig, das Themawechseln lässt den Einwand aber ungelöst im Raum.',
-      'Falsch und riskant: Mietende merken es – auf der Betriebskostenabrechnung. Genau daraus entstehen die Widersprüche.',
-    ],
-    why: 'Die erzielten Einsparungen übersteigen die Softwarekosten nicht selten, wodurch Mietende finanziell entlastet werden. Umlagefähigkeit ist ausserdem ein Kann, kein Muss – und zusätzlich ersetzt die digitale Überwachung kostenpflichtige manuelle Prüfpflichten.',
-    source: {
-      label: 'Knowledge Base: Umlagefähigkeit der Kosten von Green Fusion',
-      url: 'https://knowledge.green-fusion.de/umlagef%C3%A4higkeit-der-kosten-von-green-fusion-zur-heizungsoptimierung',
-    },
-  },
-  {
-    id: 'v4-pilot-laeuft',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-4',
-    level: 3,
-    type: 'mc',
-    concepts: ['Einwand laufender Pilot'],
-    prompt:
-      'Ein Kunde sagt: "Wir haben schon einen Pilot mit einem anderen Anbieter laufen." Was ist die beste Reaktion?',
-    options: [
-      '"Gut, dann haben Sie Vergleichswerte. Was hat Sie dazu gebracht, sich mehrere Anbieter anzuschauen?"',
-      '"Dann melde ich mich, wenn der Pilot vorbei ist."',
-      '"Der Anbieter ist bekannt dafür, dass die Piloten scheitern."',
-      '"Wie viel zahlen Sie dort?"',
-    ],
-    answer: 0,
-    why: 'Ein laufender Pilot ist ein Kaufsignal, kein Hindernis: der Bedarf ist bewiesen und Budget existiert. Die Frage nach dem "warum mehrere Anbieter" legt offen, was fehlt – und genau dort liegt dein Einstieg.',
-    source: ICP,
-  },
-
-  // ───────────────────────── vertrieb-5
-  {
     id: 'v5-spiced',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-5',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u5',
     level: 1,
     type: 'match',
     concepts: ['SPICED'],
@@ -503,8 +370,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v5-stages',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-5',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u5',
     level: 2,
     type: 'order',
     concepts: ['Sales-Prozess'],
@@ -522,8 +389,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v5-rating',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-5',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u5',
     level: 2,
     type: 'match',
     concepts: ['Meeting-Rating'],
@@ -539,8 +406,8 @@ export const vertriebItems: Item[] = [
   },
   {
     id: 'v5-deal-desk',
-    courseId: 'vertrieb',
-    unitId: 'vertrieb-5',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u5',
     level: 3,
     type: 'multi',
     concepts: ['Deal Desk', 'Angebotsprozess'],
@@ -555,5 +422,100 @@ export const vertriebItems: Item[] = [
     answer: [0, 1, 2, 3],
     why: 'Preise werden ausschliesslich im Master-Preisblatt und im Sheet geändert; RevOps lädt sie per Bulk-Import in HubSpot. Nur so bleiben die Line Items im CRM 1:1 deckungsgleich mit dem offiziellen Preismodell. Und nach dem Generieren gilt: PDF prüfen, ob Optionen und Textbausteine zur Konfiguration passen.',
     source: PLAYBOOK,
+  },
+
+  // ───────────────────────── 6.5 · Der kritische technische Leiter
+  {
+    id: 'm6-fall-tech-leiter',
+    moduleId: 'm6-wirtschaft',
+    unitId: 'm6-u4',
+    level: 3,
+    type: 'dialogue',
+    concepts: ['Technische Einwände', 'Glaubwürdigkeit'],
+    persona: 'Technischer Leiter, 22 Jahre im Beruf, war selbst Heizungsbauer',
+    situation:
+      'Er hat schon zwei Digitalisierungsprojekte erlebt, die nichts gebracht haben. Er ist nicht feindlich, aber er prüft jede Aussage — und er merkt sofort, wenn jemand Technik nur nachplappert.',
+    turns: [
+      {
+        says:
+          'Ich stelle meine Anlagen selbst ein. Was soll eine Software besser wissen als jemand, der seit zwanzig Jahren im Keller steht?',
+        prompt: 'Wie antwortest du?',
+        options: [
+          'Nichts – bei der einzelnen Einstellung sind Sie besser. Der Unterschied ist die Wiederholung: wir messen alle fünf Minuten und ziehen die Heizkurve über die Heizperiode mehrfach nach. Wie oft kommen Sie realistisch an jede Ihrer Anlagen?',
+          'Unsere KI erkennt Muster, die ein Mensch nicht sehen kann.',
+          'Das machen unsere Ingenieure genauso gut wie Sie.',
+          'Die meisten Anlagen sind falsch eingestellt, auch bei erfahrenen Leuten.',
+        ],
+        answer: 0,
+        optionFeedback: [
+          'Richtig: gibt ihm seine Kompetenz, verschiebt das Kriterium auf Frequenz und endet mit einer Frage, die er selbst beantworten muss.',
+          'Genau der Satz, bei dem er abschaltet. Unbelegt und respektlos gegenüber seiner Erfahrung.',
+          'Ein Wettbewerb um Fachkompetenz, den man gegen ihn nicht gewinnen muss und nicht gewinnen wird.',
+          'Ein Vorwurf. Er hört: Sie machen Ihre Arbeit schlecht.',
+        ],
+        reaction:
+          '"Ehrlich? Bei 40 Anlagen komme ich einmal im Jahr an jede – wenn es gut läuft. Aber Ihre Software kann meine Anlagen doch gar nicht alle ansteuern."',
+      },
+      {
+        says: 'Ihre Software kann meine Anlagen doch gar nicht alle ansteuern.',
+        prompt: 'Wie gehst du mit der technischen Realität um?',
+        options: [
+          'Stimmt, nicht alle. Ob wir fernsteuern können, entscheidet der Regler im Keller, nicht das Gebäude – verbindlich steht das je Modell in unserer Controller Readiness DB. Für die anderen kommen wir vor Ort. Drei von vier Erstoptimierungen finden bei uns tatsächlich im Keller statt.',
+          'Wir können jeden Regler fernsteuern.',
+          'Dann tauschen wir eben die Regler aus.',
+          'Für nicht steuerbare Anlagen liefern wir nur Monitoring.',
+        ],
+        answer: 0,
+        optionFeedback: [
+          'Richtig: bestätigt den Einwand, nennt das entscheidende Kriterium und die Zahl, die die Ehrlichkeit belegt. 985 von 1.319 Erstoptimierungen waren vor Ort.',
+          'Falsch – und er wird es prüfen. Genau daran erkennt er den Vertriebler, der Technik nur nachplappert.',
+          'Nicht unser Geschäft und ein teurer Vorschlag, den er nicht gefragt hat.',
+          'Zu wenig: für nicht fernsteuerbare Anlagen bieten wir die Optimierung vor Ort an, das ist der Kern des Modells.',
+        ],
+        reaction:
+          '"Das ist mal eine ehrliche Antwort. Und was ist mit dem hydraulischen Abgleich? Ohne den bringt Ihre Heizkurve doch nichts."',
+      },
+      {
+        says: 'Ohne hydraulischen Abgleich bringt Ihre Heizkurve doch nichts.',
+        prompt: 'Wie ordnest du das ein?',
+        options: [
+          'Zwei verschiedene Probleme: der Abgleich verteilt die Wassermengen richtig, die Heizkurve bestimmt, wie heiss das Wasser überhaupt ist. Sind Ihre Wohnungen ungleichmässig warm, brauchen Sie den Abgleich. Sind sie gleichmässig zu warm, ist es die Kurve. Wir machen den Abgleich nicht, aber wir zeigen Ihnen, wo er sich lohnen würde.',
+          'Den hydraulischen Abgleich machen wir mit.',
+          'Der Abgleich ist überbewertet, die Kurve bringt mehr.',
+          'Ohne Abgleich können wir leider nichts machen.',
+        ],
+        answer: 0,
+        optionFeedback: [
+          'Richtig: trennt Mengenproblem von Temperaturproblem, gibt ihm ein Diagnosewerkzeug und grenzt die eigene Leistung ehrlich ab.',
+          'Falsch: wir führen ihn nicht durch, wir geben nur einen Hinweis, wo er sinnvoll wäre.',
+          'Fachlich angreifbar und respektlos gegenüber einem Handwerker – §60c GEG macht den Abgleich beim Heizungstausch sogar zur Pflicht.',
+          'Falsch: die WSL Leipzig hatte eine 30 Jahre alte Anlage und kam auf 16,5 %.',
+        ],
+        reaction:
+          '"Gut. Sagen wir, ich mache mit. Was habe ich davon ausser Energieeinsparung? Die Vorstände wollen Zahlen."',
+      },
+      {
+        says: 'Was habe ich davon ausser Energieeinsparung?',
+        prompt: 'Welche sekundären Effekte nennst du?',
+        options: [
+          'Drei Dinge: die Heizungsprüfung nach §60b entfällt bei uns wegen der TÜV-Zertifizierung nach §71a – das sind 200 bis 600 € je Liegenschaft. Weniger Anfahrten des Wartungsunternehmens, etwa 300 €. Und Störungen sehen Sie, bevor der erste Mieter anruft.',
+          'Sie verbessern Ihre CO2-Bilanz.',
+          'Sie sparen Personal in der Haustechnik.',
+          'Ihre Immobilien steigen im Wert.',
+        ],
+        answer: 0,
+        optionFeedback: [
+          'Richtig: drei konkrete, bezifferbare Effekte – und der letzte ist der, der einen technischen Leiter persönlich betrifft.',
+          'Zu weich für einen technischen Leiter. Für den Vorstand relevant, hier nicht das erste Argument.',
+          'Riskant: nach Personalabbau klingende Argumente machen ihn zum Gegner, nicht zum Verbündeten.',
+          'Richtig, aber vage und nicht bezifferbar – gehört als Ergänzung dazu, nicht als Hauptargument.',
+        ],
+        reaction:
+          '"Die vermiedenen Anfahrten sind für mich das stärkste Argument. Schicken Sie mir eine Rechnung für zehn Liegenschaften."',
+      },
+    ],
+    passRatio: 0.75,
+    why: 'Das Muster gegen technische Skepsis: seine Kompetenz nicht bestreiten, das Entscheidungskriterium verschieben, jede Grenze offen benennen und mit einer Frage enden. Die Zahlen tragen dabei die Glaubwürdigkeit — 985 von 1.319 Erstoptimierungen vor Ort, 200 bis 600 € vermiedene Prüfung, rund 300 € vermiedene Anfahrten. Wer bei diesem Kundentyp einmal übertreibt, hat das Gespräch verloren.',
+    source: ICP,
   },
 ]

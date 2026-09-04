@@ -20,6 +20,8 @@ const IGNORE = [/fonts\.googleapis/, /fonts\.gstatic/, /accounts\.google/, /favi
 
 const ALL_TYPES = [
   'Eine Antwort',
+  'Einsortieren',
+  'Karte beurteilen',
   'Mehrere Antworten',
   'Stimmt das?',
   'Setze die passenden Wörter ein',
@@ -31,6 +33,8 @@ const ALL_TYPES = [
   'Lesen · etwa 2 Minuten',
   'Zusammenfassen',
 ]
+/** Labels, die nur in bestimmten Phasen auftauchen und nicht erzwungen werden. */
+const OPTIONAL_TYPES = ['Gesprächssimulation', 'Auswertung']
 
 const SUMMARY_TEXT =
   'Wir optimieren kontinuierlich, weil sich Gebäude, Nutzung und Algorithmen verändern und es kein statisches Optimum gibt. ' +
@@ -72,6 +76,37 @@ async function answer(page, hint) {
 
   if (await page.locator('textarea').count()) {
     await page.fill('textarea', SUMMARY_TEXT)
+    return
+  }
+  if (await page.locator('.dialogue-says, .dialogue-reaction').count()) {
+    // Gesprächssimulation: Zug für Zug antworten, bis alle Züge durch sind.
+    for (let turn = 0; turn < 12; turn++) {
+      const weiter = page.locator(
+        'button:has-text("Weiter im Gespräch"), button:has-text("Gespräch beenden")',
+      )
+      if (await weiter.count()) {
+        await weiter.click()
+        await page.waitForTimeout(80)
+        continue
+      }
+      const opt = page.locator('.option')
+      if (!(await opt.count())) break
+      await opt.first().click()
+      await page.waitForTimeout(80)
+    }
+    return
+  }
+  if (await page.locator('.bucket-head').count()) {
+    // Einsortieren: Begriff antippen, dann Korb antippen.
+    for (let n = 0; n < 14; n++) {
+      const tile = page.locator('.tiles .tile:not(.tile--used)').first()
+      if (!(await tile.count())) break
+      await tile.click()
+      const bucket = page.locator('.bucket-head:not([disabled])').first()
+      if (!(await bucket.count())) break
+      await bucket.click()
+      await page.waitForTimeout(40)
+    }
     return
   }
   if (await page.locator('.match-slot').count()) {
@@ -162,18 +197,20 @@ await page.screenshot({ path: `${OUT}/01-home.png`, fullPage: true })
 
 // Je Kurs eine Lektion, bis alle Aufgabentypen mindestens einmal dran waren.
 const plan = [
-  ['technik', 'technik-1'],
-  ['technik', 'technik-2'],
-  ['produkt', 'produkt-1'],
-  ['produkt', 'produkt-4'],
-  ['vertrieb', 'vertrieb-4'],
-  ['recht', 'recht-1'],
+  ['m1-grundlagen', 'm1-u1'],
+  ['m1-grundlagen', 'm1-u3'],
+  ['m2-regelung', 'm2-u1'],
+  ['m2-regelung', 'm2-u7'],
+  ['m3-produkt', 'm3-u5'],
+  ['m4-recht', 'm4-u6'],
+  ['m5-markt', 'm5-u3'],
+  ['m8-praxis', 'm8-u1'],
 ]
 
-for (const [course, unit] of plan) {
-  await page.click(`[data-testid="course-${course}"]`)
+for (const [mod, unit] of plan) {
+  await page.click(`[data-testid="module-${mod}"]`)
   await page.waitForSelector(`[data-testid="unit-${unit}"]`)
-  if (unit === 'technik-1') await page.screenshot({ path: `${OUT}/02-path.png`, fullPage: true })
+  if (unit === 'm1-u1') await page.screenshot({ path: `${OUT}/02-modulpfad.png`, fullPage: true })
   await page.click(`[data-testid="unit-${unit}"]`)
   const ok = await playLesson(page, unit)
   if (!ok) break
@@ -182,6 +219,50 @@ for (const [course, unit] of plan) {
   await page.click('[data-testid="lesson-home"]')
   await page.waitForSelector('[data-testid="start-daily"]')
 }
+
+// Modulprüfung vollständig durchspielen: keine Auflösung zwischendurch.
+await page.click('[data-testid="module-m5-markt"]')
+await page.waitForSelector('[data-testid="start-exam-m5-markt"]')
+await page.screenshot({ path: `${OUT}/06-modulpruefung-karte.png`, fullPage: true })
+await page.click('[data-testid="start-exam-m5-markt"]')
+await page.waitForSelector('button:has-text("Antwort abgeben")')
+for (let step = 0; step < 30; step++) {
+  const hint = ((await page.locator('.type-hint').first().textContent().catch(() => '')) ?? '').trim()
+  if (hint) seenTypes.add(hint)
+  if (await page.locator('.feedback').count()) {
+    errors.push('Prüfung zeigt eine Auflösung zwischendurch')
+    break
+  }
+  await answer(page, hint)
+  const submit = page.locator('button:has-text("Antwort abgeben"), button:has-text("Abgeben und auswerten")')
+  if (!(await submit.count())) break
+  if (await submit.isDisabled()) {
+    errors.push(`Prüfung: Abgeben gesperrt bei Aufgabentyp "${hint}"`)
+    break
+  }
+  await submit.click()
+  await page.waitForTimeout(160)
+  if (await page.locator('[data-testid="exam-done"]').count()) break
+}
+if (!(await page.locator('[data-testid="exam-done"]').count())) {
+  errors.push('Modulprüfung endete nicht innerhalb von 30 Schritten')
+} else {
+  await page.screenshot({ path: `${OUT}/07-pruefungsergebnis.png`, fullPage: true })
+  await page.click('[data-testid="exam-done"]')
+  await page.waitForSelector('[data-testid="start-exam-m5-markt"]')
+  await page.click('[data-testid="back-home"]')
+  await page.waitForSelector('[data-testid="start-daily"]')
+}
+
+// Zertifikatsübersicht
+await page.click('[data-testid="open-certificate"]')
+await page.waitForSelector('text=Modulprüfungen')
+await page.screenshot({ path: `${OUT}/08-zertifikat.png`, fullPage: true })
+if (await page.locator('[data-testid="start-final"]').count()) {
+  errors.push('Abschlussprüfung ist offen, obwohl nicht alle Module bestanden sind')
+}
+await page.click('[data-testid="back-home"]')
+await page.waitForSelector('[data-testid="start-daily"]')
 
 const xpBefore = await page.locator('.pill--xp').textContent()
 await page.screenshot({ path: `${OUT}/04-home-after.png`, fullPage: true })
@@ -210,7 +291,7 @@ await page.waitForSelector('.pill--xp')
 const xpAfter = await page.locator('.pill--xp').textContent()
 if (xpBefore !== xpAfter) errors.push(`Fortschritt nach Reload verloren: ${xpBefore} → ${xpAfter}`)
 
-const missing = ALL_TYPES.filter((t) => !seenTypes.has(t))
+const missing = ALL_TYPES.filter((t) => !seenTypes.has(t) && !OPTIONAL_TYPES.includes(t))
 if (missing.length) errors.push(`Nie gerendert: ${missing.join(', ')}`)
 
 await browser.close()

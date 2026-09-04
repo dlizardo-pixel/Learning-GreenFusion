@@ -1,18 +1,32 @@
-import type { Course, Item, Unit } from '../engine/types'
-import { technikCourse, technikItems } from './courses/technik'
-import { produktCourse, produktItems } from './courses/produkt'
-import { vertriebCourse, vertriebItems } from './courses/vertrieb'
-import { rechtCourse, rechtItems } from './courses/recht'
+import type { Item, LearningModule, ModuleId, Unit } from '../engine/types'
+import { modules } from './modules'
+import { m1Items } from './items/m1'
+import { m2Items } from './items/m2'
+import { m3Items } from './items/m3'
+import { m4Items } from './items/m4'
+import { m5Items } from './items/m5'
+import { m6Items } from './items/m6'
+import { m7Items } from './items/m7'
+import { m8Items } from './items/m8'
 
-export const courses: Course[] = [technikCourse, produktCourse, vertriebCourse, rechtCourse]
+export { modules } from './modules'
 
-export const items: Item[] = [...technikItems, ...produktItems, ...vertriebItems, ...rechtItems]
+export const items: Item[] = [
+  ...m1Items,
+  ...m2Items,
+  ...m3Items,
+  ...m4Items,
+  ...m5Items,
+  ...m6Items,
+  ...m7Items,
+  ...m8Items,
+]
 
-export const units: Unit[] = courses.flatMap((c) => c.units)
+export const units: Unit[] = modules.flatMap((m) => m.units)
 
 export const itemById = new Map(items.map((i) => [i.id, i]))
-export const courseById = new Map(courses.map((c) => [c.id, c]))
-export const unitById = new Map(units.map((u) => [u.id, u]))
+export const moduleById = new Map<ModuleId, LearningModule>(modules.map((m) => [m.id, m]))
+export const unitById = new Map(units.map((x) => [x.id, x]))
 
 export const itemsInUnit = (unitId: string) => items.filter((i) => i.unitId === unitId)
-export const itemsInCourse = (courseId: string) => items.filter((i) => i.courseId === courseId)
+export const itemsInModule = (moduleId: string) => items.filter((i) => i.moduleId === moduleId)

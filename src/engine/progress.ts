@@ -16,6 +16,7 @@ export const emptyProgress = (): Progress => ({
   frozenDays: [],
   lostStreak: null,
   challenge: null,
+  exams: {},
 })
 
 /**

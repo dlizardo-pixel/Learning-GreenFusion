@@ -1,4 +1,4 @@
-import type { Item, Progress, CourseId } from './types'
+import type { Item, Progress, ModuleId } from './types'
 import { isDue } from './srs'
 
 export type LessonMode = 'unit' | 'daily' | 'review'
@@ -8,7 +8,7 @@ export interface LessonRequest {
   progress: Progress
   mode: LessonMode
   unitId?: string
-  courseId?: CourseId
+  moduleId?: ModuleId
   size?: number
   /** Für reproduzierbare Tests. */
   random?: () => number
@@ -28,15 +28,21 @@ export interface LessonRequest {
 export const DEFAULT_LESSON_SIZE = 8
 
 export function buildLesson(req: LessonRequest): Item[] {
-  const { items, progress, mode, unitId, courseId } = req
+  const { items, progress, mode, unitId, moduleId } = req
   const size = req.size ?? DEFAULT_LESSON_SIZE
   const rnd = req.random ?? Math.random
 
+  // Bei einer Lektions-Auswahl zählt die Lektion selbst; reicht ihr Material
+  // nicht für eine volle Lektion, wird aus dem umgebenden Modul aufgefüllt.
+  // Das ist besser, als Lektionen künstlich gross zu schneiden — der
+  // Lehrplan gibt die Gliederung vor, nicht die Lektionsgrösse.
+  const unitModule = unitId ? items.find((i) => i.unitId === unitId)?.moduleId : undefined
   const scope = items.filter((i) => {
-    if (mode === 'unit') return i.unitId === unitId
-    if (courseId) return i.courseId === courseId
+    if (mode === 'unit') return i.unitId === unitId || i.moduleId === unitModule
+    if (moduleId) return i.moduleId === moduleId
     return true
   })
+  const inUnit = (i: Item) => i.unitId === unitId
 
   const seen = (i: Item) => progress.items[i.id]
   const due = scope.filter((i) => {
@@ -50,9 +56,14 @@ export function buildLesson(req: LessonRequest): Item[] {
   // Höchstens die Hälfte einer Lektion ist Wiederholung — sonst kommt man
   // im Lernpfad nie voran und die App fühlt sich wie eine Prüfung an.
   const reviewSlots = Math.min(due.length, Math.floor(size / 2))
+  // Neues Material zuerst aus der gewählten Lektion, dann aus dem Modul.
+  const freshOrdered =
+    mode === 'unit'
+      ? [...byLevel(fresh.filter(inUnit)), ...byLevel(fresh.filter((i) => !inUnit(i)))]
+      : byLevel(fresh)
   const picked = [
-    ...shuffle(due, rnd).slice(0, reviewSlots),
-    ...byLevel(fresh).slice(0, size - reviewSlots),
+    ...shuffle(due.filter((i) => mode !== 'unit' || inUnit(i)), rnd).slice(0, reviewSlots),
+    ...freshOrdered.slice(0, size - reviewSlots),
   ]
 
   // Falls der Kurs noch keine neuen Items mehr hat, mit bereits Gelerntem

@@ -7,15 +7,24 @@ ist Fachwissen, nicht Softwareentwicklung.
 ## Wo die Inhalte liegen
 
 ```
-src/data/courses/
-├── technik.ts     🔧 Heizungstechnik
-├── produkt.ts     🖥️ Produkt & Plattform
-├── vertrieb.ts    💼 Wirtschaft & Vertrieb
-└── recht.ts       ⚖️ Recht & Regulatorik
+src/data/
+├── modules.ts      Der Lehrplan: 8 Module, 43 Lektionen mit Nummer und Ziel
+├── sources.ts      Alle Quellenangaben an einer Stelle
+└── items/
+    ├── m1.ts       Physik & Technik
+    ├── m2.ts       Regelung & Digitalisierung
+    ├── m3.ts       Green Fusion Produktlogik
+    ├── m4.ts       Regulatorik & Recht
+    ├── m5.ts       Wettbewerb & Markt
+    ├── m6.ts       Wirtschaftlichkeit & Vertrieb
+    ├── m7.ts       Sektorkopplung
+    └── m8.ts       Praxis & Zertifizierung
 ```
 
-Jede Datei enthält oben die Kursstruktur (Lektionen mit Titel und Ziel) und
-darunter die Aufgaben.
+Struktur und Inhalt sind getrennt: `modules.ts` sagt, welche Lektionen es
+gibt, die Dateien unter `items/` füllen sie. Und `sources.ts` hält die
+Quellenangaben zentral, damit ein aktualisierter Link nicht an dreissig
+Stellen gepflegt werden muss.
 
 ## Die Qualitätsschwelle
 
@@ -36,6 +45,12 @@ Lückentext hat für jeden Platzhalter eine Lösung und mindestens einen
 Ablenker, jede Zuordnung hat mindestens zwei Paare ohne Dopplungen, jede
 Lektion hat genug Aufgaben für eine vollständige Lektion, jede Musterlösung
 erfüllt ihre eigene Rubrik.
+
+Dazu kommen die Prüfungen für die neuen Aufgabentypen: jeder Begriff einer
+Einsortier-Aufgabe zeigt auf einen existierenden Korb, **kein Korb bleibt
+immer leer** (ein Ablenker, der nie stimmt, frustriert ohne zu prüfen),
+jede Karte hat Fakten und ein Feedback je Option, und jedes Gespräch hat
+pro Zug Optionen, Antwort, Feedback und eine Reaktion.
 
 Ausführen mit:
 
@@ -86,9 +101,9 @@ für den häufigsten Fall:
 
 ```ts
 {
-  id: 'v2-neue-frage',            // eindeutig, Präfix = Lektion
-  courseId: 'vertrieb',
-  unitId: 'vertrieb-2',
+  id: 'm6-neue-frage',            // eindeutig, Präfix = Modul
+  moduleId: 'm6-wirtschaft',
+  unitId: 'm6-u2',                // Lektion, siehe modules.ts
   level: 2,                       // 1 Einstieg · 2 Aufbau · 3 Vertiefung
   type: 'mc',
   concepts: ['Rabattrichtlinien'],
@@ -96,9 +111,12 @@ für den häufigsten Fall:
   options: ['Richtig', 'Plausibel falsch', 'Plausibel falsch', 'Plausibel falsch'],
   answer: 0,                      // Index in options
   why: 'Warum das so ist – und was es im Gespräch bedeutet.',
-  source: PLAYBOOK,               // oben in der Datei definiert
+  source: PLAYBOOK,               // aus sources.ts
 },
 ```
+
+Die Importe aus `sources.ts` müssen zur Verwendung passen — `npm run build`
+meldet unbenutzte Importe als Fehler.
 
 Alle zehn Typen mit ihren Feldern stehen mit Kommentaren in
 `src/engine/types.ts`. Die Levelstufe steuert nur die Reihenfolge, in der
@@ -121,15 +139,21 @@ Lektion mit drei Aufgaben ist keine Lektion.
 
 ## Neue Lektion oder neuen Kurs anlegen
 
-**Lektion:** im `units`-Array des Kurses ergänzen (`id`, `title`, `goal`,
-`icon`), dann mindestens vier Aufgaben mit dieser `unitId` schreiben. Das
-`goal` ist wichtig — es steht im Lernpfad und ist das Versprechen der
-Lektion. Ein Satz, aktiv, aus Sicht der Lernenden.
+**Lektion:** in `modules.ts` beim passenden Modul ergänzen — mit
+Lehrplan-Nummer (`code`), Titel, Ziel und Icon. Dann mindestens drei
+Aufgaben mit dieser `unitId` schreiben. Das `goal` ist wichtig: es steht im
+Lernpfad und ist das Versprechen der Lektion. Ein Satz, aktiv, aus Sicht
+der Lernenden.
 
-**Kurs:** neue Datei in `src/data/courses/` nach dem Muster der
-bestehenden, `CourseId` in `src/engine/types.ts` erweitern und in
-`src/data/index.ts` registrieren. Farbe aus dem Green Fusion Design System
-wählen, keine neue erfinden.
+Drei Aufgaben genügen, weil eine Lektion bei Bedarf aus dem umgebenden
+Modul auffüllt — der Lehrplan gibt die Gliederung vor, nicht die
+Lektionsgrösse. Ein Modul braucht aber mindestens zwölf Aufgaben, sonst
+lässt sich keine Modulprüfung stellen; auch das prüft ein Test.
+
+**Modul:** neue Datei in `src/data/items/`, `ModuleId` in
+`src/engine/types.ts` erweitern, in `modules.ts` und `src/data/index.ts`
+registrieren. Farbe aus dem Green Fusion Design System wählen, keine neue
+erfinden.
 
 ## Warum die Inhalte nicht automatisch aus Notion kommen
 
@@ -149,3 +173,16 @@ Was sinnvoll wäre: ein Skript, das **prüft**, ob sich verlinkte
 Notion-Quellen seit dem letzten Stand geändert haben, und die betroffenen
 Aufgaben zur Durchsicht meldet. Steht in der
 [Roadmap](ROADMAP.md) — Vorschlagen ist billig, Prüfen ist wertvoll.
+
+## Wenn eine Quelle fehlt
+
+Wo kein interner Beleg existiert, wird die Quelle als `FACH`
+(„Heizungstechnische Grundlagen") gekennzeichnet. Das ist kein Freibrief
+für Behauptungen, sondern eine sichtbare Markierung: hier fehlt eine
+Quelle, und wenn eine auftaucht, gehört sie nachgetragen.
+
+Was **nicht** passiert: eine Aufgabe schreiben, weil eine Zahl plausibel
+klingt. Beim Aufbau des Zertifikatsmoduls liess sich das Preismodell
+„Basis / Komfort / Premium" nicht belegen — es ist deshalb nicht zu einer
+Aufgabe geworden, sondern in [LEHRPLAN.md](LEHRPLAN.md) als offener Punkt
+vermerkt. Dasselbe gilt für die Prüffristen der Trinkwasserverordnung.

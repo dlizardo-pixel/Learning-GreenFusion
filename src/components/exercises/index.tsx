@@ -6,6 +6,9 @@ import { Hotspot } from './Hotspot'
 import { Match } from './Match'
 import { Order } from './Order'
 import { ReadSummarize } from './ReadSummarize'
+import { Buckets } from './Buckets'
+import { Card } from './Card'
+import { Dialogue } from './Dialogue'
 import type { ExerciseProps } from './common'
 
 export { TYPE_HINT, hasInput, initialValue } from './common'
@@ -34,5 +37,11 @@ export function Exercise(props: ExerciseProps<Item>) {
       return <Estimate {...props} item={item} />
     case 'readSummarize':
       return <ReadSummarize {...props} item={item} />
+    case 'buckets':
+      return <Buckets {...props} item={item} />
+    case 'card':
+      return <Card {...props} item={item} />
+    case 'dialogue':
+      return <Dialogue {...props} item={item} />
   }
 }

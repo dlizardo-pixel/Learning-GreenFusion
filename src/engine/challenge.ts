@@ -16,11 +16,11 @@
  * gleich — das macht sie im Team besprechbar ("hast du die heutige schon?")
  * und verhindert, dass ein Neuladen eine leichtere Aufgabe auswürfelt.
  */
-import type { CourseId, Item, Progress } from './types'
+import type { Item, ModuleId, Progress } from './types'
 import { today } from './srs'
 
 export type ChallengeKind =
-  | { kind: 'courseCorrect'; courseId: CourseId }
+  | { kind: 'moduleCorrect'; moduleId: ModuleId }
   | { kind: 'reviews' }
   | { kind: 'perfectLesson' }
   | { kind: 'summarize' }
@@ -38,36 +38,36 @@ export interface DailyChallenge {
 
 const POOL: DailyChallenge[] = [
   {
-    id: 'technik-3',
+    id: 'm1-3',
     title: 'Kellerwissen',
-    description: 'Beantworte drei Aufgaben aus Heizungstechnik richtig.',
+    description: 'Beantworte drei Aufgaben aus Modul 1 (Physik & Technik) richtig.',
     target: 3,
     xp: 30,
-    spec: { kind: 'courseCorrect', courseId: 'technik' },
+    spec: { kind: 'moduleCorrect', moduleId: 'm1-grundlagen' },
   },
   {
-    id: 'produkt-3',
+    id: 'm3-3',
     title: 'Produktcheck',
-    description: 'Beantworte drei Aufgaben aus Produkt & Plattform richtig.',
+    description: 'Beantworte drei Aufgaben aus Modul 3 (Produktlogik) richtig.',
     target: 3,
     xp: 30,
-    spec: { kind: 'courseCorrect', courseId: 'produkt' },
+    spec: { kind: 'moduleCorrect', moduleId: 'm3-produkt' },
   },
   {
-    id: 'vertrieb-3',
+    id: 'm6-3',
     title: 'Vertriebsrunde',
-    description: 'Beantworte drei Aufgaben aus Wirtschaft & Vertrieb richtig.',
+    description: 'Beantworte drei Aufgaben aus Modul 6 (Wirtschaftlichkeit & Vertrieb) richtig.',
     target: 3,
     xp: 30,
-    spec: { kind: 'courseCorrect', courseId: 'vertrieb' },
+    spec: { kind: 'moduleCorrect', moduleId: 'm6-wirtschaft' },
   },
   {
-    id: 'recht-3',
+    id: 'm4-3',
     title: 'Paragrafen',
-    description: 'Beantworte drei Aufgaben aus Recht & Regulatorik richtig.',
+    description: 'Beantworte drei Aufgaben aus Modul 4 (Regulatorik & Recht) richtig.',
     target: 3,
     xp: 30,
-    spec: { kind: 'courseCorrect', courseId: 'recht' },
+    spec: { kind: 'moduleCorrect', moduleId: 'm4-recht' },
   },
   {
     id: 'reviews-5',
@@ -117,8 +117,8 @@ export function countsTowards(
 ): boolean {
   if (!ctx.correct) return false
   switch (challenge.spec.kind) {
-    case 'courseCorrect':
-      return item.courseId === challenge.spec.courseId
+    case 'moduleCorrect':
+      return item.moduleId === challenge.spec.moduleId
     case 'reviews':
       return ctx.wasDue
     case 'scenarios':

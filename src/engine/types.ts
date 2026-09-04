@@ -8,7 +8,22 @@
  * erzeugt Ratewissen, und Wissen ohne Quelle veraltet unbemerkt.
  */
 
-export type CourseId = 'technik' | 'produkt' | 'vertrieb' | 'recht'
+/**
+ * Die acht Module des Zertifikats "GF Heiz-Kompass – Level 1".
+ *
+ * Reihenfolge ist didaktisch: Physik vor Regelung vor Produkt. Wer die
+ * Heizkurve nicht kennt, kann die Optimierungsempfehlung nicht einordnen,
+ * und wer das Produkt nicht kennt, kann die Regulatorik nicht verkaufen.
+ */
+export type ModuleId =
+  | 'm1-grundlagen'
+  | 'm2-regelung'
+  | 'm3-produkt'
+  | 'm4-recht'
+  | 'm5-markt'
+  | 'm6-wirtschaft'
+  | 'm7-sektorkopplung'
+  | 'm8-praxis'
 
 export interface Source {
   /** Menschenlesbarer Name, z. B. "Product Specification 1.0 (08.26), Abschnitt 2.3" */
@@ -19,7 +34,7 @@ export interface Source {
 
 interface ItemBase {
   id: string
-  courseId: CourseId
+  moduleId: ModuleId
   /** Lektions-Bündel innerhalb des Kurses, z. B. "technik-1" */
   unitId: string
   /** 1 = Einstieg, 2 = Aufbau, 3 = Vertiefung. Steuert die Reihenfolge im Lernpfad. */
@@ -128,6 +143,73 @@ export interface ReadSummarizeItem extends ItemBase {
   passRatio: number
 }
 
+/**
+ * Sortieren in Körbe – für "Wer macht das?" (Green Fusion / Partner / Kunde)
+ * und für den Aufbau eines Heizsystems (Erzeuger / Verteilung / Verbraucher).
+ *
+ * Unterscheidet sich von der Zuordnung darin, dass mehrere Begriffe in
+ * denselben Korb gehören. Genau das ist bei Zuständigkeiten der Normalfall.
+ */
+export interface BucketsItem extends ItemBase {
+  type: 'buckets'
+  prompt: string
+  buckets: { id: string; label: string; hint?: string }[]
+  /** Jeder Begriff gehört in genau einen Korb. */
+  entries: { text: string; bucketId: string }[]
+}
+
+/**
+ * Datenkarte mit Entscheidung – für "Fernoptimierbar oder nicht?".
+ *
+ * Die Karte zeigt Merkmale (Reglermodell, Bus, Gateway, GreenBox-Generation),
+ * und es ist zu entscheiden, was daraus folgt. Das trainiert genau die
+ * Urteilsbildung, die im Termin gebraucht wird: nicht das Reglermodell
+ * auswendig kennen, sondern aus seinen Merkmalen die Folge ableiten.
+ */
+export interface CardItem extends ItemBase {
+  type: 'card'
+  /** Titel der Karte, z. B. "Samson Trovis 5576" */
+  cardTitle: string
+  /** Merkmale als Feld-Wert-Paare. */
+  cardFacts: { label: string; value: string }[]
+  prompt: string
+  options: string[]
+  answer: number
+  /** Warum die jeweilige Option richtig oder falsch ist. */
+  optionFeedback: string[]
+}
+
+/**
+ * Mehrstufige Gesprächssimulation.
+ *
+ * Für die Fallstudien des Lehrplans: "Herr Kamp fragt nach Umlagefähigkeit"
+ * und "Der kritische technische Leiter". Jeder Zug hat eine beste Antwort;
+ * die Wahl bestimmt, was die Person als Nächstes sagt.
+ *
+ * Bewusst keine echte Verzweigung in getrennte Pfade: eine falsche Antwort
+ * führt nicht in einen Sackgassen-Pfad, sondern die Person reagiert
+ * entsprechend und das Gespräch geht weiter. Wer im Rollenspiel abbricht,
+ * lernt nichts über die Rettung eines schiefgelaufenen Gesprächs.
+ */
+export interface DialogueItem extends ItemBase {
+  type: 'dialogue'
+  persona: string
+  /** Vorspann: Wer sitzt da, worum geht es, was ist der Anlass. */
+  situation: string
+  turns: {
+    /** Was die Person sagt. */
+    says: string
+    prompt: string
+    options: string[]
+    answer: number
+    optionFeedback: string[]
+    /** Reaktion der Person nach der Wahl – gleich für alle Wege. */
+    reaction: string
+  }[]
+  /** Anteil richtiger Züge, ab dem das Gespräch als gelungen gilt. */
+  passRatio: number
+}
+
 export type Item =
   | MultipleChoiceItem
   | MultiSelectItem
@@ -139,26 +221,43 @@ export type Item =
   | EstimateItem
   | ScenarioItem
   | ReadSummarizeItem
+  | BucketsItem
+  | CardItem
+  | DialogueItem
 
 export type ItemType = Item['type']
 
 export interface Unit {
   id: string
-  courseId: CourseId
+  moduleId: ModuleId
+  /** Nummer im Lehrplan, z. B. "1.2" – macht die App zum Lehrplan nachvollziehbar. */
+  code: string
   title: string
   /** Ein Satz: was kann ich danach, was ich vorher nicht konnte. */
   goal: string
   icon: string
 }
 
-export interface Course {
-  id: CourseId
+export interface LearningModule {
+  id: ModuleId
+  /** Modulnummer 1–8. */
+  number: number
   title: string
   subtitle: string
   icon: string
   /** Akzentfarbe aus dem Green Fusion Design System. */
   color: string
   units: Unit[]
+}
+
+/** Ergebnis einer Modulprüfung. */
+export interface ExamResult {
+  /** Bester erreichter Anteil richtiger Antworten, 0..1 */
+  bestScore: number
+  passed: boolean
+  attempts: number
+  /** ISO-Datum des Bestehens. */
+  passedAt: string | null
 }
 
 /** Lernstand pro Item — die Grundlage der verteilten Wiederholung. */
@@ -213,4 +312,6 @@ export interface Progress {
   /** Verlorene Serie, solange das Zeitfenster zur Rettung offen ist. */
   lostStreak: LostStreak | null
   challenge: ChallengeProgress | null
+  /** Prüfungsstand je Modul. */
+  exams: Record<string, ExamResult>
 }

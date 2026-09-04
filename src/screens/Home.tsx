@@ -1,20 +1,22 @@
-import type { Course, Progress } from '../engine/types'
-import { itemsInCourse } from '../data'
+import type { LearningModule, Progress } from '../engine/types'
+import { itemsInModule } from '../data'
 import { canRepairStreak, dueCount, repairStreak, today } from '../engine/srs'
 import { levelFromXp, masteredCount, masteryRatio, xpToday } from '../engine/progress'
 import { daysLeftInWeek, xpThisWeek } from '../engine/liga'
 import { badgeFor, BADGE_ICON, BADGE_LABEL } from '../engine/badges'
 import { challengeCount, challengeDone, challengeForDay } from '../engine/challenge'
+import { certificateStatus } from '../engine/exam'
 import { Ring } from '../components/Ring'
 
 interface Props {
-  courses: Course[]
+  modules: LearningModule[]
   progress: Progress
   onProgress(p: Progress): void
   onStartDaily(): void
   onStartReview(): void
-  onOpenCourse(courseId: Course['id']): void
+  onOpenModule(moduleId: LearningModule['id']): void
   onOpenLiga(): void
+  onOpenCertificate(): void
   /** Nur gesetzt, wenn eine Anmeldung eingerichtet ist. */
   onSignOut?: () => void
 }
@@ -34,13 +36,14 @@ function currentWeekDays(): string[] {
 }
 
 export function Home({
-  courses,
+  modules,
   progress,
   onProgress,
   onStartDaily,
   onStartReview,
-  onOpenCourse,
+  onOpenModule,
   onOpenLiga,
+  onOpenCertificate,
   onSignOut,
 }: Props) {
   const due = dueCount(progress)
@@ -61,10 +64,15 @@ export function Home({
   const challengeAt = challengeCount(progress, currentDay)
   const challengeFinished = challengeDone(progress, currentDay)
 
-  const courseStats = courses.map((c) => {
-    const ids = itemsInCourse(c.id).map((i) => i.id)
+  const cert = certificateStatus(
+    progress,
+    modules.map((m) => m.id),
+  )
+
+  const moduleStats = modules.map((m) => {
+    const ids = itemsInModule(m.id).map((i) => i.id)
     return {
-      course: c,
+      module: m,
       total: ids.length,
       mastered: masteredCount(progress, ids),
       touched: ids.filter((id) => progress.items[id]).length,
@@ -240,36 +248,72 @@ export function Home({
         </>
       )}
 
-      <div className="section-label">Kurse</div>
+      <div className="section-label">GF Heiz-Kompass</div>
+      <button
+        className="course-card"
+        data-testid="open-certificate"
+        onClick={onOpenCertificate}
+        style={{ borderLeftColor: cert.earned ? 'var(--gf-primary)' : 'var(--gf-brand-grade-4)' }}
+      >
+        <span
+          className="course-icon"
+          style={{ background: cert.earned ? 'var(--gf-frosted-mint)' : 'var(--gf-polar-mist)' }}
+          aria-hidden="true"
+        >
+          🎓
+        </span>
+        <span className="course-body">
+          <span className="course-title">
+            {cert.earned ? 'Zertifikat erreicht · Level 1' : 'Zertifikat Level 1'}
+          </span>
+          <span className="course-meta">
+            {cert.modulesPassed} von {cert.modulesTotal} Modulprüfungen bestanden
+            {cert.finalUnlocked && !cert.finalPassed && ' · Abschlussprüfung offen'}
+          </span>
+          <span className="bar">
+            <i
+              style={{
+                width: `${(cert.modulesPassed / cert.modulesTotal) * 100}%`,
+                background: 'var(--gf-primary)',
+              }}
+            />
+          </span>
+        </span>
+        <span aria-hidden="true" className="muted">
+          ›
+        </span>
+      </button>
+
+      <div className="section-label">Module</div>
       <div className="course-grid">
-        {courseStats.map(({ course, total, mastered, touched, ratio, badge }) => (
+        {moduleStats.map(({ module: m, total, mastered, touched, ratio, badge }) => (
           <button
-            key={course.id}
+            key={m.id}
             className="course-card"
-            data-testid={`course-${course.id}`}
-            style={{ borderLeftColor: course.color }}
-            onClick={() => onOpenCourse(course.id)}
+            data-testid={`module-${m.id}`}
+            style={{ borderLeftColor: m.color }}
+            onClick={() => onOpenModule(m.id)}
           >
             <span className="course-icon" aria-hidden="true">
-              {course.icon}
+              {m.icon}
             </span>
             <span className="course-body">
+              <span className="course-meta">Modul {m.number}</span>
               <span className="course-title">
-                {course.title}
+                {m.title}
                 {badge.level !== 'none' && (
                   <span className="badge-chip" title={`Mastery ${BADGE_LABEL[badge.level]}`}>
                     {BADGE_ICON[badge.level]} {BADGE_LABEL[badge.level]}
                   </span>
                 )}
               </span>
-              <span className="course-meta">{course.subtitle}</span>
+              <span className="course-meta">{m.subtitle}</span>
               <span className="bar">
-                <i style={{ width: `${ratio * 100}%`, background: course.color }} />
+                <i style={{ width: `${ratio * 100}%`, background: m.color }} />
               </span>
               <span className="course-meta">
                 {mastered} von {total} sitzen
                 {touched > mastered && ` · ${touched - mastered} in Arbeit`}
-                {badge.next && ` · ${badge.next.itemsMissing} bis ${BADGE_LABEL[badge.next.level]}`}
               </span>
             </span>
             <span aria-hidden="true" className="muted">

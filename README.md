@@ -1,13 +1,14 @@
-# Heizungsheld — Lernapp für Green Fusion
+# Heizungsheld — GF Heiz-Kompass Level 1
 
-Eine Lernapp im Duolingo-Stil für Heizungswissen, Produktwissen, Vertrieb
-und Regulatorik. Gebaut für Kolleginnen und Kollegen, die noch nie einen
-Heizungskeller von innen gesehen haben — und trotzdem morgen im
+Ein Zertifikatskurs im Duolingo-Stil für Heizungswissen, Produktwissen,
+Vertrieb und Regulatorik. Gebaut für Kolleginnen und Kollegen, die noch nie
+einen Heizungskeller von innen gesehen haben — und trotzdem morgen im
 Kundentermin sitzen.
 
-Kurze Lektionen von rund vier Minuten, verteilte Wiederholung, zehn
-Aufgabentypen. Jede Antwort bekommt eine Erklärung mit Quellenangabe aus
-unseren internen Unterlagen.
+Acht Module, kurze Lektionen von rund vier Minuten, verteilte
+Wiederholung, dreizehn Aufgabentypen. Jede Antwort bekommt eine Erklärung
+mit Quellenangabe. Am Ende jedes Moduls eine Prüfung, am Ende aller Module
+das Zertifikat **GF Heiz-Kompass – Level 1**.
 
 ## Schnellstart
 
@@ -37,23 +38,27 @@ npm run smoke
 
 | | |
 |---|---|
-| Kurse | 4 |
-| Lektionen | 17 |
-| Aufgaben | 97 |
-| Aufgabentypen | 10 |
-| Tests | 102 Unit-Tests + Browser-Smoke-Test |
+| Module | 8 |
+| Lektionen | 43 |
+| Aufgaben | 177 |
+| Aufgabentypen | 13 |
+| Prüfungen | 8 Modulprüfungen + Abschlussprüfung |
+| Tests | 131 Unit-Tests + Browser-Smoke-Test |
 
-### Die vier Kurse
+### Die acht Module
 
-- 🔧 **Heizungstechnik** — Erzeuger und Verbraucher, Vorlauf und Rücklauf,
-  Heizkurve und Nachtabsenkung, Anlagentypen, Warmwasser und Hygiene
-- 🖥️ **Produkt & Plattform** — Energiespar-Pilot und Sektorkopplung,
-  GreenBox-Generationen, die vier Tabs der Plattform, der Weg von der
-  Empfehlung zur umgesetzten Änderung
-- 💼 **Wirtschaft & Vertrieb** — Zielkundenprofil, Preise und Pakete,
-  Business Case, die häufigsten Einwände, SPICED und Sales-Prozess
-- ⚖️ **Recht & Regulatorik** — Umlagefähigkeit, GEG-Prüfpflichten,
-  Datenschutz und EU AI Act
+1. 🔧 **Physik & Technik** — Erzeuger, Verteilung, Übergabe und Trägheit, Warmwasser, Kennzahlen
+2. 🎛️ **Regelung & Digitalisierung** — Steuerung vs. Regelung, Heizkurve, hydraulischer Abgleich, Reglerlandschaft
+3. 🖥️ **Green Fusion Produktlogik** — Energiespar-Pilot, GreenBox, Empfehlungen, Freigabeprozess, Erfolgsmessung
+4. ⚖️ **Regulatorik & Recht** — GEG-Historie, §60a/§60b/§60c, §71a und TÜV, Umlagefähigkeit, Trinkwasser, Datenschutz
+5. 🧭 **Wettbewerb & Markt** — Monitoring-only vs. aktive Optimierung, Fallbeispiel Immoconn, Nachbarfelder
+6. 💼 **Wirtschaftlichkeit & Vertrieb** — Rentabilitätsschwelle, Preismodell, Angebot, technische Einwände
+7. ☀️ **Sektorkopplung** — Echtzeit vs. iterativ, Machbarkeit, §9 EEG, Mieterstrom, Ausblick
+8. 🎓 **Praxis & Zertifizierung** — Kellerbegehung, vollständige Gesprächssimulation, Abschluss
+
+Welcher Lehrplan-Punkt wo liegt, steht in
+**[docs/LEHRPLAN.md](docs/LEHRPLAN.md)** — inklusive der Punkte, die noch
+eine fachliche Freigabe brauchen.
 
 ### Green Fusion Liga
 
@@ -73,16 +78,26 @@ Beherrschung hängen statt an Punkten.
 Ohne Backend zeigt die Liga Beispieldaten (in der Oberfläche als solche
 gekennzeichnet); nur die eigene Zeile ist echt.
 
-### Die zehn Aufgabentypen
+### Die dreizehn Aufgabentypen
 
 Eine Antwort · Mehrere Antworten · Stimmt das? · Lücken füllen · Zuordnen ·
-Reihenfolge · Im Anlagenschema anklicken · Schätzen ·
-Kundengespräch mit Einwand · Lesen & in eigenen Worten zusammenfassen
+Reihenfolge · Im Anlagenschema anklicken · Schätzen · Kundengespräch mit
+Einwand · Lesen & in eigenen Worten zusammenfassen · **Einsortieren**
+(„Wer macht das?") · **Karte beurteilen** („Fernoptimierbar oder nicht?") ·
+**Gespräch** (mehrstufige Simulation)
+
+### Prüfungen und Zertifikat
+
+Je Modul eine Prüfung mit 12 Fragen, bestanden ab 80 %. Sind alle acht
+bestanden, öffnet die Abschlussprüfung mit 24 Fragen über alle Module —
+die einzige Sperre in der App. In der Prüfung kommen Fehler nicht nochmal
+und die Auflösung erst am Ende; ein Fehlversuch kostet nichts, der beste
+Wert bleibt stehen.
 
 ## Woher die Inhalte kommen
 
-Alle Aufgaben sind aus internen Quellen belegt, jede nennt ihre Herkunft
-direkt in der Rückmeldung:
+Alle Aufgaben sind belegt, jede nennt ihre Herkunft direkt in der
+Rückmeldung:
 
 - **Product Specification 1.0 (08.26)** — verifizierte Quelle der Wahrheit
   für den heutigen Produktstand, mit Abschnittsangabe
@@ -90,6 +105,10 @@ direkt in der Rückmeldung:
 - **Commercial Playbook** — Angeboterstellung und Preismodell
 - **Sales Materials** — Preise, Einsparbenchmarks, Case Studies,
   Zielkundenprofil
+- **§60a / §60b / §60c GEG** — Prüfpflichten und Fristen aus dem
+  Gesetzestext selbst, nicht aus zweiter Hand
+- **TÜV-Zertifikat §71a**, **Wettbewerber-Notiz Immoconn**,
+  **Webinar-Vorbereitung mit KEDi** — Regulatorik, Markt, Umlagepraxis
 
 Keine Aufgabe ohne Erklärung und Quelle — ein Test setzt das durch.
 Widersprüchliche Angaben aus verschiedenen Quellen werden **nicht** zu
@@ -109,11 +128,14 @@ src/
 │   ├── liga.ts        Wochengrenze, Rangbildung, Team-Wertung
 │   ├── leaderboard.ts Datenquelle der Liga (austauschbar)
 │   ├── challenge.ts   Aufgabe des Tages
-│   ├── badges.ts      Mastery-Abzeichen je Kurs
+│   ├── badges.ts      Mastery-Abzeichen je Modul
+│   ├── exam.ts        Prüfungen, Bestehensgrenze, Zertifikat
 │   └── progress.ts    Lernstand, XP, Speicher-Abstraktion
-├── data/courses/      Die Inhalte — eine Datei pro Kurs
+├── data/modules.ts    Der Lehrplan: Module, Lektionen, Lehrplan-Nummern
+├── data/sources.ts    Alle Quellenangaben an einer Stelle
+├── data/items/        Die Aufgaben — eine Datei pro Modul
 ├── components/        Aufgabentypen und Anlagenschemata
-├── screens/           Übersicht, Lernpfad, Lektion, Abschluss, Liga, Login
+├── screens/           Übersicht, Modulpfad, Lektion, Prüfung, Zertifikat, Liga, Login
 ├── backend/           Supabase: Anmeldung, Lernstand, Liga
 └── styles/app.css     Green Fusion Design System als CSS-Tokens
 
@@ -152,6 +174,9 @@ Zusammenfassungen. Siehe [Roadmap](docs/ROADMAP.md).
   Begründung hinter jeder Entscheidung
 - **[docs/INHALTE-PFLEGEN.md](docs/INHALTE-PFLEGEN.md)** — Aufgaben
   schreiben, ändern, aussortieren; die Qualitätsschwelle
+- **[docs/LEHRPLAN.md](docs/LEHRPLAN.md)** — der Lehrplan mit
+  Abdeckungstabelle je Lektion, die bewussten Abweichungen und die offenen
+  Punkte, die eine fachliche Freigabe brauchen
 - **[docs/LIGA-UND-PUNKTE.md](docs/LIGA-UND-PUNKTE.md)** — die
   Punktevergabe und die Liga, mit Begründung je Regel; auch was wir
   bewusst nicht bauen und warum Punkte keine Führungskennzahl werden dürfen

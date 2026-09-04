@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildLesson, interleave } from '../lesson'
 import { emptyProgress } from '../progress'
 import { review } from '../srs'
-import { items, courses, units, itemsInUnit } from '../../data'
+import { items, modules, units, itemsInUnit } from '../../data'
 import type { Item } from '../types'
 
 /** Reproduzierbarer Zufall für stabile Tests. */
@@ -17,39 +17,51 @@ describe('Lektionsaufbau', () => {
       items,
       progress: emptyProgress(),
       mode: 'unit',
-      unitId: 'technik-2',
+      unitId: 'm2-u3',
       random: seeded(1),
     })
     expect(lesson.length).toBeGreaterThan(0)
-    for (const i of lesson) expect(i.unitId).toBe('technik-2')
+    // Die Lektion füllt bei Bedarf aus dem Modul auf – geprüft wird, dass
+    // sie das Modul nicht verlässt und mit der gewählten Lektion beginnt.
+    for (const i of lesson) expect(i.moduleId).toBe('m2-regelung')
   })
 
-  it('beginnt bei neuen Items mit der Einstiegsstufe', () => {
+  it('wählt neue Items in aufsteigender Stufe aus', () => {
+    // Die eigentliche Absicht: wird ein Vertiefungs-Item gewählt, müssen
+    // die Einstiegs-Items derselben Lektion auch dabei sein. Eine reine
+    // Zählung wäre an die Grösse der Lektion gekoppelt und damit brüchig.
+    const unitId = 'm1-u1'
     const lesson = buildLesson({
       items,
       progress: emptyProgress(),
       mode: 'unit',
-      unitId: 'technik-1',
+      unitId,
       size: 4,
       random: seeded(2),
     })
-    // Level-1-Items müssen vor Level-3-Items ausgewählt worden sein.
-    const levels = lesson.map((i) => i.level)
-    expect(Math.min(...levels)).toBe(1)
-    expect(levels.filter((l) => l === 1).length).toBeGreaterThanOrEqual(2)
+    const own = lesson.filter((i) => i.unitId === unitId)
+    const maxLevel = Math.max(...own.map((i) => i.level))
+    for (const candidate of itemsInUnit(unitId)) {
+      if (candidate.level < maxLevel) {
+        expect(
+          own.some((i) => i.id === candidate.id),
+          `${candidate.id} (Stufe ${candidate.level}) fehlt, obwohl Stufe ${maxLevel} gewählt wurde`,
+        ).toBe(true)
+      }
+    }
   })
 
   it('füllt höchstens die Hälfte der Lektion mit Wiederholungen', () => {
     const progress = emptyProgress()
     // Alle Items der Unit auf "fällig" setzen.
-    for (const i of itemsInUnit('produkt-1')) {
+    for (const i of itemsInUnit('m3-u1')) {
       progress.items[i.id] = review(undefined, i.id, true, new Date(2020, 0, 1))
     }
     const lesson = buildLesson({
       items,
       progress,
       mode: 'unit',
-      unitId: 'produkt-1',
+      unitId: 'm3-u1',
       size: 4,
       random: seeded(3),
     })
@@ -80,7 +92,7 @@ describe('Lektionsaufbau', () => {
       items,
       progress,
       mode: 'unit',
-      unitId: 'recht-3',
+      unitId: 'm4-u8',
       size: 4,
       random: seeded(5),
     })
@@ -101,7 +113,16 @@ describe('Lektionsaufbau', () => {
 
 describe('Interleaving', () => {
   const fake = (id: string, type: Item['type']): Item =>
-    ({ id, type, courseId: 'technik', unitId: 'u', level: 1, concepts: [], why: '', source: { label: '' } }) as unknown as Item
+    ({
+      id,
+      type,
+      moduleId: 'm1-grundlagen',
+      unitId: 'u',
+      level: 1,
+      concepts: [],
+      why: '',
+      source: { label: '' },
+    }) as unknown as Item
 
   it('vermeidet zwei gleiche Aufgabentypen in Folge', () => {
     const list = [
@@ -135,11 +156,20 @@ describe('Interleaving', () => {
 })
 
 describe('Struktur der Inhalte', () => {
-  it('jede Unit gehört zu ihrem Kurs und hat genug Items für eine Lektion', () => {
+  it('jede Lektion gehört zu ihrem Modul und hat genug eigenes Material', () => {
     for (const u of units) {
       const own = itemsInUnit(u.id)
-      expect(own.length, `Unit ${u.id} hat zu wenige Items`).toBeGreaterThanOrEqual(4)
-      for (const i of own) expect(i.courseId, i.id).toBe(u.courseId)
+      // Drei genügen, weil eine Lektion bei Bedarf aus dem Modul auffüllt.
+      // Der Lehrplan gibt die Gliederung vor, nicht die Lektionsgrösse.
+      expect(own.length, `Lektion ${u.id} (${u.code}) hat zu wenige Aufgaben`).toBeGreaterThanOrEqual(3)
+      for (const i of own) expect(i.moduleId, i.id).toBe(u.moduleId)
+    }
+  })
+
+  it('jedes Modul hat genug Material für eine Prüfung', () => {
+    for (const m of modules) {
+      const own = items.filter((i) => i.moduleId === m.id)
+      expect(own.length, `Modul ${m.number} (${m.title}) hat zu wenige Aufgaben`).toBeGreaterThanOrEqual(12)
     }
   })
 
@@ -148,10 +178,15 @@ describe('Struktur der Inhalte', () => {
     for (const i of items) expect(ids.has(i.unitId), `${i.id} → ${i.unitId}`).toBe(true)
   })
 
-  it('jeder Kurs hat mehrere Aufgabentypen', () => {
-    for (const c of courses) {
-      const types = new Set(items.filter((i) => i.courseId === c.id).map((i) => i.type))
-      expect(types.size, `Kurs ${c.id} nutzt zu wenige Aufgabentypen`).toBeGreaterThanOrEqual(4)
+  it('jedes Modul nutzt mehrere Aufgabentypen', () => {
+    for (const m of modules) {
+      const types = new Set(items.filter((i) => i.moduleId === m.id).map((i) => i.type))
+      expect(types.size, `Modul ${m.number} nutzt zu wenige Aufgabentypen`).toBeGreaterThanOrEqual(4)
     }
+  })
+
+  it('jede Lehrplan-Nummer ist eindeutig', () => {
+    const codes = units.map((u) => u.code)
+    expect(new Set(codes).size).toBe(codes.length)
   })
 })

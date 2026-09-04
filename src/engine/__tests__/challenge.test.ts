@@ -37,21 +37,29 @@ describe('Aufgabe des Tages', () => {
 })
 
 describe('Zählen', () => {
-  const kursAufgabe = { ...challengeForDay('x'), spec: { kind: 'courseCorrect', courseId: 'technik' } as const }
+  const kursAufgabe = {
+    ...challengeForDay('x'),
+    spec: { kind: 'moduleCorrect', moduleId: 'm1-grundlagen' } as const,
+  }
+
+  /** Ein Item aus Modul 1 und eines aus einem anderen Modul. */
+  const ausM1 = get('t1-erzeuger-verbraucher')
+  const ausM6 = get('v2-komfort-preis')
 
   it('zählt falsche Antworten nicht', () => {
-    expect(countsTowards(kursAufgabe, get('t2-heizkurve-was'), { correct: false, wasDue: false })).toBe(false)
+    expect(countsTowards(kursAufgabe, ausM1, { correct: false, wasDue: false })).toBe(false)
   })
 
-  it('zählt nur Aufgaben aus dem verlangten Kurs', () => {
-    expect(countsTowards(kursAufgabe, get('t2-heizkurve-was'), { correct: true, wasDue: false })).toBe(true)
-    expect(countsTowards(kursAufgabe, get('v2-komfort-preis'), { correct: true, wasDue: false })).toBe(false)
+  it('zählt nur Aufgaben aus dem verlangten Modul', () => {
+    expect(ausM1.moduleId).toBe('m1-grundlagen')
+    expect(countsTowards(kursAufgabe, ausM1, { correct: true, wasDue: false })).toBe(true)
+    expect(countsTowards(kursAufgabe, ausM6, { correct: true, wasDue: false })).toBe(false)
   })
 
   it('zählt bei der Wiederholungs-Aufgabe nur fällige Items', () => {
     const c = { ...kursAufgabe, spec: { kind: 'reviews' } as const }
-    expect(countsTowards(c, get('t2-heizkurve-was'), { correct: true, wasDue: true })).toBe(true)
-    expect(countsTowards(c, get('t2-heizkurve-was'), { correct: true, wasDue: false })).toBe(false)
+    expect(countsTowards(c, ausM1, { correct: true, wasDue: true })).toBe(true)
+    expect(countsTowards(c, ausM1, { correct: true, wasDue: false })).toBe(false)
   })
 
   it('erkennt Kundengespräch und Zusammenfassung am Aufgabentyp', () => {

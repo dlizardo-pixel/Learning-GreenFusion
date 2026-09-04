@@ -23,6 +23,9 @@ export const TYPE_HINT: Record<Item['type'], string> = {
   estimate: 'Schätzen',
   scenario: 'Aus dem Kundengespräch',
   readSummarize: 'Lesen & zusammenfassen',
+  buckets: 'Einsortieren',
+  card: 'Karte beurteilen',
+  dialogue: 'Gesprächssimulation',
 }
 
 /** Ist genug eingegeben, um "Prüfen" freizugeben? */
@@ -30,6 +33,7 @@ export function hasInput(item: Item, value: unknown): boolean {
   switch (item.type) {
     case 'mc':
     case 'scenario':
+    case 'card':
     case 'hotspot':
       return value !== null && value !== undefined
     case 'truefalse':
@@ -46,6 +50,12 @@ export function hasInput(item: Item, value: unknown): boolean {
       return typeof value === 'number'
     case 'readSummarize':
       return typeof value === 'string' && value.trim().length > 0
+    case 'buckets':
+      return Object.keys((value as Record<string, string>) ?? {}).length === item.entries.length
+    case 'dialogue': {
+      const picks = (value as number[]) ?? []
+      return item.turns.every((_, i) => typeof picks[i] === 'number')
+    }
   }
 }
 
@@ -65,6 +75,10 @@ export function initialValue(item: Item): unknown {
       return Math.round((item.min + item.max) / 2 / item.step) * item.step
     case 'readSummarize':
       return ''
+    case 'buckets':
+      return {}
+    case 'dialogue':
+      return []
     default:
       return null
   }

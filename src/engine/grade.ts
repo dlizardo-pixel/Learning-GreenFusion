@@ -29,7 +29,8 @@ const sameSet = (a: number[], b: number[]) =>
 export function grade(item: Item, answer: Answer): Grade {
   switch (item.type) {
     case 'mc':
-    case 'scenario': {
+    case 'scenario':
+    case 'card': {
       const correct = answer.value === item.answer
       return { correct, score: correct ? 1 : 0 }
     }
@@ -78,6 +79,27 @@ export function grade(item: Item, answer: Answer): Grade {
       const v = Number(answer.value)
       const correct = Math.abs(v - item.answer) <= item.tolerance
       return { correct, score: correct ? 1 : 0 }
+    }
+
+    case 'buckets': {
+      // value: Record<Begriff, Korb-ID>
+      const map = (answer.value as Record<string, string>) ?? {}
+      const hits = item.entries.filter((e) => map[e.text] === e.bucketId).length
+      return { correct: hits === item.entries.length, score: hits / item.entries.length }
+    }
+
+    case 'dialogue': {
+      // value: gewählte Option je Gesprächszug
+      const picks = (answer.value as number[]) ?? []
+      const hits = item.turns.filter((t, i) => picks[i] === t.answer).length
+      const score = item.turns.length ? hits / item.turns.length : 0
+      return {
+        correct: score >= item.passRatio,
+        score,
+        detail: item.turns
+          .map((t, i) => (picks[i] === t.answer ? null : t.optionFeedback[picks[i]] ?? null))
+          .filter((x): x is string => x !== null),
+      }
     }
 
     case 'readSummarize':
