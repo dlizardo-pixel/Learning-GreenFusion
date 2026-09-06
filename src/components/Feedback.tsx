@@ -1,5 +1,6 @@
 import type { Item } from '../engine/types'
 import type { XpAward } from '../engine/scoring'
+import { Emphasis } from './Emphasis'
 
 interface Props {
   item: Item
@@ -32,7 +33,7 @@ export function Feedback({ item, correct, award, onNext, isLast, willRepeat }: P
           </span>
         )}
       </div>
-      <div className="feedback-why">{item.why}</div>
+      <div className="feedback-why"><Emphasis text={item.why} /></div>
       <div className="feedback-source">
         Quelle:{' '}
         {item.source.url ? (

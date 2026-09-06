@@ -5,6 +5,7 @@ import { getSummaryGrader } from '../engine/summary'
 import { applyAnswer } from '../engine/progress'
 import { EXAM_XP, FINAL, PASS_RATIO, recordExamAttempt } from '../engine/exam'
 import { Exercise, hasInput, initialValue, TYPE_HINT } from '../components/exercises'
+import { Emphasis } from '../components/Emphasis'
 
 interface Props {
   queue: Item[]
@@ -108,7 +109,7 @@ export function Exam({ queue, examId, title, progress, onProgress, onExit }: Pro
                     {a.item.concepts.join(' · ')}
                   </div>
                   <div className="small" style={{ marginTop: 6, lineHeight: 1.6 }}>
-                    {a.item.why}
+                    <Emphasis text={a.item.why} />
                   </div>
                   <div className="feedback-source" style={{ marginTop: 8 }}>
                     Quelle:{' '}

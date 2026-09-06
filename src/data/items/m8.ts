@@ -168,9 +168,9 @@ export const m8Items: Item[] = [
         says: 'Was würde das kosten?',
         prompt: 'Jetzt kommt die Preisfrage – und sie ist berechtigt. Wie gehst du damit um?',
         options: [
-          'Die Größenordnung nennen und einordnen: das Komfort-Paket liegt bei 104 € netto pro Anlage und Monat, im Rahmenvertrag deutlich darunter. Interessanter ist die Gegenrechnung – bei Ihren zwanzig Wintereinsätzen und 200 bis 600 € vermiedener Prüfung je Liegenschaft. Dafür brauche ich Ihre Verbrauchsdaten.',
+          'Die Größenordnung nennen und einordnen: Komfort liegt je nach Portfoliogröße zwischen 99 € und 74 € netto pro Anlage und Monat – bei Ihrem Bestand am unteren Ende. Interessanter ist die Gegenrechnung – bei Ihren zwanzig Wintereinsätzen und 200 bis 600 € vermiedener Prüfung je Liegenschaft. Dafür brauche ich Ihre Verbrauchsdaten.',
           'Ohne Verbrauchsdaten kann ich dazu nichts sagen.',
-          '104 € pro Anlage und Monat.',
+          '99 € pro Anlage und Monat.',
           'Das hängt von vielen Faktoren ab, dazu müssten wir einen Termin machen.',
         ],
         answer: 0,

@@ -37,14 +37,12 @@ Lektion, und der Lehrplan-Code bleibt in der App sichtbar.
 
 Ehrlich benannt, damit es niemand für gesichert hält:
 
-- **Preismodell „Basis / Komfort / Premium"** aus Punkt 6.2 liess sich
-  **nicht belegen.** Unsere Quellen kennen das Komfort-Paket (104 €
-  netto/Anlage/Monat), den Rahmenvertrag (~74–79 €) und die
-  Line-Item-Struktur (Einsparpilot, Installation Co-Pilot, Upgrade
-  Autopilot, Sensorpaket, Zählerdigitalisierung, Manuelle Optimierung).
-  Eine Drei-Stufen-Struktur mit diesen Namen steht in keiner Quelle, die
-  ich gefunden habe — deshalb ist sie **nicht** zu einer Aufgabe geworden.
-  Falls es sie gibt: sagen, dann trage ich sie nach.
+- *Geschlossen (09/2026):* Das Preismodell aus Punkt 6.2 galt hier lange
+  als unbelegt. Es ist belegt — **Basis / Komfort / Premium**, mit
+  Mengenstaffel, im **Preisblatt 2026**. Lektion 6.2 ist daraufhin von 3
+  auf 13 Aufgaben gewachsen. Nebenbei fielen dabei drei veraltete Zahlen
+  auf: die früher gelehrten 104 € je Anlage und Monat stehen so in keinem
+  aktuellen Preisblatt mehr. Sie sind korrigiert.
 - **Trinkwasserverordnung, Prüffristen** (4.7): die Lektion behandelt
   Verantwortung, Legionellenrisiko und die Abgrenzung unserer Überwachung.
   Konkrete Prüffristen und Grenzwerte sind **nicht** aufgenommen, weil ich
@@ -82,17 +80,17 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | 2.6 | Gebäudeleittechnik | 3 | Auswahl, Wahr/Falsch |
 | 2.7–2.8 | Reglerlandschaft | 6 | Zuordnen, Auswahl, Karte |
 
-### Modul 3 · Green Fusion Produktlogik — 37 Aufgaben
+### Modul 3 · Green Fusion Produktlogik — 45 Aufgaben
 
 | Lehrplan | Lektion | Aufgaben | Typen |
 |---|---|---|---|
 | 3.1 | Energiespar-Pilot im Überblick | 11 | Schätzen, Auswahl, Mehrfach, Wahr/Falsch, Zuordnen |
 | 3.2 | Datenerfassung & GreenBox | 6 | Zuordnen, Mehrfach, Schätzen, Auswahl |
 | 3.3 | Optimierungsempfehlungen | 5 | Auswahl, Wahr/Falsch, Schätzen |
-| 3.4 | Sonderfälle & Ausschlüsse | 3 | Mehrfach, Auswahl, Einsortieren |
-| 3.5–3.9 | Freigabe & Logbuch | 3 | Reihenfolge, Wahr/Falsch, Gespräch |
-| 3.6 | Remote, On-Site, kontinuierlich | 3 | Zusammenfassen, Auswahl, Mehrfach |
-| 3.7 | Erfolgsmessung | 3 | Kundenzitat, Mehrfach, Auswahl |
+| 3.4 | Sonderfälle & Ausschlüsse | 6 | Mehrfach, Auswahl, Einsortieren, Wahr/Falsch |
+| 3.5–3.9 | Freigabe & Logbuch | 4 | Reihenfolge, Wahr/Falsch, Gespräch |
+| 3.6 | Remote, On-Site, kontinuierlich | 6 | Zusammenfassen, Auswahl, Mehrfach, Kundenzitat |
+| 3.7 | Erfolgsmessung | 4 | Kundenzitat, Mehrfach, Auswahl |
 | 3.8 | Trinkwarmwasser-Hygiene | 3 | Auswahl, Mehrfach |
 
 ### Modul 4 · Regulatorik & Recht — 33 Aufgaben
@@ -116,13 +114,13 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | 5.2 | Fallbeispiel Immoconn | 3 | Mehrfach, Auswahl, Kundenzitat |
 | 5.3–5.4 | Nachbarfelder einordnen | 4 | Zuordnen, Einsortieren, Auswahl |
 
-### Modul 6 · Wirtschaftlichkeit & Vertrieb — 22 Aufgaben
+### Modul 6 · Wirtschaftlichkeit & Vertrieb — 41 Aufgaben
 
 | Lehrplan | Lektion | Aufgaben | Typen |
 |---|---|---|---|
 | 6.1 | Rentabilitätsschwelle & Zielkunden | 8 | Zuordnen, Auswahl, Mehrfach, Reihenfolge, Schätzen |
-| 6.2 | Preismodell-Grundlagen | 3 | Schätzen, Lücken, Mehrfach |
-| 6.3 | Rahmenverträge & Angebot | 3 | Zuordnen, Mehrfach, Kundenzitat |
+| 6.2 | Preismodell-Grundlagen | 13 | Schätzen, Lücken, Einsortieren, Auswahl, Zuordnen, Kundenzitat, Karte, Wahr/Falsch |
+| 6.3 | Rahmenverträge & Angebot | 12 | Zuordnen, Mehrfach, Kundenzitat, Auswahl, Einsortieren, Reihenfolge |
 | 6.4–6.5 | Technische Einwände | 4 | Zuordnen, Kundenzitat, Gespräch |
 | 6.6* | Prozess & Methodik | 4 | Zuordnen, Reihenfolge, Mehrfach |
 
@@ -144,8 +142,7 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | 8.2 | Gesprächssimulation | 4 | Gespräch, Auswahl, Karte |
 | 8.3 | Vor der Abschlussprüfung | 6 | Auswahl, Mehrfach, Zuordnen, Zusammenfassen |
 
-
----
+**Gesamt: 204 Aufgaben in 43 Lektionen.**
 
 ## Quellen der Inhalte
 
@@ -157,7 +154,10 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | Knowledge Base: Umlagefähigkeit | Rechtsgrundlage, FAQ für Mietende, Mustertext |
 | Webinar-Vorbereitung „Umlagefähigkeit Deep Dive" mit KEDi | Wirtschaftlichkeit als Voraussetzung, Praxis der Abrechnung |
 | Wettbewerber-Notiz Immoconn | Stärken und Argumentationslücke |
-| Commercial Playbook, Sales Materials | Preise, Angebotsstruktur, Rabattgrenzen, Benchmarks, ICP |
+| **Preisblatt KI-Energiespar-Pilot 2026** (gültig ab 01.07.2026) | Leistungspakete, Mengenstaffel, Einrichtung, Eventualpositionen, Gateway-Klassen |
+| **Commercial Playbook** (Go-to-Market & kommerzielles Regelwerk) | Vertragsarten, Testphasen, Revision/Restrukturierung, IaaS, Vertragshierarchie |
+| **GreenFusion Product – Status Quo (07/2026)** | Ist-Stand statt Soll-Stand: Fernoptimierungsquote, bekannte Einschränkungen |
+| Commercial Playbook (Angeboterstellung), Sales Materials | Angebotsstruktur, Rabattgrenzen, Benchmarks, ICP |
 | Heizungstechnische Grundlagen (als `FACH` gekennzeichnet) | Allgemeines Fachwissen ohne interne Quelle |
 
 Jede Aufgabe nennt ihre Quelle in der Rückmeldung. Wo eine interne Quelle

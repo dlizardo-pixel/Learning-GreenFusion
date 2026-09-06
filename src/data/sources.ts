@@ -17,6 +17,17 @@ export const SPEC: Source = {
   label: 'Product Specification 1.0 (08.26)',
   url: 'https://app.notion.com/p/36d8e7b69be5818bbff9e11b126cb984',
 }
+/**
+ * Der validierte Ist-Stand des Produkts – bewusst getrennt von der
+ * Product Specification. Die Spec beschreibt, was gebaut wurde; diese
+ * Seite beschreibt, was davon heute tatsächlich im Feld läuft. Für den
+ * Vertrieb ist der Unterschied entscheidend.
+ */
+export const STATUSQUO: Source = {
+  label: 'GreenFusion Product – Status Quo (Stand 07/2026)',
+  url: 'https://app.notion.com/p/3a68e7b69be58070b468e4614d30faf3',
+}
+
 export const spec = (section: string): Source => ({
   ...SPEC,
   label: `Product Specification 1.0, ${section}`,
@@ -31,6 +42,14 @@ export const DECK: Source = {
   label: 'Sales Materials – Pitch- & Angebots-Deck (Preise, Benchmarks, Case Studies)',
 }
 export const BENCH: Source = { label: 'Einsparwerte nach Anlagentyp (Pitch-Deck-Benchmark)' }
+export const PREISBLATT: Source = {
+  label: 'Preisblatt KI-Energiespar-Pilot 2026 (Stand Juni 2026, gültig ab 01.07.2026)',
+  url: 'https://drive.google.com/file/d/1SX95Bhg-KNYvkQTvH2juZUgl-FKm8_O8/view',
+}
+export const COMPLAY: Source = {
+  label: 'Commercial Playbook – Go-to-Market-Framework & kommerzielles Regelwerk',
+  url: 'https://app.notion.com/p/2408e7b69be580ceba22e8e644cd4cf3',
+}
 export const PLAYBOOK: Source = {
   label: 'Angeboterstellung & Das Preismodell (Commercial Playbook)',
   url: 'https://app.notion.com/p/1948e7b69be580a68abbe01a38a1ed4e',

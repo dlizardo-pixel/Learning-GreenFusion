@@ -510,7 +510,7 @@ export const m4Items: Item[] = [
       'Die Prüfung darf jede Person durchführen, die die Anlage betreut',
     ],
     answer: [0, 1, 2, 3],
-    why: 'Der zweite Punkt ist der wertvollste Satz dieses Moduls für den Vertrieb: die Wiederholungspflicht alle fünf Jahre gilt für Wärmepumpen, **die nicht der Fernüberwachung unterliegen**. Wer fernüberwacht, ist privilegiert — und Fernüberwachung ist genau unser Geschäft. Die Prüfung selbst muss eine qualifizierte Person durchführen, etwa Energieberatende aus der Energieeffizienz-Expertenliste des Bundes.',
+    why: 'Der zweite Punkt ist der wertvollste Satz dieses Moduls für den Vertrieb: die Wiederholungspflicht alle fünf Jahre gilt für Wärmepumpen, *die nicht der Fernüberwachung unterliegen*. Wer fernüberwacht, ist privilegiert — und Fernüberwachung ist genau unser Geschäft. Die Prüfung selbst muss eine qualifizierte Person durchführen, etwa Energieberatende aus der Energieeffizienz-Expertenliste des Bundes.',
     source: GEG_60A,
   },
 

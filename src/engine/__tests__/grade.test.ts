@@ -57,12 +57,18 @@ describe('Bewertung je Aufgabentyp', () => {
     expect(g.score).toBeCloseTo(3 / 5)
   })
 
+  // Bewusst aus dem Item abgeleitet statt hart notiert: der Test prüft die
+  // Toleranzlogik, nicht den Listenpreis. Ändert sich das Preisblatt, soll
+  // die Aufgabe angepasst werden – nicht dieser Test rot werden.
   it('Schätzen akzeptiert innerhalb der Toleranz', () => {
     const item = get<EstimateItem>('v2-komfort-preis')
-    expect(grade(item, { value: 104 }).correct).toBe(true)
-    expect(grade(item, { value: 100 }).correct).toBe(true)
-    expect(grade(item, { value: 108 }).correct).toBe(true)
-    expect(grade(item, { value: 95 }).correct).toBe(false)
+    const { answer, tolerance } = item
+    expect(tolerance).toBeGreaterThan(0)
+    expect(grade(item, { value: answer }).correct).toBe(true)
+    expect(grade(item, { value: answer - tolerance }).correct).toBe(true)
+    expect(grade(item, { value: answer + tolerance }).correct).toBe(true)
+    expect(grade(item, { value: answer - tolerance - 1 }).correct).toBe(false)
+    expect(grade(item, { value: answer + tolerance + 1 }).correct).toBe(false)
   })
 })
 

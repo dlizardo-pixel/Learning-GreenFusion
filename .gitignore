@@ -6,3 +6,4 @@ dist
 smoke-shots
 .env
 .env.local
+tsconfig.tsbuildinfo
