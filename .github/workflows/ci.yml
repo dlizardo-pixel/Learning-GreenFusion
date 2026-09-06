@@ -1,0 +1,88 @@
+# Prüft jeden Beitrag, bevor er nach main kommt.
+#
+# Die Reihenfolge ist nach Rückmeldegeschwindigkeit sortiert: Typecheck und
+# Unit-Tests brauchen Sekunden und fangen das meiste ab, der Browser-Test
+# braucht eine Minute und fängt das, was nur beim Klicken auffällt.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Erlaubt einen Lauf von Hand, etwa um einen Verdacht auf Flakiness zu prüfen.
+  workflow_dispatch:
+
+# Ein neuer Push auf denselben Branch macht den vorherigen Lauf überflüssig.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruefen:
+    name: Typecheck, Tests, Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Unit-Tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # Der Build ist die Eingabe des Smoke-Tests. Ihn hier weiterzureichen
+      # spart im nächsten Job einen zweiten Build.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
+
+  smoke:
+    name: Browser-Smoke-Test
+    runs-on: ubuntu-latest
+    needs: pruefen
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      # Nur Chromium: der Test prüft die App, nicht die Browservielfalt.
+      - name: Chromium installieren
+        run: npx playwright install --with-deps chromium
+
+      # Startet die Vorschau selbst, siehe scripts/smoke.mjs.
+      - name: Smoke-Test
+        run: npm run smoke
+
+      # Bei einem Fehlschlag sind die Screenshots das Erste, was man sehen will.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-shots
+          path: smoke-shots
+          retention-days: 7

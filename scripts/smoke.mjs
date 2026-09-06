@@ -5,15 +5,78 @@
  * bedienbar ist: rendert jeder Aufgabentyp, lässt sich jeder abschliessen,
  * überlebt der Fortschritt einen Reload.
  *
- *   npm run build && npm run preview   (in einem Terminal)
- *   node scripts/smoke.mjs             (in einem zweiten)
+ *   npm run build && npm run smoke
+ *
+ * Läuft schon eine Vorschau auf BASE_URL, wird sie benutzt; sonst startet
+ * dieses Skript selbst eine und beendet sie am Ende wieder. Damit ist der
+ * Aufruf in der CI derselbe wie auf dem eigenen Rechner.
  */
 import { chromium } from 'playwright'
-import { mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync } from 'node:fs'
+import { spawn } from 'node:child_process'
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:4173/'
 const OUT = process.env.SHOT_DIR ?? 'smoke-shots'
+
+/**
+ * In dieser Sandbox liegt Chromium an einem festen Ort, in der CI bringt
+ * Playwright seinen eigenen mit. Deshalb wird der Pfad nur gesetzt, wenn
+ * dort auch wirklich etwas liegt — sonst sucht Playwright selbst.
+ */
 const EXEC = process.env.CHROMIUM_PATH ?? '/opt/pw-browsers/chromium'
+const launchOptions = existsSync(EXEC) ? { executablePath: EXEC } : {}
+
+/** Wartet, bis die Vorschau antwortet. Gibt false zurück, wenn sie es nicht tut. */
+async function reachable(url, tries = 1) {
+  for (let i = 0; i < tries; i++) {
+    try {
+      await fetch(url)
+      return true
+    } catch {
+      if (i < tries - 1) await new Promise((r) => setTimeout(r, 500))
+    }
+  }
+  return false
+}
+
+let preview
+
+/**
+ * Beendet die selbst gestartete Vorschau.
+ *
+ * `detached` plus negative PID beendet die ganze Prozessgruppe: npx startet
+ * vite als Kindprozess, und ein Signal nur an npx lässt vite weiterlaufen —
+ * in der CI wäre der Job damit nie fertig.
+ */
+function stopPreview() {
+  if (!preview) return
+  try {
+    process.kill(-preview.pid)
+  } catch {
+    // Schon beendet – nichts zu tun.
+  }
+  preview = undefined
+}
+
+if (await reachable(BASE)) {
+  console.log(`Vorschau läuft bereits auf ${BASE}`)
+} else {
+  const port = new URL(BASE).port || '4173'
+  console.log(`Starte Vorschau auf Port ${port} …`)
+  preview = spawn('npx', ['vite', 'preview', '--port', port], {
+    stdio: 'ignore',
+    detached: true,
+  })
+  if (!(await reachable(BASE, 40))) {
+    stopPreview()
+    console.error(`Vorschau kam auf ${BASE} nicht hoch. Erst "npm run build" laufen lassen?`)
+    process.exit(1)
+  }
+}
+
+// Auch bei Abbruch oder unerwartetem Fehler aufräumen.
+process.on('exit', stopPreview)
+process.on('SIGINT', () => process.exit(130))
 
 /** Netzwerk-Rauschen, das nichts über die App aussagt (z. B. Google Fonts in Sandboxes). */
 const IGNORE = [/fonts\.googleapis/, /fonts\.gstatic/, /accounts\.google/, /favicon/]
@@ -49,7 +112,7 @@ mkdirSync(OUT, { recursive: true })
 const errors = []
 const seenTypes = new Set()
 
-const browser = await chromium.launch({ executablePath: EXEC })
+const browser = await chromium.launch(launchOptions)
 const page = await browser.newPage({ viewport: { width: 414, height: 900 } })
 page.on('console', (m) => {
   if (m.type() !== 'error') return
@@ -295,6 +358,7 @@ const missing = ALL_TYPES.filter((t) => !seenTypes.has(t) && !OPTIONAL_TYPES.inc
 if (missing.length) errors.push(`Nie gerendert: ${missing.join(', ')}`)
 
 await browser.close()
+stopPreview()
 
 console.log(`Aufgabentypen geprüft (${seenTypes.size}/${ALL_TYPES.length}): ${[...seenTypes].join(' | ')}`)
 console.log(`XP: ${xpBefore} (nach Reload ${xpAfter})`)

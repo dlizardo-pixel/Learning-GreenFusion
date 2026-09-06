@@ -23,16 +23,23 @@ Weitere Befehle:
 npm test             # Unit-Tests für Lern-Engine und Inhalte
 npm run build        # Produktions-Build nach dist/
 npm run preview      # gebaute Version auf http://localhost:4173
-npm run smoke        # klickt echte Lektionen im Browser durch (Preview muss laufen)
+npm run smoke        # klickt echte Lektionen im Browser durch
 ```
 
-Der Smoke-Test braucht Chromium und Playwright:
+Der Smoke-Test braucht einen Build und Chromium. Die Vorschau startet er
+selbst, wenn auf Port 4173 noch keine läuft:
 
 ```bash
-npm install --no-save playwright
-npm run build && npm run preview &
-npm run smoke
+npx playwright install chromium   # einmalig
+npm run build && npm run smoke
 ```
+
+## Continuous Integration
+
+`.github/workflows/ci.yml` läuft bei jedem Pull Request und bei jedem Push
+auf `main`: Typecheck, Unit-Tests und Build im ersten Job, danach der
+Browser-Smoke-Test. Schlägt Letzterer fehl, liegen die Screenshots als
+Artefakt `smoke-shots` am Lauf — das ist meist schneller gelesen als das Log.
 
 ## Was drin ist
 
