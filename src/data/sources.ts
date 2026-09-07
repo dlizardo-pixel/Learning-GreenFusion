@@ -82,6 +82,71 @@ export const KEDI: Source = {
   url: 'https://app.notion.com/p/23f8e7b69be580d19527e6626ce36efe',
 }
 
+// ── Wohnungswirtschaft ────────────────────────────────────────────────
+/**
+ * Rechtsformen und Gremien sind kein Beiwerk, sondern sagen den
+ * Entscheidungsweg voraus. Deshalb steht hier das Gesetz und nicht die
+ * Zusammenfassung eines Vertriebstrainings.
+ */
+export const GENG_27: Source = {
+  label: '§ 27 GenG – Leitung der Genossenschaft (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/geng/__27.html',
+}
+export const GENG_38: Source = {
+  label: '§ 38 GenG – Aufgaben des Aufsichtsrats (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/geng/__38.html',
+}
+export const GENG_43A: Source = {
+  label: '§ 43a GenG – Vertreterversammlung (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/geng/__43a.html',
+}
+export const GENG_54: Source = {
+  label: '§ 54 GenG – Pflichtmitgliedschaft im Prüfungsverband (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/geng/__54.html',
+}
+export const GENG_53: Source = {
+  label: '§ 53 GenG – Pflichtprüfung (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/geng/__53.html',
+}
+export const BGB_556C: Source = {
+  label: '§ 556c BGB – Umstellung auf gewerbliche Wärmelieferung (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/bgb/__556c.html',
+}
+export const GDW: Source = {
+  label: 'GdW – Unternehmenssparten und Mitgliederstruktur',
+  url: 'https://www.gdw.de/der-gdw/unternehmenssparten/',
+}
+export const VDW_RW: Source = {
+  label: 'VdW Rheinland Westfalen – Der Verband',
+  url: 'https://vdw-rw.de/der-verband/',
+}
+/**
+ * Die Rechtsprechung zum Auftraggeberstatus kommunaler
+ * Wohnungsunternehmen ist nicht einheitlich. Genau deshalb ist die
+ * Quelle eine anwaltliche Einordnung und keine Regel — und die Aufgabe
+ * lehrt Nachfragen statt Annehmen.
+ */
+export const VERGABE: Source = {
+  label: 'GGSC: Wann sind kommunale Wohnungsbaugesellschaften öffentliche Auftraggeber?',
+  url: 'https://www.ggsc.de/aktuelles/newsletter/newsletter-bau-mai-2019/wann-sind-kommunale-wohnungsbaugesellschaften-oeffentliche-auftraggeber',
+}
+/**
+ * Dass Objektbetreuung ein eigenes Berufsbild mit eigener Fortbildung
+ * ist, belegt besser als jede Behauptung, warum diese Rolle im Projekt
+ * zählt.
+ */
+export const VDW_BAYERN: Source = {
+  label: 'VdW Bayern – Fortbildung "Technisches Wissen für Hausmeister und Objektbetreuer"',
+  url: 'https://www.vdwbayern.de/kalender/',
+}
+export const KOMMAR: Source = {
+  label: 'BVerwG zum Weisungsrecht des Stadtrats gegenüber seinen Aufsichtsratsmitgliedern',
+  url: 'https://www.strunz-alter.de/aktuelle-informationen/bverwg-weisungsrecht-des-stadtrates-gegenueber-seinen-vertretern-im-aufsichtsrat-eines-kommunalen-unternehmens/',
+}
+export const PROFILE: Source = {
+  label: 'Kundenprofile aus echten Gesprächsmitschriften (Green Fusion Sales Expert)',
+}
+
 // ── Markt ─────────────────────────────────────────────────────────────
 export const IMMOCONN: Source = {
   label: 'Wettbewerber-Notiz Immoconn (Vortragsmitschrift)',

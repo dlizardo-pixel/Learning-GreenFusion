@@ -5,7 +5,7 @@ Vertrieb und Regulatorik. Gebaut für Kolleginnen und Kollegen, die noch nie
 einen Heizungskeller von innen gesehen haben — und trotzdem morgen im
 Kundentermin sitzen.
 
-Acht Module, kurze Lektionen von rund vier Minuten, verteilte
+Neun Module, kurze Lektionen von rund vier Minuten, verteilte
 Wiederholung, dreizehn Aufgabentypen. Jede Antwort bekommt eine Erklärung
 mit Quellenangabe. Am Ende jedes Moduls eine Prüfung, am Ende aller Module
 das Zertifikat **GF Heiz-Kompass – Level 1**.
@@ -45,14 +45,14 @@ Artefakt `smoke-shots` am Lauf — das ist meist schneller gelesen als das Log.
 
 | | |
 |---|---|
-| Module | 8 |
-| Lektionen | 43 |
-| Aufgaben | 177 |
+| Module | 9 |
+| Lektionen | 49 |
+| Aufgaben | 236 |
 | Aufgabentypen | 13 |
-| Prüfungen | 8 Modulprüfungen + Abschlussprüfung |
-| Tests | 131 Unit-Tests + Browser-Smoke-Test |
+| Prüfungen | 9 Modulprüfungen + Abschlussprüfung |
+| Tests | 135 Unit-Tests + Browser-Smoke-Test |
 
-### Die acht Module
+### Die neun Module
 
 1. 🔧 **Physik & Technik** — Erzeuger, Verteilung, Übergabe und Trägheit, Warmwasser, Kennzahlen
 2. 🎛️ **Regelung & Digitalisierung** — Steuerung vs. Regelung, Heizkurve, hydraulischer Abgleich, Reglerlandschaft
@@ -62,6 +62,7 @@ Artefakt `smoke-shots` am Lauf — das ist meist schneller gelesen als das Log.
 6. 💼 **Wirtschaftlichkeit & Vertrieb** — Rentabilitätsschwelle, Preismodell, Angebot, technische Einwände
 7. ☀️ **Sektorkopplung** — Echtzeit vs. iterativ, Machbarkeit, §9 EEG, Mieterstrom, Ausblick
 8. 🎓 **Praxis & Zertifizierung** — Kellerbegehung, vollständige Gesprächssimulation, Abschluss
+9. 🏘️ **Wohnungswirtschaft verstehen** — Rechtsformen, Gremien und Entscheidungswege, Rollen im Alltag, Stadtwerke, Verbände
 
 Welcher Lehrplan-Punkt wo liegt, steht in
 **[docs/LEHRPLAN.md](docs/LEHRPLAN.md)** — inklusive der Punkte, die noch

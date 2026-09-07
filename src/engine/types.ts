@@ -9,11 +9,18 @@
  */
 
 /**
- * Die acht Module des Zertifikats "GF Heiz-Kompass – Level 1".
+ * Die Module des Zertifikats "GF Heiz-Kompass – Level 1".
  *
  * Reihenfolge ist didaktisch: Physik vor Regelung vor Produkt. Wer die
  * Heizkurve nicht kennt, kann die Optimierungsempfehlung nicht einordnen,
  * und wer das Produkt nicht kennt, kann die Regulatorik nicht verkaufen.
+ *
+ * Modul 9 ist nachträglich dazugekommen und steht bewusst am Ende, obwohl
+ * es inhaltlich am Anfang stehen könnte: Wer nicht weiss, wie ein
+ * Wohnungsunternehmen entscheidet, kann auch mit perfektem Fachwissen
+ * nichts ausrichten. Es wurde ergänzt, weil in den Modulen 1 bis 8 die
+ * Rollen nur als Kulisse in Rollenspielen vorkamen — das Vokabular war
+ * da, das Wissen nicht.
  */
 export type ModuleId =
   | 'm1-grundlagen'
@@ -24,6 +31,7 @@ export type ModuleId =
   | 'm6-wirtschaft'
   | 'm7-sektorkopplung'
   | 'm8-praxis'
+  | 'm9-wohnungswirtschaft'
 
 export interface Source {
   /** Menschenlesbarer Name, z. B. "Product Specification 1.0 (08.26), Abschnitt 2.3" */

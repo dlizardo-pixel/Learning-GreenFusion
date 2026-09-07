@@ -7,7 +7,7 @@ beiden Seiten prüfen kann.
 
 ## Struktur
 
-Acht Module, 43 Lektionen, 177 Aufgaben. Pro Modul eine **Modulprüfung**
+Neun Module, 49 Lektionen, 236 Aufgaben. Pro Modul eine **Modulprüfung**
 (12 Fragen, bestanden ab 80 %), danach die **Abschlussprüfung** (24 Fragen
 quer über alle Module). Beides zusammen ergibt das Zertifikat.
 
@@ -33,6 +33,28 @@ Regelkreis gehören in eine Lektion) sowie 3.5 bis 3.9, 4.6 bis 4.8 und
 5.3 mit 5.4 — dort war der Stoff je Unterpunkt zu klein für eine eigene
 Lektion, und der Lehrplan-Code bleibt in der App sichtbar.
 
+## Modul 9 – nachträglich ergänzt
+
+Modul 9 „Wohnungswirtschaft verstehen" stand **nicht** im eingereichten
+Lehrplan. Es ist entstanden, weil eine Prüfung der bestehenden 204
+Aufgaben eine Lücke zeigte: Begriffe wie Vorstand (18 Treffer),
+technische Leitung (9) oder Genossenschaft (8) kamen ausschliesslich als
+Kulisse in Rollenspielen vor. „Aufsichtsrat" kam einmal vor,
+„Mitgliederversammlung" gar nicht. Das Vokabular war da, das Wissen
+nicht — man lernte, wie man einer technischen Leiterin antwortet, aber
+nicht, was sie tut und wer über ihr Budget entscheidet.
+
+Der Leitgedanke des Moduls: **die Rechtsform sagt den Entscheidungsweg
+voraus.** Eine Genossenschaft entscheidet über Vorstandsbeschluss mit
+Zustimmungsvorbehalt des Aufsichtsrats, eine kommunale Gesellschaft im
+Takt des Haushalts, ein privater Bestandshalter in einem Termin. Wer das
+nicht unterscheidet, verkauft allen dasselbe und verliert alle.
+
+Die Governance-Inhalte stammen aus dem Genossenschaftsgesetz selbst
+(§ 27, § 38, § 43a, § 53, § 54 GenG) und sind je Aufgabe verlinkt, nicht
+aus einer Vertriebszusammenfassung. Die Rollenkunde stützt sich auf die
+vier Kundenprofile aus echten Gesprächsmitschriften.
+
 ## Was noch fachliche Freigabe braucht
 
 Ehrlich benannt, damit es niemand für gesichert hält:
@@ -43,6 +65,13 @@ Ehrlich benannt, damit es niemand für gesichert hält:
   auf 13 Aufgaben gewachsen. Nebenbei fielen dabei drei veraltete Zahlen
   auf: die früher gelehrten 104 € je Anlage und Monat stehen so in keinem
   aktuellen Preisblatt mehr. Sie sind korrigiert.
+- **Vergaberecht bei kommunalen Wohnungsunternehmen** (9.2): Ob ein
+  kommunales Wohnungsunternehmen öffentlicher Auftraggeber ist, ist
+  **nicht einheitlich entschieden** — verschiedene Oberlandesgerichte
+  haben das unterschiedlich beurteilt. Die Aufgabe lehrt deshalb
+  bewusst *Nachfragen statt Annehmen* und stellt keine Regel auf. Wer
+  eine belastbare Linie für unsere Angebote will, braucht dafür eine
+  anwaltliche Einschätzung.
 - **Trinkwasserverordnung, Prüffristen** (4.7): die Lektion behandelt
   Verantwortung, Legionellenrisiko und die Abgrenzung unserer Überwachung.
   Konkrete Prüffristen und Grenzwerte sind **nicht** aufgenommen, weil ich
@@ -142,7 +171,18 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | 8.2 | Gesprächssimulation | 4 | Gespräch, Auswahl, Karte |
 | 8.3 | Vor der Abschlussprüfung | 6 | Auswahl, Mehrfach, Zuordnen, Zusammenfassen |
 
-**Gesamt: 204 Aufgaben in 43 Lektionen.**
+### Modul 9 · Wohnungswirtschaft verstehen — 32 Aufgaben
+
+| Lehrplan | Lektion | Aufgaben | Typen |
+|---|---|---|---|
+| 9.1 | Wer besitzt was | 5 | Zuordnen, Auswahl, Wahr/Falsch |
+| 9.2 | Wer entscheidet was | 6 | Zuordnen, Auswahl, Lücken, Reihenfolge, Kundenzitat |
+| 9.3 | Die Rollen im Alltag | 5 | Einsortieren, Mehrfach, Wahr/Falsch, Kundenzitat, Auswahl |
+| 9.4 | Stadtwerke & Wärmelieferung | 6 | Auswahl, Zuordnen, Lücken, Wahr/Falsch |
+| 9.5 | Verbände & Netzwerke | 4 | Auswahl, Lücken, Kundenzitat |
+| 9.6 | Wen musst du fragen? | 6 | Auswahl, Karte, Gespräch, Zusammenfassen |
+
+**Gesamt: 236 Aufgaben in 49 Lektionen.**
 
 ## Quellen der Inhalte
 
@@ -158,6 +198,13 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | **Commercial Playbook** (Go-to-Market & kommerzielles Regelwerk) | Vertragsarten, Testphasen, Revision/Restrukturierung, IaaS, Vertragshierarchie |
 | **GreenFusion Product – Status Quo (07/2026)** | Ist-Stand statt Soll-Stand: Fernoptimierungsquote, bekannte Einschränkungen |
 | Commercial Playbook (Angeboterstellung), Sales Materials | Angebotsstruktur, Rabattgrenzen, Benchmarks, ICP |
+| **§ 27 / § 38 / § 43a / § 53 / § 54 GenG** (Gesetzestext) | Organe der Genossenschaft, Vertreterversammlung, Pflichtprüfung, Verbandsbindung |
+| **§ 556c BGB** (Gesetzestext) | Umstellung auf gewerbliche Wärmelieferung, Kostenneutralität |
+| **GdW · VdW Rheinland Westfalen** | Unternehmenssparten, Marktgrösse, Verbandsstruktur |
+| **BVerwG zum Weisungsrecht des Stadtrats** | Politische Taktung kommunaler Entscheidungen |
+| **GGSC zum Auftraggeberstatus** | Vergaberecht als offene Einzelfallfrage |
+| **VdW Bayern (Fortbildung Objektbetreuung)** | Objektbetreuung als eigenes Berufsbild |
+| **Kundenprofile aus echten Gesprächsmitschriften** | Rollen, Einwände, Entscheidungswege |
 | Heizungstechnische Grundlagen (als `FACH` gekennzeichnet) | Allgemeines Fachwissen ohne interne Quelle |
 
 Jede Aufgabe nennt ihre Quelle in der Rückmeldung. Wo eine interne Quelle

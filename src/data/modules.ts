@@ -12,6 +12,10 @@ import type { LearningModule, ModuleId, Unit } from '../engine/types'
  * und als solche gekennzeichnet: 4.9 (Daten, Datenschutz und KI) und 6.5
  * (Prozess und Methodik). Beides ist Wissen, das im Kundengespräch
  * gebraucht wird und sonst keinen Platz hätte.
+ *
+ * Modul 9 ist vollständig neu und im ursprünglichen Lehrplan nicht
+ * vorgesehen. Es beantwortet die Frage, die vor jeder Fachfrage kommt:
+ * wie arbeitet eigentlich ein Wohnungsunternehmen?
  */
 
 const u = (
@@ -188,6 +192,30 @@ export const modules: LearningModule[] = [
         'Du führst ein vollständiges Gespräch von der Situationsaufnahme bis zur Einwandbehandlung.', '🎭'),
       u('m8-praxis', 'm8-u3', '8.3', 'Vor der Abschlussprüfung',
         'Du prüfst quer über alle Module, wo noch Lücken sind – bevor es zählt.', '🏁'),
+    ],
+  },
+  {
+    id: 'm9-wohnungswirtschaft',
+    number: 9,
+    title: 'Wohnungswirtschaft verstehen',
+    subtitle: 'Wer sitzt dir gegenüber – und wer entscheidet wirklich',
+    icon: '🏘️',
+    // Sunstone, der sekundäre Brand-Akzent — die einzige noch freie Token-Farbe,
+    // die sich von den acht bestehenden Modulfarben klar unterscheidet.
+    color: '#EB5D38',
+    units: [
+      u('m9-wohnungswirtschaft', 'm9-u1', '9.1', 'Wer besitzt was',
+        'Du erkennst an der Rechtsform, wem das Unternehmen gehört und wem seine Führung Rechenschaft schuldet.', '🏛️'),
+      u('m9-wohnungswirtschaft', 'm9-u2', '9.2', 'Wer entscheidet was',
+        'Du kannst den Entscheidungsweg bis zur Unterschrift benennen – und er ist je Rechtsform ein anderer.', '✍️'),
+      u('m9-wohnungswirtschaft', 'm9-u3', '9.3', 'Die Rollen im Alltag',
+        'Du weisst, wer den Ausfall merkt, wer bestellt und wer dich in den Keller lässt.', '👷'),
+      u('m9-wohnungswirtschaft', 'm9-u4', '9.4', 'Stadtwerke & Wärmelieferung',
+        'Du kannst die vier Rollen eines Stadtwerks auseinanderhalten: Kunde, Lieferant, Contractor, Wettbewerber.', '🏭'),
+      u('m9-wohnungswirtschaft', 'm9-u5', '9.5', 'Verbände & Netzwerke',
+        'Du verstehst, warum Verbände in dieser Branche mehr Gewicht haben als Werbung – und warum das gesetzlich so ist.', '🤝'),
+      u('m9-wohnungswirtschaft', 'm9-u6', '9.6', 'Wen musst du fragen?',
+        'Du liest aus Rechtsform, Grösse und Gremien ab, welchen Weg ein Abschluss nehmen wird.', '🧭'),
     ],
   },
 ]

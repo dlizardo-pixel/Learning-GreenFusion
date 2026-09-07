@@ -124,7 +124,7 @@ sinnvoller Ordnung kommt.
 ## Vom Kurs zum Führerschein
 
 Die App ist als **Zertifikat** aufgebaut, nicht als Themensammlung: acht
-Module, 43 Lektionen, danach Prüfungen. Das ist mehr als Kosmetik — es
+Module, 49 Lektionen, danach Prüfungen. Das ist mehr als Kosmetik — es
 löst ein Problem, das reine Lernpfade haben: sie haben kein Ende.
 
 Ohne Abschluss bleibt „ich lerne gerade Heizungstechnik" ein Dauerzustand
@@ -149,7 +149,7 @@ Der dritte verhindert einen echten Fehler: eine Prüfung, die zufällig aus
 dem Topf zieht, kann eine halbe Ausbildung auslassen. Gezogen wird deshalb
 reihum über die Lektionen — und bei der Abschlussprüfung zweistufig, erst
 über die Module, dann innerhalb. Genau daran ist die erste Fassung
-gescheitert: sie deckte nur vier von acht Modulen ab, und ein Test hat es
+gescheitert: sie deckte nur vier von damals acht Modulen ab, und ein Test hat es
 gefunden.
 
 **Die Abschlussprüfung ist die einzige Sperre in der App.** Sie öffnet erst,

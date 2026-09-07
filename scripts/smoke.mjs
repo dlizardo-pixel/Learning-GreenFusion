@@ -268,6 +268,8 @@ const plan = [
   ['m4-recht', 'm4-u6'],
   ['m5-markt', 'm5-u3'],
   ['m8-praxis', 'm8-u1'],
+  // Modul 9 mitspielen, damit das neue Modul auch im Browser geprüft wird.
+  ['m9-wohnungswirtschaft', 'm9-u3'],
 ]
 
 for (const [mod, unit] of plan) {
