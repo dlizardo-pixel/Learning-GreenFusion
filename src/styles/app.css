@@ -682,3 +682,79 @@ textarea:focus { outline: none; border-color: var(--gf-primary); box-shadow: 0 0
 }
 .exam-card { padding: var(--gf-space-4) var(--gf-space-6); }
 .exam-card--passed { background: var(--gf-light-frosted-mint); border-color: var(--gf-primary-light); }
+
+/* ── Grosse Bildschirme ───────────────────────────────────────────────
+ *
+ * Die App ist mobile-first gebaut: eine Spalte von 720 px. Am Rechner
+ * bleibt davon links und rechts viel Leerfläche.
+ *
+ * Breiter wird aber nur, was davon profitiert. Übersichten gewinnen
+ * durch Nebeneinander — neun Modulkarten in einer Spalte sind eine
+ * lange Strecke Scrollen. Eine Lektion gewinnt nicht: 720 px sind die
+ * bequeme Zeilenlänge, und ein Aufgabentext über 1200 px wäre
+ * schlechter lesbar, nicht besser. Deshalb tragen nur Startseite und
+ * Modulpfad die Klasse `app--wide`; Lektion, Prüfung und Anmeldung
+ * behalten die schmale Spalte.
+ */
+.home-cards {
+  display: grid;
+}
+
+@media (min-width: 1000px) {
+  .app--wide {
+    max-width: var(--gf-content-max-width);
+  }
+
+  /* Aufgabe des Tages, Liga, Wiederholung, Heiz-Kompass nebeneinander.
+   * auto-fit, damit es mit drei wie mit vier Karten aufgeht — die
+   * Wiederholung erscheint nur, wenn etwas fällig ist. */
+  .app--wide .home-cards {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--gf-space-4);
+  }
+
+  /* Die Karten in der Reihe sollen gleich hoch aussehen, ohne dass ihr
+   * Inhalt gestreckt wird. */
+  .app--wide .home-card {
+    display: flex;
+    flex-direction: column;
+  }
+  .app--wide .home-card > .card,
+  .app--wide .home-card > .course-card {
+    flex: 1;
+  }
+
+  /* Ein Knopf über die volle Breite von 1200 px wirkt wie ein Balken,
+   * nicht wie ein Knopf. Er bleibt links, damit er unter dem
+   * linksbündigen Text der Karte sitzt. */
+  .app--wide .btn--block {
+    max-width: 420px;
+  }
+
+  /* Modulkarten und Lektionen in ein Raster. minmax sorgt dafür, dass
+   * eine Karte nie so schmal wird, dass der Titel bricht. */
+  .app--wide .course-grid,
+  .app--wide .path {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  }
+
+  /* Tagesziel und Wochenstreifen nebeneinander. Ohne das läuft der
+   * Streifen über die ganze Breite und die sieben Punkte stehen so weit
+   * auseinander, dass sie nicht mehr als eine Woche zu lesen sind. */
+  .app--wide .home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--gf-space-4);
+  }
+
+  /* Am Rechner bekommt der Streifen einen eigenen Rahmen, damit er neben
+   * der Zielkarte nicht wie ein loses Element wirkt. */
+  .app--wide .home-hero .week {
+    margin-top: 0;
+    align-items: center;
+    background: var(--gf-white);
+    border: 1px solid var(--gf-polar-mist);
+    border-radius: var(--gf-radius-xlg);
+    padding: var(--gf-space-4) var(--gf-space-3);
+  }
+}

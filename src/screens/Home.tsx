@@ -82,7 +82,7 @@ export function Home({
   })
 
   return (
-    <div className="app">
+    <div className="app app--wide">
       <div className="topbar">
         <div className="brand">
           <span className="brand-mark" aria-hidden="true">
@@ -132,6 +132,7 @@ export function Home({
         </div>
       )}
 
+      <div className="home-hero">
       <div className="goal-card">
         <Ring value={todayXp} max={progress.dailyGoal} label={goalReached ? '✓' : `${todayXp}`} />
         <div style={{ flex: 1 }}>
@@ -175,7 +176,10 @@ export function Home({
           )
         })}
       </div>
+      </div>
 
+      <div className="home-cards">
+      <section className="home-card">
       <div className="section-label">Aufgabe des Tages</div>
       <div className={`card challenge ${challengeFinished ? 'challenge--done' : ''}`}>
         <div className="challenge-head">
@@ -197,7 +201,9 @@ export function Home({
             : `${challengeAt} von ${challenge.target}`}
         </div>
       </div>
+      </section>
 
+      <section className="home-card">
       <div className="section-label">Green Fusion Liga</div>
       <button
         className="course-card"
@@ -220,9 +226,10 @@ export function Home({
           ›
         </span>
       </button>
+      </section>
 
       {due > 0 && (
-        <>
+        <section className="home-card">
           <div className="section-label">Wiederholung</div>
           <button
             className="course-card"
@@ -245,9 +252,10 @@ export function Home({
               ›
             </span>
           </button>
-        </>
+        </section>
       )}
 
+      <section className="home-card">
       <div className="section-label">GF Heiz-Kompass</div>
       <button
         className="course-card"
@@ -283,6 +291,8 @@ export function Home({
           ›
         </span>
       </button>
+      </section>
+      </div>
 
       <div className="section-label">Module</div>
       <div className="course-grid">
