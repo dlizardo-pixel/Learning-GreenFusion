@@ -8,6 +8,7 @@ import { m5Items } from './items/m5'
 import { m6Items } from './items/m6'
 import { m7Items } from './items/m7'
 import { m8Items } from './items/m8'
+import { m9Items } from './items/m9'
 
 export { modules } from './modules'
 
@@ -20,6 +21,7 @@ export const items: Item[] = [
   ...m6Items,
   ...m7Items,
   ...m8Items,
+  ...m9Items,
 ]
 
 export const units: Unit[] = modules.flatMap((m) => m.units)

@@ -8,7 +8,7 @@ ist Fachwissen, nicht Softwareentwicklung.
 
 ```
 src/data/
-├── modules.ts      Der Lehrplan: 8 Module, 43 Lektionen mit Nummer und Ziel
+├── modules.ts      Der Lehrplan: 9 Module, 49 Lektionen mit Nummer und Ziel
 ├── sources.ts      Alle Quellenangaben an einer Stelle
 └── items/
     ├── m1.ts       Physik & Technik
