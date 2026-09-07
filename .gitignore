@@ -1,0 +1,9 @@
+node_modules
+dist
+.DS_Store
+*.local
+.vite
+smoke-shots
+.env
+.env.local
+tsconfig.tsbuildinfo
