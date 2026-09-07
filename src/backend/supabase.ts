@@ -11,7 +11,19 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+
+/**
+ * Der öffentliche Schlüssel, unter zwei möglichen Namen.
+ *
+ * Supabase hat die Schlüssel umbenannt: `sb_publishable_…` ersetzt den
+ * alten `anon`-Key, der Ende 2026 ausläuft. Beide funktionieren mit
+ * `createClient`, deshalb wird der neue Name bevorzugt und der alte als
+ * Rückfallebene akzeptiert — ein bestehendes Deployment soll durch die
+ * Umbenennung nicht ausfallen.
+ */
+const publicKey =
+  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ??
+  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)
 
 /**
  * Erlaubte E-Mail-Domain. Die eigentliche Durchsetzung gehört in die
@@ -24,8 +36,8 @@ export const ALLOWED_EMAIL_DOMAIN =
 
 let client: SupabaseClient | null = null
 
-if (url && anonKey) {
-  client = createClient(url, anonKey, {
+if (url && publicKey) {
+  client = createClient(url, publicKey, {
     auth: { persistSession: true, autoRefreshToken: true },
   })
 }
