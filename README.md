@@ -166,7 +166,7 @@ Die App läuft in zwei Modi, und der Unterschied ist eine Konfiguration:
 
 - **Lokal** (Standard, ohne Einrichtung): Lernstand im Browser, keine
   Anmeldung, Liga mit Beispieldaten. So kann man sie sofort starten.
-- **Mit Anmeldung**: sind `VITE_SUPABASE_URL` und `VITE_SUPABASE_ANON_KEY`
+- **Mit Anmeldung**: sind `VITE_SUPABASE_URL` und `VITE_SUPABASE_PUBLISHABLE_KEY`
   gesetzt, gibt es Konten (nur `@green-fusion.de`), geräteübergreifenden
   Lernstand und die echte Liga. Der Code dafür ist fertig; es fehlen nur
   das Supabase-Projekt und die beiden Variablen. Einrichtung in sieben
