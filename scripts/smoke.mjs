@@ -365,14 +365,34 @@ if (missing.length) errors.push(`Nie gerendert: ${missing.join(', ')}`)
 // aber eine eigene Sache, und "sieht gut aus" lässt sich nicht klicken.
 // Prüfbar ist die eine Eigenschaft, an der alles hängt: liegen die
 // Modulkarten am Rechner nebeneinander und auf dem Handy untereinander?
+/**
+ * Zwei Positionen vergleichen, aber in *einem* Layout-Durchgang.
+ *
+ * Die App lädt ihre Schrift von Google Fonts mit `display: swap`. Kommt
+ * sie an, fliesst der Text neu um und alles darunter verschiebt sich.
+ * Zwei getrennte boundingBox-Aufrufe können deshalb zwei verschiedene
+ * Zustände messen — genau daran ist dieser Test einmal gescheitert
+ * (18 px Differenz, weil die Schrift zwischen den Messungen eintraf).
+ * Lokal fällt das nicht auf, weil der Egress-Proxy Google Fonts
+ * blockiert und die Schrift nie ankommt.
+ *
+ * Deshalb: erst auf die Schriften warten, dann beide Rechtecke in einem
+ * einzigen evaluate lesen.
+ */
+async function twoRows(p, idA, idB) {
+  await p.evaluate(() => document.fonts.ready.then(() => true))
+  return p.evaluate(([a, b]) => {
+    const y = (id) => document.querySelector(`[data-testid="module-${id}"]`).getBoundingClientRect().y
+    return [y(a), y(b)]
+  }, [idA, idB])
+}
+
 const wide = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 await wide.goto(BASE, { waitUntil: 'domcontentloaded' })
 await wide.waitForSelector('[data-testid="module-m1-grundlagen"]')
 
-const rowOf = async (p, id) => (await p.locator(`[data-testid="module-${id}"]`).boundingBox()).y
-const y1 = await rowOf(wide, 'm1-grundlagen')
-const y2 = await rowOf(wide, 'm2-regelung')
-if (Math.abs(y1 - y2) > 4) {
+const [y1, y2] = await twoRows(wide, 'm1-grundlagen', 'm2-regelung')
+if (Math.abs(y1 - y2) > 1) {
   errors.push(`Am Rechner stehen die Modulkarten nicht nebeneinander (y ${y1} vs ${y2})`)
 }
 
@@ -382,6 +402,7 @@ await wide.click('[data-testid="module-m1-grundlagen"]')
 await wide.waitForSelector('[data-testid="unit-m1-u1"]')
 await wide.click('[data-testid="unit-m1-u1"]')
 await wide.waitForSelector('.prompt')
+await wide.evaluate(() => document.fonts.ready.then(() => true))
 const promptWidth = (await wide.locator('.prompt').boundingBox()).width
 if (promptWidth > 800) {
   errors.push(`Aufgabentext am Rechner zu breit: ${Math.round(promptWidth)} px (erwartet unter 800)`)
@@ -393,8 +414,7 @@ await wide.close()
 const narrow = await browser.newPage({ viewport: { width: 414, height: 900 } })
 await narrow.goto(BASE, { waitUntil: 'domcontentloaded' })
 await narrow.waitForSelector('[data-testid="module-m1-grundlagen"]')
-const n1 = await rowOf(narrow, 'm1-grundlagen')
-const n2 = await rowOf(narrow, 'm2-regelung')
+const [n1, n2] = await twoRows(narrow, 'm1-grundlagen', 'm2-regelung')
 if (Math.abs(n1 - n2) < 20) {
   errors.push(`Auf Handybreite stehen die Modulkarten nebeneinander (y ${n1} vs ${n2})`)
 }
