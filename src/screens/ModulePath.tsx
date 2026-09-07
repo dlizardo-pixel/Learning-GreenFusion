@@ -26,7 +26,7 @@ export function ModulePath({ module, progress, onStartUnit, onStartExam, onBack 
   const exam = examFor(progress, module.id)
 
   return (
-    <div className="app">
+    <div className="app app--wide">
       <div className="topbar">
         <button className="btn btn--ghost" data-testid="back-home" onClick={onBack}>
           ‹ Übersicht

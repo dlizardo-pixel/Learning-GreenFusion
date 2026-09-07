@@ -359,6 +359,48 @@ if (xpBefore !== xpAfter) errors.push(`Fortschritt nach Reload verloren: ${xpBef
 const missing = ALL_TYPES.filter((t) => !seenTypes.has(t) && !OPTIONAL_TYPES.includes(t))
 if (missing.length) errors.push(`Nie gerendert: ${missing.join(', ')}`)
 
+// ── Grosse Bildschirme ──────────────────────────────────────────────
+//
+// Der Test oben läuft auf Handybreite. Das Layout für den Rechner ist
+// aber eine eigene Sache, und "sieht gut aus" lässt sich nicht klicken.
+// Prüfbar ist die eine Eigenschaft, an der alles hängt: liegen die
+// Modulkarten am Rechner nebeneinander und auf dem Handy untereinander?
+const wide = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+await wide.goto(BASE, { waitUntil: 'domcontentloaded' })
+await wide.waitForSelector('[data-testid="module-m1-grundlagen"]')
+
+const rowOf = async (p, id) => (await p.locator(`[data-testid="module-${id}"]`).boundingBox()).y
+const y1 = await rowOf(wide, 'm1-grundlagen')
+const y2 = await rowOf(wide, 'm2-regelung')
+if (Math.abs(y1 - y2) > 4) {
+  errors.push(`Am Rechner stehen die Modulkarten nicht nebeneinander (y ${y1} vs ${y2})`)
+}
+
+// Und die Lektion muss ihre bequeme Zeilenlänge behalten, statt sich
+// über die ganze Breite zu ziehen.
+await wide.click('[data-testid="module-m1-grundlagen"]')
+await wide.waitForSelector('[data-testid="unit-m1-u1"]')
+await wide.click('[data-testid="unit-m1-u1"]')
+await wide.waitForSelector('.prompt')
+const promptWidth = (await wide.locator('.prompt').boundingBox()).width
+if (promptWidth > 800) {
+  errors.push(`Aufgabentext am Rechner zu breit: ${Math.round(promptWidth)} px (erwartet unter 800)`)
+}
+await wide.screenshot({ path: `${OUT}/09-rechner-lektion.png` })
+await wide.close()
+
+// Gegenprobe auf Handybreite: dort müssen sie untereinander stehen.
+const narrow = await browser.newPage({ viewport: { width: 414, height: 900 } })
+await narrow.goto(BASE, { waitUntil: 'domcontentloaded' })
+await narrow.waitForSelector('[data-testid="module-m1-grundlagen"]')
+const n1 = await rowOf(narrow, 'm1-grundlagen')
+const n2 = await rowOf(narrow, 'm2-regelung')
+if (Math.abs(n1 - n2) < 20) {
+  errors.push(`Auf Handybreite stehen die Modulkarten nebeneinander (y ${n1} vs ${n2})`)
+}
+await narrow.close()
+console.log(`Layout: Rechner nebeneinander (y ${Math.round(y1)}), Handy untereinander (y ${Math.round(n1)}/${Math.round(n2)}), Aufgabentext ${Math.round(promptWidth)} px`)
+
 await browser.close()
 stopPreview()
 
