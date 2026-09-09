@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Item, ModuleId, Progress } from './engine/types'
-import { modules, moduleById, unitById, items } from './data'
+import { modules, moduleById, unitById, coreItems, lessonPool } from './data'
 import { buildLesson, DEFAULT_LESSON_SIZE } from './engine/lesson'
 import { buildExam, FINAL } from './engine/exam'
 import { emptyProgress, localStorageAdapter, type StorageAdapter } from './engine/progress'
@@ -78,7 +78,7 @@ export default function App() {
   ) {
     const unitId = opts.mode === 'unit' ? opts.unitId : null
     const queue = buildLesson({
-      items,
+      items: lessonPool(unitId ?? undefined),
       progress,
       mode: opts.mode,
       unitId: unitId ?? undefined,
@@ -97,7 +97,9 @@ export default function App() {
   }
 
   function startExam(examId: string, from: View) {
-    const queue = buildExam({ items, examId })
+    // Prüfungen fragen nur den Pflichtstoff ab — die optionale Spur zählt
+    // nicht für das Zertifikat.
+    const queue = buildExam({ items: coreItems, examId })
     if (queue.length === 0) return
     const title =
       examId === FINAL

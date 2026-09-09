@@ -152,6 +152,14 @@ beantworteten, sonst käme dieselbe Frage mehrfach an einem Tag. Ein Modul
 braucht mindestens zwölf Aufgaben, sonst lässt sich keine Modulprüfung
 stellen; auch das prüft ein Test.
 
+**Optionale Lektion:** in `modules.ts` mit `uOpt` statt `u` anlegen. Damit
+gehört sie nicht zum Zertifikat: sie kommt nicht in die Tageslektion, nicht
+in die Prüfungen, nicht in die Tagesaufgabe, füllt keine andere Lektion auf
+und zählt nicht zur Mastery. Gedacht für Stoff, der für einen Teil der
+Nutzenden zentral und für den anderen Ballast ist — heute Einwandbehandlung
+und Vertriebsmethodik. Achtung: ein Modul braucht **ohne** seine optionalen
+Lektionen noch zwölf Aufgaben für die Modulprüfung.
+
 **Modul:** neue Datei in `src/data/items/`, `ModuleId` in
 `src/engine/types.ts` erweitern, in `modules.ts` und `src/data/index.ts`
 registrieren. Farbe aus dem Green Fusion Design System wählen, keine neue

@@ -7,7 +7,8 @@ beiden Seiten prüfen kann.
 
 ## Struktur
 
-Neun Module, 49 Lektionen, 236 Aufgaben. Pro Modul eine **Modulprüfung**
+Neun Module, 49 Lektionen, 239 Aufgaben — davon 227 Pflichtstoff und 12 in
+einer **optionalen Spur** (siehe unten). Pro Modul eine **Modulprüfung**
 (12 Fragen, bestanden ab 80 %), danach die **Abschlussprüfung** (24 Fragen
 quer über alle Module). Beides zusammen ergibt das Zertifikat.
 
@@ -16,6 +17,25 @@ jeder ist Absicht: Fehler kommen **nicht** nochmal, die Auflösung kommt
 **erst am Ende**, und gezogen wird als **Querschnitt** über alle Lektionen
 statt zufällig. Begründung in [LIGA-UND-PUNKTE.md](LIGA-UND-PUNKTE.md) und
 [LERNKONZEPT.md](LERNKONZEPT.md).
+
+## Die optionale Spur
+
+Drei Lektionen sind **optional** und damit nicht Teil des Zertifikats:
+
+| Lehrplan | Lektion | Warum optional |
+|---|---|---|
+| 6.4–6.5 | Technische Einwände | Einwandbehandlung ist Formulierungsarbeit, kein Fachwissen |
+| 6.6* | Prozess & Methodik | SPICED und Sales-Stages betreffen nur den Vertrieb |
+| 8.2 | Gesprächssimulation | Übt Gesprächsführung, nicht Heizungs- oder Branchenwissen |
+
+Sie kommen nicht in der Tageslektion, nicht in den Prüfungen und nicht in
+der Tagesaufgabe, füllen keine andere Lektion auf und zählen nicht zur
+Mastery. Wer sie will, öffnet sie im Lernpfad unter „Optional".
+
+Der Grund kommt aus der Nutzung: für den Vertrieb ist dieser Stoff das
+Nützlichste an der App, für alle anderen Ballast — und Ballast, der sich
+ungefragt in die Tageslektion mischt, kostet die App das Vertrauen.
+Löschen wäre die einfachere, aber schlechtere Lösung gewesen.
 
 ## Abweichungen vom eingereichten Lehrplan
 
@@ -143,15 +163,15 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | 5.2 | Fallbeispiel Immoconn | 3 | Mehrfach, Auswahl, Kundenzitat |
 | 5.3–5.4 | Nachbarfelder einordnen | 4 | Zuordnen, Einsortieren, Auswahl |
 
-### Modul 6 · Wirtschaftlichkeit & Vertrieb — 41 Aufgaben
+### Modul 6 · Wirtschaftlichkeit & Vertrieb — 33 + 8 optional
 
 | Lehrplan | Lektion | Aufgaben | Typen |
 |---|---|---|---|
 | 6.1 | Rentabilitätsschwelle & Zielkunden | 8 | Zuordnen, Auswahl, Mehrfach, Reihenfolge, Schätzen |
 | 6.2 | Preismodell-Grundlagen | 13 | Schätzen, Lücken, Einsortieren, Auswahl, Zuordnen, Kundenzitat, Karte, Wahr/Falsch |
 | 6.3 | Rahmenverträge & Angebot | 12 | Zuordnen, Mehrfach, Kundenzitat, Auswahl, Einsortieren, Reihenfolge |
-| 6.4–6.5 | Technische Einwände | 4 | Zuordnen, Kundenzitat, Gespräch |
-| 6.6* | Prozess & Methodik | 4 | Zuordnen, Reihenfolge, Mehrfach |
+| 6.4–6.5 | Technische Einwände *(optional)* | 4 | Zuordnen, Kundenzitat, Gespräch |
+| 6.6* | Prozess & Methodik *(optional)* | 4 | Zuordnen, Reihenfolge, Mehrfach |
 
 ### Modul 7 · Sektorkopplung — 16 Aufgaben
 
@@ -163,12 +183,12 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | 7.4 | Mieterstrom & GGV | 3 | Zuordnen, Wahr/Falsch, Auswahl |
 | 7.5 | Ausblick | 3 | Auswahl, Einsortieren |
 
-### Modul 8 · Praxis & Zertifizierung — 15 Aufgaben
+### Modul 8 · Praxis & Zertifizierung — 14 + 4 optional
 
 | Lehrplan | Lektion | Aufgaben | Typen |
 |---|---|---|---|
-| 8.1 | Kellerbegehung | 5 | Schema, Einsortieren |
-| 8.2 | Gesprächssimulation | 4 | Gespräch, Auswahl, Karte |
+| 8.1 | Kellerbegehung | 8 | Schema, Einsortieren, Auswahl, Zuordnen |
+| 8.2 | Gesprächssimulation *(optional)* | 4 | Gespräch, Auswahl, Karte |
 | 8.3 | Vor der Abschlussprüfung | 6 | Auswahl, Mehrfach, Zuordnen, Zusammenfassen |
 
 ### Modul 9 · Wohnungswirtschaft verstehen — 32 Aufgaben

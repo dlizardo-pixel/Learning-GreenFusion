@@ -244,6 +244,19 @@ export interface Unit {
   /** Ein Satz: was kann ich danach, was ich vorher nicht konnte. */
   goal: string
   icon: string
+  /**
+   * Optionale Lektion: gehört nicht zum Pflichtstoff des Zertifikats.
+   *
+   * Sie kommt nicht in die Tageslektion, nicht in die Prüfungen, zählt
+   * nicht zur Mastery und füllt keine andere Lektion auf. Sie erscheint
+   * nur, wenn man sie selbst öffnet.
+   *
+   * Hintergrund: Gesprächstechnik und Formulierungshilfen sind für einen
+   * Teil der Nutzenden das Nützlichste an der App und für einen anderen
+   * Teil Ballast. Beides gleichzeitig geht nur, wenn dieser Stoff
+   * erreichbar bleibt, aber nichts erzwingt.
+   */
+  optional?: boolean
 }
 
 export interface LearningModule {

@@ -2,7 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { buildLesson, hasLessonToday, interleave } from '../lesson'
 import { emptyProgress } from '../progress'
 import { review } from '../srs'
-import { items, modules, units, itemsInModule, itemsInUnit } from '../../data'
+import { buildExam, FINAL } from '../exam'
+import {
+  items,
+  modules,
+  units,
+  coreItems,
+  isOptionalUnit,
+  itemsInModule,
+  itemsInUnit,
+  lessonPool,
+} from '../../data'
 import type { Item } from '../types'
 
 /** Reproduzierbarer Zufall für stabile Tests. */
@@ -227,9 +237,10 @@ describe('Struktur der Inhalte', () => {
     }
   })
 
-  it('jedes Modul hat genug Material für eine Prüfung', () => {
+  it('jedes Modul hat genug Pflichtmaterial für eine Prüfung', () => {
     for (const m of modules) {
-      const own = items.filter((i) => i.moduleId === m.id)
+      // Die optionale Spur zählt nicht: die Prüfung fragt sie nicht ab.
+      const own = itemsInModule(m.id)
       expect(own.length, `Modul ${m.number} (${m.title}) hat zu wenige Aufgaben`).toBeGreaterThanOrEqual(12)
     }
   })
@@ -241,7 +252,7 @@ describe('Struktur der Inhalte', () => {
 
   it('jedes Modul nutzt mehrere Aufgabentypen', () => {
     for (const m of modules) {
-      const types = new Set(items.filter((i) => i.moduleId === m.id).map((i) => i.type))
+      const types = new Set(itemsInModule(m.id).map((i) => i.type))
       expect(types.size, `Modul ${m.number} nutzt zu wenige Aufgabentypen`).toBeGreaterThanOrEqual(4)
     }
   })
@@ -249,5 +260,74 @@ describe('Struktur der Inhalte', () => {
   it('jede Lehrplan-Nummer ist eindeutig', () => {
     const codes = units.map((u) => u.code)
     expect(new Set(codes).size).toBe(codes.length)
+  })
+})
+
+describe('Optionale Spur', () => {
+  const optionalUnits = units.filter((u) => u.optional)
+
+  it('es gibt sie überhaupt', () => {
+    expect(optionalUnits.length).toBeGreaterThan(0)
+    for (const u of optionalUnits) expect(itemsInUnit(u.id).length).toBeGreaterThan(0)
+  })
+
+  it('gehört nicht zum Pflichtstoff', () => {
+    for (const i of coreItems) expect(isOptionalUnit(i.unitId)).toBe(false)
+  })
+
+  it('kommt nicht in der Tageslektion', () => {
+    const progress = emptyProgress()
+    for (let seed = 1; seed < 30; seed++) {
+      const lesson = buildLesson({
+        items: lessonPool(),
+        progress,
+        mode: 'daily',
+        random: seeded(seed),
+      })
+      for (const i of lesson) expect(isOptionalUnit(i.unitId), i.id).toBe(false)
+    }
+  })
+
+  it('füllt keine Pflichtlektion auf', () => {
+    // Modul 6 hat zwei optionale Lektionen neben drei Pflichtlektionen –
+    // hier würde ein zu weit gefasster Auffüll-Topf sofort auffallen.
+    const progress = emptyProgress()
+    for (const unit of ['m6-u1', 'm6-u2', 'm6-u3', 'm8-u1', 'm8-u3']) {
+      const lesson = buildLesson({
+        items: lessonPool(unit),
+        progress,
+        mode: 'unit',
+        unitId: unit,
+        random: seeded(4),
+      })
+      for (const i of lesson) expect(isOptionalUnit(i.unitId), `${i.id} in ${unit}`).toBe(false)
+    }
+  })
+
+  it('kommt, wenn man sie selbst öffnet', () => {
+    for (const u of optionalUnits) {
+      const lesson = buildLesson({
+        items: lessonPool(u.id),
+        progress: emptyProgress(),
+        mode: 'unit',
+        unitId: u.id,
+        random: seeded(5),
+      })
+      expect(lesson.length, u.id).toBeGreaterThan(0)
+      // Die eigene Lektion vollständig, aufgefüllt wird mit Pflichtstoff
+      // des Moduls – nie mit einer anderen optionalen Lektion.
+      for (const i of lesson) {
+        expect(i.unitId === u.id || !isOptionalUnit(i.unitId), i.id).toBe(true)
+      }
+    }
+  })
+
+  it('kommt in keiner Prüfung', () => {
+    for (const m of modules) {
+      const exam = buildExam({ items: coreItems, examId: m.id, random: seeded(6) })
+      for (const i of exam) expect(isOptionalUnit(i.unitId), i.id).toBe(false)
+    }
+    const final = buildExam({ items: coreItems, examId: FINAL, random: seeded(7) })
+    for (const i of final) expect(isOptionalUnit(i.unitId), i.id).toBe(false)
   })
 })

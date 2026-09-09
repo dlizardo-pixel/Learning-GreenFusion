@@ -31,4 +31,26 @@ export const moduleById = new Map<ModuleId, LearningModule>(modules.map((m) => [
 export const unitById = new Map(units.map((x) => [x.id, x]))
 
 export const itemsInUnit = (unitId: string) => items.filter((i) => i.unitId === unitId)
-export const itemsInModule = (moduleId: string) => items.filter((i) => i.moduleId === moduleId)
+
+/** Gehört diese Lektion zur optionalen Spur? Siehe `Unit.optional`. */
+export const isOptionalUnit = (unitId: string) => unitById.get(unitId)?.optional === true
+
+/**
+ * Der Pflichtstoff. Alles, was das Zertifikat abfragt und was von selbst
+ * in einer Lektion auftauchen darf.
+ */
+export const coreItems = items.filter((i) => !isOptionalUnit(i.unitId))
+
+/** Aufgaben eines Moduls — ohne die optionale Spur, denn die zählt nicht. */
+export const itemsInModule = (moduleId: string) =>
+  coreItems.filter((i) => i.moduleId === moduleId)
+
+/**
+ * Woraus eine Lektion schöpfen darf.
+ *
+ * Normalfall: nur Pflichtstoff. Öffnet jemand eine optionale Lektion,
+ * kommen genau deren Aufgaben dazu — nicht die der anderen optionalen
+ * Lektionen, sonst würde eine Lektion die Nachbarspur mitschleppen.
+ */
+export const lessonPool = (unitId?: string) =>
+  unitId && isOptionalUnit(unitId) ? [...coreItems, ...itemsInUnit(unitId)] : coreItems

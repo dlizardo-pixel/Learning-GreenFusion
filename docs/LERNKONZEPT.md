@@ -122,6 +122,21 @@ sie erneut anzubieten.
 
 → `src/engine/lesson.ts`
 
+### 4b. Nicht jeder braucht jeden Stoff
+
+Drei Lektionen liegen in einer **optionalen Spur**: Einwandbehandlung,
+Vertriebsmethodik und die vollständige Gesprächssimulation. Sie kommen
+nicht in der Tageslektion, nicht in den Prüfungen und zählen nicht zur
+Mastery — sie erscheinen nur, wenn man sie selbst öffnet.
+
+Das ist eine Antwort auf echte Nutzung: derselbe Stoff war für eine Person
+das Nützlichste an der App und für eine andere Ballast. Eine Lernapp, die
+ungefragt Ballast in die Tageslektion mischt, wird nicht seltener
+geöffnet, sondern gar nicht mehr. Löschen wäre einfacher gewesen und
+falsch: das Material ist gut, es ist nur nicht für alle.
+
+→ `Unit.optional` in `src/engine/types.ts`, `coreItems` in `src/data/index.ts`
+
 ### 5. Kein gesperrter Lernpfad
 
 Bei Duolingo sind spätere Lektionen gesperrt, bis frühere bestanden sind.

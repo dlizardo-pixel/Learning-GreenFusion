@@ -271,6 +271,9 @@ const plan = [
   ['m4-recht', 'm4-u6'],
   ['m5-markt', 'm5-u3'],
   ['m8-praxis', 'm8-u1'],
+  // Eine optionale Lektion: sie steht in einem eigenen Abschnitt und muss
+  // sich trotzdem normal spielen lassen.
+  ['m6-wirtschaft', 'm6-u4'],
   // Modul 9 mitspielen, damit das neue Modul auch im Browser geprüft wird.
   ['m9-wohnungswirtschaft', 'm9-u3'],
 ]

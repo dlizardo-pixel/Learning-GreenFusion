@@ -1,5 +1,5 @@
 import type { LearningModule, Progress } from '../engine/types'
-import { items, itemsInModule, itemsInUnit } from '../data'
+import { itemsInModule, itemsInUnit, lessonPool } from '../data'
 import { masteredCount, masteryRatio } from '../engine/progress'
 import { badgeFor, BADGE_ICON, BADGE_LABEL } from '../engine/badges'
 import { examFor, PASS_RATIO } from '../engine/exam'
@@ -25,6 +25,63 @@ export function ModulePath({ module, progress, onStartUnit, onStartExam, onBack 
   const moduleIds = itemsInModule(module.id).map((i) => i.id)
   const badge = badgeFor(progress, moduleIds)
   const exam = examFor(progress, module.id)
+
+  // Die optionale Spur steht unter dem Lernpfad, nicht in ihm: sie ist kein
+  // Schritt auf dem Weg zum Zertifikat, sondern ein Angebot daneben.
+  const pflicht = module.units.filter((x) => !x.optional)
+  const optional = module.units.filter((x) => x.optional)
+
+  function renderUnit(unit: LearningModule['units'][number]) {
+    const ids = itemsInUnit(unit.id).map((i) => i.id)
+    const mastered = masteredCount(progress, ids)
+    const done = (progress.unitsCompleted[unit.id] ?? 0) > 0
+    const pct = masteryRatio(progress, ids) * 100
+    // Was heute schon dran war, kommt heute nicht wieder. Dann hat die
+    // Lektion nichts zu geben, und das gehört sichtbar an die Karte —
+    // ein Tippen, das nichts tut, liest sich wie ein Fehler.
+    const openToday = hasLessonToday({
+      items: lessonPool(unit.id),
+      progress,
+      mode: 'unit',
+      unitId: unit.id,
+    })
+
+    return (
+      <button
+        key={unit.id}
+        className={`unit ${done ? 'unit--done' : ''} ${openToday ? '' : 'unit--resting'}`}
+        data-testid={`unit-${unit.id}`}
+        disabled={!openToday}
+        onClick={() => onStartUnit(unit.id)}
+      >
+        <span className="unit-badge" aria-hidden="true">
+          {done ? '✓' : unit.icon}
+        </span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span className="course-meta">
+            {unit.optional ? 'Optional' : `Lehrplan ${unit.code}`}
+          </span>
+          <span className="course-title" style={{ display: 'block' }}>
+            {unit.title}
+          </span>
+          <span className="course-meta" style={{ display: 'block', marginTop: 2 }}>
+            {unit.goal}
+          </span>
+          <span className="bar">
+            <i style={{ width: `${pct}%`, background: module.color }} />
+          </span>
+          <span className="course-meta">
+            {mastered}/{ids.length} sitzen
+            {done && ` · ${progress.unitsCompleted[unit.id]}× abgeschlossen`}
+            {!openToday && ' · heute erledigt'}
+          </span>
+        </span>
+        <span aria-hidden="true" className="muted">
+          ›
+        </span>
+      </button>
+    )
+  }
 
   return (
     <div className="app app--wide">
@@ -63,52 +120,18 @@ export function ModulePath({ module, progress, onStartUnit, onStartExam, onBack 
       </div>
 
       <div className="section-label">Lektionen</div>
-      <div className="path">
-        {module.units.map((unit) => {
-          const ids = itemsInUnit(unit.id).map((i) => i.id)
-          const mastered = masteredCount(progress, ids)
-          const done = (progress.unitsCompleted[unit.id] ?? 0) > 0
-          const pct = masteryRatio(progress, ids) * 100
-          // Was heute schon dran war, kommt heute nicht wieder. Dann hat die
-          // Lektion nichts zu geben, und das gehört sichtbar an die Karte —
-          // ein Tippen, das nichts tut, liest sich wie ein Fehler.
-          const openToday = hasLessonToday({ items, progress, mode: 'unit', unitId: unit.id })
+      <div className="path">{pflicht.map(renderUnit)}</div>
 
-          return (
-            <button
-              key={unit.id}
-              className={`unit ${done ? 'unit--done' : ''} ${openToday ? '' : 'unit--resting'}`}
-              data-testid={`unit-${unit.id}`}
-              disabled={!openToday}
-              onClick={() => onStartUnit(unit.id)}
-            >
-              <span className="unit-badge" aria-hidden="true">
-                {done ? '✓' : unit.icon}
-              </span>
-              <span style={{ flex: 1, minWidth: 0 }}>
-                <span className="course-meta">Lehrplan {unit.code}</span>
-                <span className="course-title" style={{ display: 'block' }}>
-                  {unit.title}
-                </span>
-                <span className="course-meta" style={{ display: 'block', marginTop: 2 }}>
-                  {unit.goal}
-                </span>
-                <span className="bar">
-                  <i style={{ width: `${pct}%`, background: module.color }} />
-                </span>
-                <span className="course-meta">
-                  {mastered}/{ids.length} sitzen
-                  {done && ` · ${progress.unitsCompleted[unit.id]}× abgeschlossen`}
-                  {!openToday && ' · heute erledigt'}
-                </span>
-              </span>
-              <span aria-hidden="true" className="muted">
-                ›
-              </span>
-            </button>
-          )
-        })}
-      </div>
+      {optional.length > 0 && (
+        <>
+          <div className="section-label">Optional</div>
+          <p className="tiny muted" style={{ marginTop: 0 }}>
+            Gesprächsführung und Vertriebsmethodik. Kommt nicht in der Tageslektion und zählt
+            nicht für Abzeichen oder Prüfung — nur für die, die es brauchen.
+          </p>
+          <div className="path">{optional.map(renderUnit)}</div>
+        </>
+      )}
 
       <div className="section-label">Modulprüfung</div>
       <div className={`card exam-card ${exam.passed ? 'exam-card--passed' : ''}`}>
