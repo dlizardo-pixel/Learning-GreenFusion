@@ -276,6 +276,7 @@ const plan = [
   ['m6-wirtschaft', 'm6-u4'],
   // Modul 9 mitspielen, damit das neue Modul auch im Browser geprüft wird.
   ['m9-wohnungswirtschaft', 'm9-u3'],
+  ['m9-wohnungswirtschaft', 'm9-u8'],
 ]
 
 for (const [mod, unit] of plan) {

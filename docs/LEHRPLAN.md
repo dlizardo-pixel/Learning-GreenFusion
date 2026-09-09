@@ -7,7 +7,7 @@ beiden Seiten prüfen kann.
 
 ## Struktur
 
-Neun Module, 49 Lektionen, 239 Aufgaben — davon 227 Pflichtstoff und 12 in
+Neun Module, 51 Lektionen, 251 Aufgaben — davon 239 Pflichtstoff und 12 in
 einer **optionalen Spur** (siehe unten). Pro Modul eine **Modulprüfung**
 (12 Fragen, bestanden ab 80 %), danach die **Abschlussprüfung** (24 Fragen
 quer über alle Module). Beides zusammen ergibt das Zertifikat.
@@ -71,9 +71,20 @@ Takt des Haushalts, ein privater Bestandshalter in einem Termin. Wer das
 nicht unterscheidet, verkauft allen dasselbe und verliert alle.
 
 Die Governance-Inhalte stammen aus dem Genossenschaftsgesetz selbst
-(§ 27, § 38, § 43a, § 53, § 54 GenG) und sind je Aufgabe verlinkt, nicht
-aus einer Vertriebszusammenfassung. Die Rollenkunde stützt sich auf die
-vier Kundenprofile aus echten Gesprächsmitschriften.
+(§ 27, § 38, § 43a, § 48, § 53, § 54 GenG) und sind je Aufgabe verlinkt,
+nicht aus einer Vertriebszusammenfassung. Die Rollenkunde stützt sich auf
+die vier Kundenprofile aus echten Gesprächsmitschriften.
+
+**Nachgelegt nach der ersten echten Nutzung:** die Lektionen 9.4 „Der
+Alltag im Unternehmen" und 9.5 „Das Jahr im Unternehmen". Die
+Rückmeldung war, dass genau dieser Teil fehlte — nicht wer welchen Titel
+trägt, sondern was diese Menschen den ganzen Tag tun und in welchem
+Rhythmus die Firma läuft. Der Jahreslauf steht in drei Gesetzen und einer
+Satzung: Aufstellung des Jahresabschlusses in den ersten fünf Monaten
+(§ 336 Abs. 1 HGB), Generalversammlung im ersten Halbjahr (§ 48 Abs. 1
+GenG), Betriebskostenabrechnung binnen zwölf Monaten (§ 556 Abs. 3 BGB) —
+und die Zustimmungsschwellen des Aufsichtsrats in der Satzung, nicht im
+Gesetz.
 
 ## Was noch fachliche Freigabe braucht
 
@@ -191,18 +202,20 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | 8.2 | Gesprächssimulation *(optional)* | 4 | Gespräch, Auswahl, Karte |
 | 8.3 | Vor der Abschlussprüfung | 6 | Auswahl, Mehrfach, Zuordnen, Zusammenfassen |
 
-### Modul 9 · Wohnungswirtschaft verstehen — 32 Aufgaben
+### Modul 9 · Wohnungswirtschaft verstehen — 44 Aufgaben
 
 | Lehrplan | Lektion | Aufgaben | Typen |
 |---|---|---|---|
 | 9.1 | Wer besitzt was | 5 | Zuordnen, Auswahl, Wahr/Falsch |
 | 9.2 | Wer entscheidet was | 6 | Zuordnen, Auswahl, Lücken, Reihenfolge, Kundenzitat |
 | 9.3 | Die Rollen im Alltag | 5 | Einsortieren, Mehrfach, Wahr/Falsch, Kundenzitat, Auswahl |
-| 9.4 | Stadtwerke & Wärmelieferung | 6 | Auswahl, Zuordnen, Lücken, Wahr/Falsch |
-| 9.5 | Verbände & Netzwerke | 4 | Auswahl, Lücken, Kundenzitat |
-| 9.6 | Wen musst du fragen? | 6 | Auswahl, Karte, Gespräch, Zusammenfassen |
+| 9.4 | Der Alltag im Unternehmen | 6 | Zuordnen, Mehrfach, Wahr/Falsch, Auswahl, Reihenfolge |
+| 9.5 | Das Jahr im Unternehmen | 6 | Reihenfolge, Auswahl, Wahr/Falsch |
+| 9.6 | Stadtwerke & Wärmelieferung | 6 | Auswahl, Zuordnen, Lücken, Wahr/Falsch |
+| 9.7 | Verbände & Netzwerke | 4 | Auswahl, Lücken, Kundenzitat |
+| 9.8 | Wen musst du fragen? | 6 | Auswahl, Karte, Gespräch, Zusammenfassen |
 
-**Gesamt: 236 Aufgaben in 49 Lektionen.**
+**Gesamt: 251 Aufgaben in 51 Lektionen** — 239 Pflichtstoff, 12 optional.
 
 ## Quellen der Inhalte
 

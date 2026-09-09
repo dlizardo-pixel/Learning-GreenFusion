@@ -108,6 +108,34 @@ export const GENG_53: Source = {
   label: '§ 53 GenG – Pflichtprüfung (Gesetzestext)',
   url: 'https://www.gesetze-im-internet.de/geng/__53.html',
 }
+/**
+ * Der Jahreslauf eines Wohnungsunternehmens steht in drei Gesetzen und
+ * einer Satzung. Er ist kein Verwaltungsdetail: er entscheidet, wann eine
+ * Entscheidung überhaupt möglich ist.
+ */
+export const HGB_336: Source = {
+  label: '§ 336 HGB – Pflicht zur Aufstellung von Jahresabschluss und Lagebericht (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/hgb/__336.html',
+}
+export const GENG_48: Source = {
+  label: '§ 48 GenG – Zuständigkeit der Generalversammlung (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/geng/__48.html',
+}
+export const BGB_556: Source = {
+  label: '§ 556 Abs. 3 BGB – Abrechnung der Betriebskosten (Gesetzestext)',
+  url: 'https://www.gesetze-im-internet.de/bgb/__556.html',
+}
+/**
+ * Was das Gesetz offenlässt, regelt die Satzung: ab welcher Summe der
+ * Vorstand die Zustimmung des Aufsichtsrats braucht und wie oft der
+ * Aufsichtsrat zusammentritt. Satzungen von Wohnungsgenossenschaften sind
+ * öffentlich einsehbar — hier eine als Beispiel.
+ */
+export const SATZUNG: Source = {
+  label: 'Satzung einer Wohnungsgenossenschaft (Beispiel: WGLi Wohnungsgenossenschaft Lichtenberg eG)',
+  url: 'https://www.wgli.de/wp-content/uploads/2022/04/WGLi_Satzung_A5_20190711-Deutsch_Web.pdf',
+}
+
 export const BGB_556C: Source = {
   label: '§ 556c BGB – Umstellung auf gewerbliche Wärmelieferung (Gesetzestext)',
   url: 'https://www.gesetze-im-internet.de/bgb/__556c.html',

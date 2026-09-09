@@ -225,11 +225,19 @@ export const modules: LearningModule[] = [
         'Du kannst den Entscheidungsweg bis zur Unterschrift benennen – und er ist je Rechtsform ein anderer.', '✍️'),
       u('m9-wohnungswirtschaft', 'm9-u3', '9.3', 'Die Rollen im Alltag',
         'Du weisst, wer den Ausfall merkt, wer bestellt und wer dich in den Keller lässt.', '👷'),
-      u('m9-wohnungswirtschaft', 'm9-u4', '9.4', 'Stadtwerke & Wärmelieferung',
+      // Die IDs m9-u7 und m9-u8 sind nachträglich entstanden und stehen
+      // deshalb nicht in der Reihenfolge ihrer Nummern. Die ID hängt am
+      // Lernstand aller Nutzenden und wird nie geändert; die Nummer im
+      // Lehrplan folgt der didaktischen Reihenfolge.
+      u('m9-wohnungswirtschaft', 'm9-u7', '9.4', 'Der Alltag im Unternehmen',
+        'Du weisst, wer in so einer Firma an welchem Schreibtisch sitzt und was an einem normalen Dienstag passiert.', '🗂️'),
+      u('m9-wohnungswirtschaft', 'm9-u8', '9.5', 'Das Jahr im Unternehmen',
+        'Du kennst den Jahreslauf von Abschluss, Prüfung, Versammlung und Wirtschaftsplan – und was daraus für Entscheidungen folgt.', '📅'),
+      u('m9-wohnungswirtschaft', 'm9-u4', '9.6', 'Stadtwerke & Wärmelieferung',
         'Du kannst die vier Rollen eines Stadtwerks auseinanderhalten: Kunde, Lieferant, Contractor, Wettbewerber.', '🏭'),
-      u('m9-wohnungswirtschaft', 'm9-u5', '9.5', 'Verbände & Netzwerke',
+      u('m9-wohnungswirtschaft', 'm9-u5', '9.7', 'Verbände & Netzwerke',
         'Du verstehst, warum Verbände in dieser Branche mehr Gewicht haben als Werbung – und warum das gesetzlich so ist.', '🤝'),
-      u('m9-wohnungswirtschaft', 'm9-u6', '9.6', 'Wen musst du fragen?',
+      u('m9-wohnungswirtschaft', 'm9-u6', '9.8', 'Wen musst du fragen?',
         'Du liest aus Rechtsform, Grösse und Gremien ab, welchen Weg ein Abschluss nehmen wird.', '🧭'),
     ],
   },
