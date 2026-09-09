@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { buildLesson, interleave } from '../lesson'
+import { buildLesson, hasLessonToday, interleave } from '../lesson'
 import { emptyProgress } from '../progress'
 import { review } from '../srs'
-import { items, modules, units, itemsInUnit } from '../../data'
+import { items, modules, units, itemsInModule, itemsInUnit } from '../../data'
 import type { Item } from '../types'
 
 /** Reproduzierbarer Zufall für stabile Tests. */
@@ -12,7 +12,7 @@ const seeded = (seed: number) => () => {
 }
 
 describe('Lektionsaufbau', () => {
-  it('nimmt bei einer Unit-Lektion nur Items dieser Unit', () => {
+  it('nimmt bei einer Unit-Lektion die Unit vollständig und bleibt im Modul', () => {
     const lesson = buildLesson({
       items,
       progress: emptyProgress(),
@@ -21,9 +21,14 @@ describe('Lektionsaufbau', () => {
       random: seeded(1),
     })
     expect(lesson.length).toBeGreaterThan(0)
-    // Die Lektion füllt bei Bedarf aus dem Modul auf – geprüft wird, dass
-    // sie das Modul nicht verlässt und mit der gewählten Lektion beginnt.
     for (const i of lesson) expect(i.moduleId).toBe('m2-regelung')
+    // Die gewählte Lektion ist vollständig drin, das Auffüllen kommt danach.
+    for (const own of itemsInUnit('m2-u3')) {
+      expect(
+        lesson.some((i) => i.id === own.id),
+        `${own.id} fehlt in seiner eigenen Lektion`,
+      ).toBe(true)
+    }
   })
 
   it('wählt neue Items in aufsteigender Stufe aus', () => {
@@ -53,19 +58,14 @@ describe('Lektionsaufbau', () => {
 
   it('füllt höchstens die Hälfte der Lektion mit Wiederholungen', () => {
     const progress = emptyProgress()
-    // Alle Items der Unit auf "fällig" setzen.
-    for (const i of itemsInUnit('m3-u1')) {
+    // Zehn Aufgaben fällig, der ganze Rest des Kurses neu.
+    for (const i of items.slice(0, 10)) {
       progress.items[i.id] = review(undefined, i.id, true, new Date(2020, 0, 1))
     }
-    const lesson = buildLesson({
-      items,
-      progress,
-      mode: 'unit',
-      unitId: 'm3-u1',
-      size: 4,
-      random: seeded(3),
-    })
+    const lesson = buildLesson({ items, progress, mode: 'daily', size: 4, random: seeded(3) })
     expect(lesson.length).toBe(4)
+    const wiederholungen = lesson.filter((i) => progress.items[i.id]).length
+    expect(wiederholungen).toBeLessThanOrEqual(2)
   })
 
   it('liefert im Wiederholungsmodus nur fällige Items', () => {
@@ -80,12 +80,12 @@ describe('Lektionsaufbau', () => {
     expect(buildLesson({ items, progress: emptyProgress(), mode: 'review' })).toEqual([])
   })
 
-  it('füllt eine Lektion auch dann auf, wenn der Kurs kein neues Material hat', () => {
+  it('lässt eine durchgelernte Lektion freiwillig üben', () => {
     const progress = emptyProgress()
-    // Alles auf höchste Box: nichts neu, nichts fällig.
+    // Alles auf höchste Box, zuletzt vor Jahren: nichts neu, nichts fällig.
     for (const i of items) {
-      let p = review(undefined, i.id, true, new Date())
-      for (let n = 0; n < 6; n++) p = review(p, i.id, true, new Date())
+      let p = review(undefined, i.id, true, new Date(2020, 0, 1))
+      for (let n = 0; n < 6; n++) p = review(p, i.id, true, new Date(2020, 0, 1))
       progress.items[i.id] = p
     }
     const lesson = buildLesson({
@@ -97,6 +97,67 @@ describe('Lektionsaufbau', () => {
       random: seeded(5),
     })
     expect(lesson.length).toBe(4)
+  })
+
+  it('stellt eine heute richtig beantwortete Frage nicht nochmal', () => {
+    // Der gemeldete Fehler: eine Frage kam viermal an einem Tag, obwohl sie
+    // von Anfang an richtig war. Ursache war das Auffüllen aus dem Modul,
+    // das weder Fälligkeit noch den heutigen Tag beachtet hat. Sichtbar
+    // wurde es, sobald ein Modul fast durchgelernt war – dann reichte das
+    // neue Material nicht mehr für acht Aufgaben.
+    const now = new Date(2026, 8, 8, 18, 0)
+    const progress = emptyProgress()
+    for (const i of itemsInModule('m9-wohnungswirtschaft')) {
+      if (i.unitId === 'm9-u6') continue
+      progress.items[i.id] = review(undefined, i.id, true, now)
+    }
+
+    // Keine Lektion des Moduls darf sie nachliefern – auch nicht die eigene.
+    for (const unit of new Set(itemsInModule('m9-wohnungswirtschaft').map((i) => i.unitId))) {
+      const lesson = buildLesson({
+        items,
+        progress,
+        mode: 'unit',
+        unitId: unit,
+        now,
+        random: seeded(11),
+      })
+      for (const i of lesson) {
+        expect(progress.items[i.id], `${i.id} war heute schon dran`).toBeUndefined()
+      }
+    }
+  })
+
+  it('ist mit einem heute abgearbeiteten Modul für heute fertig', () => {
+    const now = new Date(2026, 8, 8, 18, 0)
+    const progress = emptyProgress()
+    for (const i of itemsInModule('m9-wohnungswirtschaft')) {
+      progress.items[i.id] = review(undefined, i.id, true, now)
+    }
+    const req = { items, progress, mode: 'unit' as const, unitId: 'm9-u1', now }
+    expect(buildLesson({ ...req, random: seeded(12) })).toEqual([])
+    expect(hasLessonToday(req)).toBe(false)
+  })
+
+  it('bringt eine falsch beantwortete Frage am selben Tag zurück', () => {
+    // Box 0 heisst "heute nochmal" – das ist die einzige Ausnahme.
+    const now = new Date(2026, 8, 8, 18, 0)
+    const progress = emptyProgress()
+    for (const i of itemsInModule('m9-wohnungswirtschaft')) {
+      progress.items[i.id] = review(undefined, i.id, true, now)
+    }
+    const target = itemsInUnit('m9-u1')[0]
+    progress.items[target.id] = review(undefined, target.id, false, now)
+
+    const lesson = buildLesson({
+      items,
+      progress,
+      mode: 'unit',
+      unitId: 'm9-u1',
+      now,
+      random: seeded(13),
+    })
+    expect(lesson.map((i) => i.id)).toEqual([target.id])
   })
 
   it('mischt über alle Kurse in der Tageslektion', () => {

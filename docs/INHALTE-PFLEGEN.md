@@ -145,10 +145,12 @@ Aufgaben mit dieser `unitId` schreiben. Das `goal` ist wichtig: es steht im
 Lernpfad und ist das Versprechen der Lektion. Ein Satz, aktiv, aus Sicht
 der Lernenden.
 
-Drei Aufgaben genügen, weil eine Lektion bei Bedarf aus dem umgebenden
-Modul auffüllt — der Lehrplan gibt die Gliederung vor, nicht die
-Lektionsgrösse. Ein Modul braucht aber mindestens zwölf Aufgaben, sonst
-lässt sich keine Modulprüfung stellen; auch das prüft ein Test.
+Drei Aufgaben sind das geprüfte Minimum, gut sind fünf bis acht. Reicht
+das Material einer Lektion nicht für acht Aufgaben, füllt sie mit **noch
+nicht gesehenen** Aufgaben aus dem umgebenden Modul auf — nie mit schon
+beantworteten, sonst käme dieselbe Frage mehrfach an einem Tag. Ein Modul
+braucht mindestens zwölf Aufgaben, sonst lässt sich keine Modulprüfung
+stellen; auch das prüft ein Test.
 
 **Modul:** neue Datei in `src/data/items/`, `ModuleId` in
 `src/engine/types.ts` erweitern, in `modules.ts` und `src/data/index.ts`

@@ -39,7 +39,7 @@ Deshalb übernehmen wir Duolingos **Motivationsmechanik** und ersetzen seine
 
 | Übernommen | Verändert |
 |---|---|
-| Kurze Lektionen (~4 Min, 8 Aufgaben) | Jede Antwort bekommt eine Erklärung mit Quelle |
+| Kurze Lektionen (~4 Min, bis 8 Aufgaben) | Jede Antwort bekommt eine Erklärung mit Quelle |
 | Serie, XP, Tagesziel | Keine Herzen, kein Rauswurf bei Fehlern |
 | Verteilte Wiederholung | Fehler kommen in derselben Lektion nochmal |
 | Gemischte Aufgabentypen | Aufgaben aus echten Kundengesprächen |
@@ -106,6 +106,19 @@ Lernerfolg.
 Lange Aufgaben (Lesetext, Zuordnung, Reihenfolge) landen nie an erster
 Stelle und nie direkt hintereinander. Eine Lektion soll mit einem schnellen
 Erfolg beginnen.
+
+**Nichts kommt zweimal am selben Tag.** Was heute richtig beantwortet
+wurde, ist heute erledigt — die einzige Ausnahme ist Box 0, also eine
+falsche Antwort, die am selben Tag korrigiert werden soll. Der Abstand ist
+der Wirkstoff der verteilten Wiederholung; eine sofortige Zweitabfrage
+bringt nichts und liest sich wie ein Fehler in der App.
+
+Eine Lektion nimmt deshalb zuerst ihre eigenen Aufgaben, füllt danach mit
+**neuem** Material aus ihrem Modul auf und bleibt sonst kurz. Früher stand
+an dieser Stelle „irgendetwas aus dem Modul" — dadurch kam eine Frage
+mehrfach an einem Tag, sobald ein Modul fast durchgelernt war. Ist eine
+Lektion für heute durch, zeigt der Lernpfad sie als „heute erledigt" statt
+sie erneut anzubieten.
 
 → `src/engine/lesson.ts`
 

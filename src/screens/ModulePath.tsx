@@ -1,8 +1,9 @@
 import type { LearningModule, Progress } from '../engine/types'
-import { itemsInModule, itemsInUnit } from '../data'
+import { items, itemsInModule, itemsInUnit } from '../data'
 import { masteredCount, masteryRatio } from '../engine/progress'
 import { badgeFor, BADGE_ICON, BADGE_LABEL } from '../engine/badges'
 import { examFor, PASS_RATIO } from '../engine/exam'
+import { hasLessonToday } from '../engine/lesson'
 
 interface Props {
   module: LearningModule
@@ -68,12 +69,17 @@ export function ModulePath({ module, progress, onStartUnit, onStartExam, onBack 
           const mastered = masteredCount(progress, ids)
           const done = (progress.unitsCompleted[unit.id] ?? 0) > 0
           const pct = masteryRatio(progress, ids) * 100
+          // Was heute schon dran war, kommt heute nicht wieder. Dann hat die
+          // Lektion nichts zu geben, und das gehört sichtbar an die Karte —
+          // ein Tippen, das nichts tut, liest sich wie ein Fehler.
+          const openToday = hasLessonToday({ items, progress, mode: 'unit', unitId: unit.id })
 
           return (
             <button
               key={unit.id}
-              className={`unit ${done ? 'unit--done' : ''}`}
+              className={`unit ${done ? 'unit--done' : ''} ${openToday ? '' : 'unit--resting'}`}
               data-testid={`unit-${unit.id}`}
+              disabled={!openToday}
               onClick={() => onStartUnit(unit.id)}
             >
               <span className="unit-badge" aria-hidden="true">
@@ -93,6 +99,7 @@ export function ModulePath({ module, progress, onStartUnit, onStartExam, onBack 
                 <span className="course-meta">
                   {mastered}/{ids.length} sitzen
                   {done && ` · ${progress.unitsCompleted[unit.id]}× abgeschlossen`}
+                  {!openToday && ' · heute erledigt'}
                 </span>
               </span>
               <span aria-hidden="true" className="muted">
