@@ -1,5 +1,6 @@
 import type { Item } from '../../engine/types'
 import {
+  DVGW_W551,
   FACH,
   SPEC_21,
   SPEC_22,
@@ -150,6 +151,39 @@ export const m1Items: Item[] = [
     source: SPEC_22,
   },
 
+  {
+    id: 'm1-brennwert-ruecklauf',
+    moduleId: 'm1-grundlagen',
+    unitId: 'm1-u1',
+    level: 2,
+    type: 'mc',
+    concepts: ['Brennwert', 'Rücklauftemperatur'],
+    prompt:
+      'Ein Brennwertkessel holt Wärme aus dem Wasserdampf im Abgas. Woran scheitert das in der Praxis am häufigsten?',
+    options: [
+      'Der Rücklauf ist zu warm – unter etwa 55 °C kondensiert das Abgas, darüber nicht',
+      'Der Kessel ist zu alt für Brennwerttechnik',
+      'Die Vorlauftemperatur ist zu niedrig eingestellt',
+      'Es fehlt ein Pufferspeicher',
+    ],
+    answer: 0,
+    why: 'Brennwertnutzung braucht einen *kalten Rücklauf*: erst wenn das Rücklaufwasser unter den Taupunkt des Abgases fällt — bei Erdgas etwa 55 °C — kondensiert der Wasserdampf und gibt seine Wärme ab. Ein Brennwertkessel mit 65 °C Rücklauf arbeitet wie ein gewöhnlicher Niedertemperaturkessel und verschenkt seinen Vorteil. Das ist der wichtigste Grund, warum unsere Arbeit an der Heizkurve nicht nur Komfort, sondern Wirkungsgrad betrifft: jede Absenkung der Vorlauftemperatur senkt auch den Rücklauf.',
+    source: FACH,
+  },
+  {
+    id: 'm1-kessel-taktet',
+    moduleId: 'm1-grundlagen',
+    unitId: 'm1-u1',
+    level: 3,
+    type: 'truefalse',
+    concepts: ['Kesselleistung', 'Taktbetrieb', 'Überdimensionierung'],
+    statement:
+      'Ein Kessel, der deutlich mehr Leistung hat als das Gebäude braucht, arbeitet dadurch sparsamer.',
+    answer: false,
+    why: 'Das Gegenteil: ein überdimensionierter Kessel erreicht die Solltemperatur zu schnell, schaltet ab, kühlt aus und startet wieder — Taktbetrieb. Jeder Start kostet Energie und Verschleiss, und der Jahresnutzungsgrad sinkt. In der Übergangszeit und im Sommer, wenn nur Warmwasser gebraucht wird, ist das am deutlichsten. Erkennbar ist es im Keller an häufigen Brennerstarts und an einer sehr kleinen Spreizung.',
+    source: FACH,
+  },
+
   // ───────────────────────── 1.2 · Spielelement "Baue ein Heizsystem"
   {
     id: 'm1-bau-heizsystem',
@@ -195,6 +229,45 @@ export const m1Items: Item[] = [
     answer: 0,
     why: 'Erzeuger und Verbraucher wollen oft unterschiedliche Wassermengen. Die Weiche trennt beide Kreise hydraulisch, sodass die Kesselpumpe und die Heizkreispumpen sich nicht bekämpfen. In unseren Schemata sitzen an hydraulischen Trennungen eigene Vorlauf- und Rücklauffühler — deshalb tauchen sie in der Installationsplanung auf.',
     source: SPEC_21,
+  },
+
+  {
+    id: 'm1-einrohr-zweirohr',
+    moduleId: 'm1-grundlagen',
+    unitId: 'm1-u2',
+    level: 3,
+    type: 'mc',
+    concepts: ['Einrohrsystem', 'Zweirohrsystem', 'Verteilung'],
+    prompt:
+      'In einem Altbau aus den Siebzigern hängen alle Heizkörper eines Stranges hintereinander an einer Ringleitung. Was folgt daraus?',
+    options: [
+      'Jeder Heizkörper gibt sein abgekühltes Wasser an den nächsten weiter – der Letzte bekommt das kühlste, und der Rücklauf bleibt warm',
+      'Alle Heizkörper werden gleichmässig mit derselben Temperatur versorgt',
+      'Der hydraulische Abgleich ist besonders einfach',
+      'Die Anlage kann nicht witterungsgeführt geregelt werden',
+    ],
+    answer: 0,
+    why: 'Das ist ein Einrohrsystem, verbreitet in den sechziger und siebziger Jahren. Es hat zwei praktische Folgen: die Räume am Strangende sind schlechter versorgt, weshalb die Vorlauftemperatur oft künstlich hoch gefahren wird — und der Rücklauf bleibt warm, was Brennwertnutzung erschwert. Ein Zweirohrsystem versorgt dagegen jeden Heizkörper parallel und lässt sich sauber abgleichen. Wer im Keller nur zwei Leitungen pro Strang sieht, sollte nachfragen, welches System dahinter liegt.',
+    source: FACH,
+  },
+  {
+    id: 'm1-pumpe-differenzdruck',
+    moduleId: 'm1-grundlagen',
+    unitId: 'm1-u2',
+    level: 2,
+    type: 'mc',
+    concepts: ['Umwälzpumpe', 'Differenzdruck', 'Stromverbrauch'],
+    prompt:
+      'Die Umwälzpumpe im Keller läuft dauerhaft auf der höchsten Stufe. Was ist daran das Problem?',
+    options: [
+      'Sie drückt mehr Wasser durch das Netz als gebraucht wird: Strom für nichts, Strömungsgeräusche und Wasser, das an den Verbrauchern vorbeiläuft',
+      'Sie überhitzt den Kessel',
+      'Sie verhindert die Nachtabsenkung',
+      'Nichts – eine höhere Stufe versorgt die oberen Etagen besser',
+    ],
+    answer: 0,
+    why: 'Die Pumpe muss nur den Widerstand des Netzes überwinden. Eine geregelte Pumpe hält dafür den Differenzdruck konstant oder passt ihn der Last an; eine fest auf Maximum gestellte Pumpe verbraucht ein Mehrfaches an Strom und fördert Überströmung. Die letzte Antwort ist der häufigste Irrtum im Keller: wenn oben nichts warm wird, ist das fast immer ein Abgleich-Problem und kein Druckproblem — mehr Druck schiebt das Wasser nur schneller durch die *unteren* Heizkörper.',
+    source: FACH,
   },
 
   // ───────────────────────── 1.3 · Wärmeübergabe & Trägheit
@@ -307,6 +380,21 @@ export const m1Items: Item[] = [
     source: spec('Abschnitt 2.3, Summer mode detection'),
   },
 
+  {
+    id: 'm1-ww-temperaturen',
+    moduleId: 'm1-grundlagen',
+    unitId: 'm1-u4',
+    level: 2,
+    type: 'cloze',
+    concepts: ['Trinkwarmwasser', 'Legionellen', 'DVGW W 551'],
+    template:
+      'Für Warmwasser-Grossanlagen gilt: am Austritt des Speichers mindestens {{0}} °C, und im Zirkulationssystem darf das Wasser nicht unter {{1}} °C fallen. Zum Sparen darf diese Grenze {{2}} werden.',
+    blanks: ['60', '55', 'nicht unterschritten'],
+    distractors: ['45', '40', 'kurzzeitig unterschritten'],
+    why: 'Diese zwei Zahlen sind die harte Untergrenze jeder Warmwasser-Optimierung (DVGW W 551). Unter 55 °C wachsen Legionellen wieder, ab etwa 55 °C sterben sie ab. Praktische Folge für uns: Warmwasser ist kein Sparpotenzial, sondern ein Überwachungsthema — deshalb prüft das Ampelsystem die Zirkulationstemperatur gegen diese Schwelle, statt sie zu senken. Wer im Termin Einsparung am Warmwasser verspricht, verspricht ein Hygienerisiko.',
+    source: DVGW_W551,
+  },
+
   // ───────────────────────── 1.5 · Kennzahlen
   {
     id: 'm1-kennzahlen-match',
@@ -356,6 +444,24 @@ export const m1Items: Item[] = [
     ],
     answer: 0,
     why: 'Genau dieses Problem hat auch unsere Erfolgsmessung: ein reiner Vorjahresvergleich vermischt Optimierung mit Wetter und Nutzungsänderung. Deshalb arbeiten wir mit dem Temperaturdifferenzverfahren und formulieren das Ergebnis als fundierte Näherung — und deshalb ist ein Kunde, der mit Gradtagszahlen argumentiert, ein guter Gesprächspartner und kein Gegner.',
+    source: FACH,
+  },
+  {
+    id: 'm1-gas-kwh',
+    moduleId: 'm1-grundlagen',
+    unitId: 'm1-u5',
+    level: 3,
+    type: 'estimate',
+    concepts: ['Gaszähler', 'Verbrauch umrechnen', 'Kennzahlen'],
+    prompt:
+      'Der Gaszähler eines Gebäudes zeigt für ein Jahr 24.000 m³ Erdgas. Wie viele Kilowattstunden sind das etwa?',
+    unit: 'kWh',
+    min: 100000,
+    max: 400000,
+    step: 5000,
+    answer: 240000,
+    tolerance: 25000,
+    why: 'Ein Kubikmeter Erdgas trägt etwa 10 kWh — genau genommen Brennwert mal Zustandszahl, und beide Werte stehen auf der Gasrechnung (typisch 9,8 bis 11,5 kWh/m³). Für das Gespräch im Keller genügt der Faktor 10: 24.000 m³ sind rund 240.000 kWh. Damit kann man aus einem Zählerstand in Sekunden eine Grössenordnung machen — und mit der Wohnfläche daraus einen kWh/m²a-Wert, der sagt, ob das Gebäude auffällig ist.',
     source: FACH,
   },
 ]

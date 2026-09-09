@@ -182,6 +182,25 @@ export const IMMOCONN: Source = {
 }
 
 /**
+ * Trinkwasserhygiene ist die harte Untergrenze jeder
+ * Warmwasser-Optimierung. Das Arbeitsblatt W 551 wird derzeit
+ * überarbeitet (Entwurf W 551-1); die Temperaturgrenzen für Grossanlagen
+ * sind seit 2004 unverändert.
+ */
+export const DVGW_W551: Source = {
+  label: 'DVGW W 551 – Vermeidung von Legionellen im Trinkwasser',
+  url: 'https://www.dvgw.de/themen/wasser/wasserqualitaet/vermeidung-von-legionellen-im-trinkwasser',
+}
+/**
+ * Die Bundesförderstelle erklärt beide Verfahren des hydraulischen
+ * Abgleichs neutral — besser als jede Herstellerseite.
+ */
+export const GEBAEUDEFORUM: Source = {
+  label: 'Gebäudeforum klimaneutral (dena) – Hydraulischer Abgleich: Verfahren A und B',
+  url: 'https://www.gebaeudeforum.de/realisieren/heizungstechnik/hydraulischer-abgleich/',
+}
+
+/**
  * Allgemein anerkanntes Fachwissen der Heizungstechnik, das in keiner
  * einzelnen internen Quelle steht. Bewusst als solches gekennzeichnet,
  * damit man sieht, wo eine interne Quelle fehlt.

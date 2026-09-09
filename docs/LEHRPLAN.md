@@ -7,7 +7,7 @@ beiden Seiten prüfen kann.
 
 ## Struktur
 
-Neun Module, 51 Lektionen, 251 Aufgaben — davon 239 Pflichtstoff und 12 in
+Neun Module, 51 Lektionen, 261 Aufgaben — davon 249 Pflichtstoff und 12 in
 einer **optionalen Spur** (siehe unten). Pro Modul eine **Modulprüfung**
 (12 Fragen, bestanden ab 80 %), danach die **Abschlussprüfung** (24 Fragen
 quer über alle Module). Beides zusammen ergibt das Zertifikat.
@@ -86,6 +86,27 @@ GenG), Betriebskostenabrechnung binnen zwölf Monaten (§ 556 Abs. 3 BGB) —
 und die Zustimmungsschwellen des Aufsichtsrats in der Satzung, nicht im
 Gesetz.
 
+## Nach der ersten echten Nutzung vertieft
+
+Die Rückmeldung war eindeutig: Heizungstypen und Heizungstechnik waren der
+nützlichste Teil. Modul 1 und 2 sind deshalb um zehn Aufgaben gewachsen —
+alle aus dem Bereich, den man im Keller wirklich braucht:
+
+| Wo | Was dazugekommen ist |
+|---|---|
+| 1.1 | Brennwertnutzung hängt am Rücklauf unter etwa 55 °C; überdimensionierte Kessel takten |
+| 1.2 | Einrohr- gegen Zweirohrsystem; was eine dauerhaft volle Umwälzpumpe anrichtet |
+| 1.4 | Die Temperaturgrenzen für Trinkwarmwasser: 60 °C am Speicher, 55 °C in der Zirkulation |
+| 1.5 | Gaszählerstand in Kilowattstunden umrechnen (Faktor ~10 pro m³) |
+| 2.3 | Heizkurven-Diagnose aus der Beschwerde; Heizgrenztemperatur; Montageort des Außenfühlers |
+| 2.5 | Verfahren A und B des hydraulischen Abgleichs — technisch, nicht nur rechtlich |
+| 8.1 | Heizkreisverteiler, Spreizung deuten, die vier häufigsten Fehlerbilder im Keller |
+
+Neue Quellen: DVGW W 551 für die Trinkwassertemperaturen und das
+Gebäudeforum der dena für die beiden Abgleich-Verfahren. Alles andere
+steht als allgemein anerkanntes Fachwissen gekennzeichnet — sichtbar
+dort, wo eine interne Quelle fehlt.
+
 ## Was noch fachliche Freigabe braucht
 
 Ehrlich benannt, damit es niemand für gesichert hält:
@@ -119,24 +140,24 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 ## Abdeckung je Modul
 
 
-### Modul 1 · Physik & Technik — 20 Aufgaben
+### Modul 1 · Physik & Technik — 26 Aufgaben
 
 | Lehrplan | Lektion | Aufgaben | Typen |
 |---|---|---|---|
-| 1.1 | Wärmeerzeuger im Vergleich | 5 | Auswahl, Schema, Zuordnen, Mehrfach |
-| 1.2 | Wärmeverteilung | 5 | Lücken, Schema, Wahr/Falsch, Einsortieren, Auswahl |
+| 1.1 | Wärmeerzeuger im Vergleich | 7 | Auswahl, Schema, Zuordnen, Mehrfach, Wahr/Falsch |
+| 1.2 | Wärmeverteilung | 7 | Lücken, Schema, Wahr/Falsch, Einsortieren, Auswahl |
 | 1.3 | Wärmeübergabe & Trägheit | 4 | Auswahl, Lücken, Zuordnen |
-| 1.4 | Warmwasserbereitung | 3 | Lücken, Zuordnen, Wahr/Falsch |
-| 1.5 | Kennzahlen | 3 | Zuordnen, Lücken, Auswahl |
+| 1.4 | Warmwasserbereitung | 4 | Lücken, Zuordnen, Wahr/Falsch |
+| 1.5 | Kennzahlen | 4 | Zuordnen, Lücken, Auswahl, Schätzen |
 
-### Modul 2 · Regelung & Digitalisierung — 21 Aufgaben
+### Modul 2 · Regelung & Digitalisierung — 25 Aufgaben
 
 | Lehrplan | Lektion | Aufgaben | Typen |
 |---|---|---|---|
 | 2.1–2.2 | Steuerung, Regelung, Regelkreis | 3 | Auswahl, Zuordnen, Einsortieren |
-| 2.3 | Die Heizkurve | 3 | Auswahl, Zuordnen |
+| 2.3 | Die Heizkurve | 6 | Auswahl, Zuordnen |
 | 2.4 | Nachtabsenkung | 3 | Schätzen, Auswahl, Kundenzitat |
-| 2.5 | Hydraulischer Abgleich | 3 | Auswahl, Mehrfach, Zuordnen |
+| 2.5 | Hydraulischer Abgleich | 4 | Auswahl, Mehrfach, Zuordnen |
 | 2.6 | Gebäudeleittechnik | 3 | Auswahl, Wahr/Falsch |
 | 2.7–2.8 | Reglerlandschaft | 6 | Zuordnen, Auswahl, Karte |
 
@@ -215,7 +236,7 @@ Ehrlich benannt, damit es niemand für gesichert hält:
 | 9.7 | Verbände & Netzwerke | 4 | Auswahl, Lücken, Kundenzitat |
 | 9.8 | Wen musst du fragen? | 6 | Auswahl, Karte, Gespräch, Zusammenfassen |
 
-**Gesamt: 251 Aufgaben in 51 Lektionen** — 239 Pflichtstoff, 12 optional.
+**Gesamt: 261 Aufgaben in 51 Lektionen** — 249 Pflichtstoff, 12 optional.
 
 ## Quellen der Inhalte
 
