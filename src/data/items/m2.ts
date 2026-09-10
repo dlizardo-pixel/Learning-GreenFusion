@@ -1,6 +1,7 @@
 import type { Item } from '../../engine/types'
 import {
   FACH,
+  GEBAEUDEFORUM,
   KB,
   SPEC,
   SPEC_24,
@@ -200,6 +201,74 @@ export const m2Items: Item[] = [
     source: spec('Abschnitt 2.6, Continuous'),
   },
 
+  {
+    id: 'm2-heizkurve-diagnose',
+    moduleId: 'm2-regelung',
+    unitId: 'm2-u3',
+    level: 3,
+    type: 'match',
+    concepts: ['Heizkurve', 'Steigung', 'Niveau', 'Fehlerbilder'],
+    prompt: 'Was die Beschwerde über die Heizkurve verrät – welche Einstellung passt nicht?',
+    pairs: [
+      {
+        left: 'Im Frühjahr und Herbst zu warm, im tiefen Winter genau richtig',
+        right: 'Steigung zu hoch – die Kurve fällt bei milder Witterung zu wenig ab',
+      },
+      {
+        left: 'Bei jeder Aussentemperatur gleichmässig zu kalt',
+        right: 'Niveau zu niedrig – die ganze Kurve muss parallel nach oben',
+      },
+      {
+        left: 'Nur im tiefen Winter zu kalt, sonst passend',
+        right: 'Steigung zu niedrig – die Kurve steigt bei Kälte zu wenig an',
+      },
+      {
+        left: 'Nur in den ersten Morgenstunden zu kalt',
+        right: 'Absenkzeiten und Aufheizverhalten, nicht die Kurve',
+      },
+    ],
+    why: 'Das ist die nützlichste Unterscheidung der ganzen Heizungsregelung: *wann* es nicht passt, sagt, *was* verstellt ist. Die Steigung wirkt bei Kälte, das Niveau immer gleich. Wer beides verwechselt, dreht am Niveau und macht die Übergangszeit noch wärmer. Und die vierte Zeile ist die Falle: eine Beschwerde über Morgenkälte ist meist kein Kurvenproblem, sondern eine zu spät endende Absenkung.',
+    source: FACH,
+  },
+  {
+    id: 'm2-aussenfuehler-ort',
+    moduleId: 'm2-regelung',
+    unitId: 'm2-u3',
+    level: 3,
+    type: 'mc',
+    concepts: ['Außenfühler', 'Witterungsgeführte Regelung', 'Montage'],
+    prompt: 'Wo muss der Außenfühler einer witterungsgeführten Regelung hängen?',
+    options: [
+      'An der Nord- oder Nordostwand, frei und im Schatten',
+      'An der Südwand, damit er die Sonneneinstrahlung mitbekommt',
+      'Im Heizungskeller neben dem Regler',
+      'Über einem Fenster oder einem Lüftungsauslass, damit er die Abluft misst',
+    ],
+    answer: 0,
+    why: 'Der Fühler soll das Wetter messen, nicht die Sonne. Hängt er an der Südwand, meldet er im Februar bei Sonnenschein 18 °C, die Regelung nimmt die Vorlauftemperatur zurück, und im Gebäude wird es kalt — die Anlage macht dann genau das Falsche, während der Regler korrekt eingestellt ist. Deshalb gehört zu einer Anlagenaufnahme immer die Frage, wo der Fühler sitzt. Ein falsch montierter Fühler ist billiger zu beheben als jede Optimierung und wirkt sofort.',
+    source: FACH,
+  },
+
+  {
+    id: 'm2-heizgrenze',
+    moduleId: 'm2-regelung',
+    unitId: 'm2-u3',
+    level: 2,
+    type: 'mc',
+    concepts: ['Heizgrenztemperatur', 'Sommerabschaltung', 'Regelung'],
+    prompt:
+      'Im Juni läuft die Heizung noch. Welche Einstellung im Regler ist der erste Verdacht?',
+    options: [
+      'Die Heizgrenztemperatur – oberhalb dieses Aussentemperaturwerts soll die Heizung abschalten',
+      'Die Steigung der Heizkurve',
+      'Die Warmwassertemperatur',
+      'Die Pumpenkennlinie',
+    ],
+    answer: 0,
+    why: 'Fast jeder Regler kennt eine Heizgrenze: liegt die Aussentemperatur (oft als gedämpfter Mittelwert) darüber, geht der Heizbetrieb aus und nur das Warmwasser bleibt. Typisch sind 15 bis 18 °C. Ist der Wert zu hoch gesetzt oder die Sommerabschaltung deaktiviert, heizt das Gebäude in den Sommer hinein — sichtbar in den Daten als Wärmeabnahme im Juni. Das ist eine der Einstellungen, die man einmal korrigiert und die danach jedes Jahr wirkt.',
+    source: FACH,
+  },
+
   // ───────────────────────── 2.4 · Nachtabsenkung
   {
     id: 'm2-absenkung-wirkung',
@@ -294,6 +363,25 @@ export const m2Items: Item[] = [
     source: FACH,
   },
 
+  {
+    id: 'm2-verfahren-a-b',
+    moduleId: 'm2-regelung',
+    unitId: 'm2-u5',
+    level: 3,
+    type: 'mc',
+    concepts: ['Hydraulischer Abgleich', 'Verfahren A', 'Verfahren B'],
+    prompt:
+      'Worin unterscheiden sich die beiden Verfahren des hydraulischen Abgleichs technisch?',
+    options: [
+      'Verfahren B rechnet die Heizlast raumweise, Verfahren A schätzt sie aus der vorhandenen Heizfläche',
+      'Verfahren A gilt für Heizkörper, Verfahren B für Fussbodenheizungen',
+      'Verfahren A wird vom Handwerk gemacht, Verfahren B von der Software des Herstellers',
+      'Verfahren B ist derselbe Rechenweg, nur mit mehr Sicherheitszuschlag',
+    ],
+    answer: 0,
+    why: 'Verfahren A nimmt an, dass der eingebaute Heizkörper zur nötigen Heizlast passt, und rechnet aus seiner Fläche zurück — schnell, aber ungenau, wenn früher zu gross dimensioniert wurde, was die Regel ist. Verfahren B rechnet die Heizlast jedes Raums und leitet daraus die Ventileinstellungen ab. Für den gesetzlich vorgeschriebenen Abgleich ist Verfahren A nicht zulässig; für eine freiwillige Optimierung und im Rahmen der Heizungsprüfung nach § 60b GEG darf es verwendet werden. Wichtig für uns: beide Verfahren sind eine handwerkliche Einmalleistung, die wir nicht erbringen — wir regeln danach.',
+    source: GEBAEUDEFORUM,
+  },
   // ───────────────────────── 2.6 · Gebäudeleittechnik
   {
     id: 'm2-glt-was',

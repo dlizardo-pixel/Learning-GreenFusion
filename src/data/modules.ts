@@ -13,6 +13,11 @@ import type { LearningModule, ModuleId, Unit } from '../engine/types'
  * (Prozess und Methodik). Beides ist Wissen, das im Kundengespräch
  * gebraucht wird und sonst keinen Platz hätte.
  *
+ * Drei Lektionen sind optional (`uOpt`): 6.4–6.5, 6.6* und 8.2. Sie
+ * behandeln Gesprächsführung und Vertriebsmethodik — nützlich für den
+ * Vertrieb, Ballast für alle anderen. Sie bleiben erreichbar, kommen aber
+ * nicht von selbst und zählen nicht für das Zertifikat.
+ *
  * Modul 9 ist vollständig neu und im ursprünglichen Lehrplan nicht
  * vorgesehen. Es beantwortet die Frage, die vor jeder Fachfrage kommt:
  * wie arbeitet eigentlich ein Wohnungsunternehmen?
@@ -26,6 +31,16 @@ const u = (
   goal: string,
   icon: string,
 ): Unit => ({ id, moduleId, code, title, goal, icon })
+
+/** Wie `u`, aber als optionale Lektion — siehe `Unit.optional`. */
+const uOpt = (
+  moduleId: ModuleId,
+  id: string,
+  code: string,
+  title: string,
+  goal: string,
+  icon: string,
+): Unit => ({ ...u(moduleId, id, code, title, goal, icon), optional: true })
 
 export const modules: LearningModule[] = [
   {
@@ -152,9 +167,9 @@ export const modules: LearningModule[] = [
         'Du kennst die Preisbestandteile und weisst, warum die Umlagefähigkeit an der Optimierung hängt.', '💸'),
       u('m6-wirtschaft', 'm6-u3', '6.3', 'Rahmenverträge & Angebot',
         'Du kannst ein Angebot korrekt aufbauen und kennst die Rabattgrenzen ohne Nachsehen.', '📄'),
-      u('m6-wirtschaft', 'm6-u4', '6.4–6.5', 'Technische Einwände',
+      uOpt('m6-wirtschaft', 'm6-u4', '6.4–6.5', 'Technische Einwände',
         'Du hast auf die häufigsten Einwände technischer Leiter eine Antwort, die eine Frage zurückgibt.', '🛡️'),
-      u('m6-wirtschaft', 'm6-u5', '6.6*', 'Prozess & Methodik',
+      uOpt('m6-wirtschaft', 'm6-u5', '6.6*', 'Prozess & Methodik',
         'Du weisst, was in welcher Stage passieren muss und wie ein Meeting bewertet wird. (Ergänzung zum Lehrplan)', '🗺️'),
     ],
   },
@@ -188,7 +203,7 @@ export const modules: LearningModule[] = [
     units: [
       u('m8-praxis', 'm8-u1', '8.1', 'Kellerbegehung',
         'Du kannst ein echtes hydraulisches Schema lesen und die Bauteile benennen.', '🏚️'),
-      u('m8-praxis', 'm8-u2', '8.2', 'Gesprächssimulation',
+      uOpt('m8-praxis', 'm8-u2', '8.2', 'Gesprächssimulation',
         'Du führst ein vollständiges Gespräch von der Situationsaufnahme bis zur Einwandbehandlung.', '🎭'),
       u('m8-praxis', 'm8-u3', '8.3', 'Vor der Abschlussprüfung',
         'Du prüfst quer über alle Module, wo noch Lücken sind – bevor es zählt.', '🏁'),
@@ -210,11 +225,19 @@ export const modules: LearningModule[] = [
         'Du kannst den Entscheidungsweg bis zur Unterschrift benennen – und er ist je Rechtsform ein anderer.', '✍️'),
       u('m9-wohnungswirtschaft', 'm9-u3', '9.3', 'Die Rollen im Alltag',
         'Du weisst, wer den Ausfall merkt, wer bestellt und wer dich in den Keller lässt.', '👷'),
-      u('m9-wohnungswirtschaft', 'm9-u4', '9.4', 'Stadtwerke & Wärmelieferung',
+      // Die IDs m9-u7 und m9-u8 sind nachträglich entstanden und stehen
+      // deshalb nicht in der Reihenfolge ihrer Nummern. Die ID hängt am
+      // Lernstand aller Nutzenden und wird nie geändert; die Nummer im
+      // Lehrplan folgt der didaktischen Reihenfolge.
+      u('m9-wohnungswirtschaft', 'm9-u7', '9.4', 'Der Alltag im Unternehmen',
+        'Du weisst, wer in so einer Firma an welchem Schreibtisch sitzt und was an einem normalen Dienstag passiert.', '🗂️'),
+      u('m9-wohnungswirtschaft', 'm9-u8', '9.5', 'Das Jahr im Unternehmen',
+        'Du kennst den Jahreslauf von Abschluss, Prüfung, Versammlung und Wirtschaftsplan – und was daraus für Entscheidungen folgt.', '📅'),
+      u('m9-wohnungswirtschaft', 'm9-u4', '9.6', 'Stadtwerke & Wärmelieferung',
         'Du kannst die vier Rollen eines Stadtwerks auseinanderhalten: Kunde, Lieferant, Contractor, Wettbewerber.', '🏭'),
-      u('m9-wohnungswirtschaft', 'm9-u5', '9.5', 'Verbände & Netzwerke',
+      u('m9-wohnungswirtschaft', 'm9-u5', '9.7', 'Verbände & Netzwerke',
         'Du verstehst, warum Verbände in dieser Branche mehr Gewicht haben als Werbung – und warum das gesetzlich so ist.', '🤝'),
-      u('m9-wohnungswirtschaft', 'm9-u6', '9.6', 'Wen musst du fragen?',
+      u('m9-wohnungswirtschaft', 'm9-u6', '9.8', 'Wen musst du fragen?',
         'Du liest aus Rechtsform, Grösse und Gremien ab, welchen Weg ein Abschluss nehmen wird.', '🧭'),
     ],
   },

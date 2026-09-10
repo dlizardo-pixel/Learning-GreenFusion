@@ -1,6 +1,7 @@
 import type { Item } from '../../engine/types'
 import {
   DECK,
+  FACH,
   GEG_60B,
   ICP,
   KEDI,
@@ -90,6 +91,68 @@ export const m8Items: Item[] = [
     ],
     why: 'Diese Checkliste ist der praktische Kern des Moduls. Hohe Vorlauftemperaturen und fehlende Absenkung sind das Potenzial, das wir suchen. Die Warnsignale sind alle heilbar oder umgehbar, aber sie müssen vor einer Zusage geklärt sein: Wohnungsstationen bekommen keine Heizkurven-Empfehlung, ein Regler ohne Schnittstelle bedeutet Optimierung vor Ort, und ohne LAN oder LTE gibt es keine Anbindung.',
     source: spec('Abschnitt 2.4 & Abschnitt 4 Installation'),
+  },
+
+  {
+    id: 'm8-keller-verteiler',
+    moduleId: 'm8-praxis',
+    unitId: 'm8-u1',
+    level: 1,
+    type: 'hotspot',
+    concepts: ['Anlagenschema', 'Heizkreise'],
+    prompt: 'Klick auf das Bauteil, an dem sich die Heizkreise des Gebäudes aufteilen.',
+    schematic: 'gasboiler',
+    answer: 'verteiler',
+    why: 'Am Verteiler zweigt jeder Heizkreis ab — und jeder Heizkreis hat seine eigene Pumpe, oft einen eigenen Mischer und damit seine *eigene* Heizkurve. Deshalb ist die erste Frage im Keller nicht "welcher Kessel?", sondern "wie viele Heizkreise?". Danach richtet sich, wie viele Kurven optimiert werden und wie viele Fühler nötig sind.',
+    source: FACH,
+  },
+  {
+    id: 'm8-keller-spreizung',
+    moduleId: 'm8-praxis',
+    unitId: 'm8-u1',
+    level: 2,
+    type: 'mc',
+    concepts: ['Spreizung', 'Fehlerbilder', 'Hydraulik'],
+    prompt:
+      'Im Keller steht am Verteiler: Vorlauf 68 °C, Rücklauf 64 °C. Was sagt dir diese Spreizung von 4 Kelvin?',
+    options: [
+      'Es fliesst zu viel Wasser für die abgenommene Wärme — ein Grossteil läuft am Verbraucher vorbei',
+      'Die Anlage arbeitet besonders effizient, weil die Temperaturen dicht beieinander liegen',
+      'Der Kessel ist zu klein für das Gebäude',
+      'Die Aussentemperatur ist zu hoch für eine Messung',
+    ],
+    answer: 0,
+    why: 'Die Spreizung ist die Wärme, die tatsächlich abgegeben wurde. Vier Kelvin heissen: das Wasser kommt fast so warm zurück, wie es losgefahren ist — es wird umgewälzt, aber kaum genutzt. Typische Ursachen sind offene Bypässe, überströmende Ventile oder eine zu stark eingestellte Pumpe. Für uns ist das ein *gutes* Zeichen: viel Potenzial, das sich ohne Umbau heben lässt. Zum Vergleich: eine gesunde Radiatorenanlage liegt bei 15 bis 20 Kelvin.',
+    source: FACH,
+  },
+  {
+    id: 'm8-keller-fehlerbilder',
+    moduleId: 'm8-praxis',
+    unitId: 'm8-u1',
+    level: 3,
+    type: 'match',
+    concepts: ['Fehlerbilder', 'Kellerbegehung', 'Hydraulik'],
+    prompt: 'Beobachtung im Keller – was steckt dahinter?',
+    pairs: [
+      {
+        left: 'Rücklauf fast so warm wie der Vorlauf',
+        right: 'Überströmung: das Wasser geht am Verbraucher vorbei',
+      },
+      {
+        left: 'Kessel startet im Sommer alle paar Minuten neu',
+        right: 'Kessel für die Warmwasserlast überdimensioniert – Taktbetrieb',
+      },
+      {
+        left: 'Pumpe läuft dauerhaft auf der höchsten Stufe',
+        right: 'Ungeregelte Umwälzung: Strom für Wasser, das niemand braucht',
+      },
+      {
+        left: 'Vorlauf 70 °C bei 12 °C draussen',
+        right: 'Heizkurve zu steil oder mit Festwert überschrieben',
+      },
+    ],
+    why: 'Diese vier Bilder erklären den grössten Teil dessen, was man in einem durchschnittlichen Keller sieht. Wichtig ist der Unterschied in der Konsequenz: Überströmung und Taktbetrieb sind hydraulische Themen, die eine Regelung nur abmildern kann. Eine zu steile oder festgesetzte Heizkurve dagegen ist genau unser Hebel — sie kostet nichts als eine Einstellung. Deshalb ist die Frage im Keller immer: liegt es an der Hydraulik oder an der Einstellung?',
+    source: FACH,
   },
 
   // ───────────────────────── 8.2 · Vollständige Gesprächssimulation

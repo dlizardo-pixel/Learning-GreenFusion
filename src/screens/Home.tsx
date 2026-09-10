@@ -1,11 +1,12 @@
 import type { LearningModule, Progress } from '../engine/types'
-import { itemsInModule } from '../data'
+import { items, itemsInModule } from '../data'
 import { canRepairStreak, dueCount, repairStreak, today } from '../engine/srs'
 import { levelFromXp, masteredCount, masteryRatio, xpToday } from '../engine/progress'
 import { daysLeftInWeek, xpThisWeek } from '../engine/liga'
 import { badgeFor, BADGE_ICON, BADGE_LABEL } from '../engine/badges'
 import { challengeCount, challengeDone, challengeForDay } from '../engine/challenge'
 import { certificateStatus } from '../engine/exam'
+import { hasLessonToday } from '../engine/lesson'
 import { Ring } from '../components/Ring'
 
 interface Props {
@@ -47,6 +48,9 @@ export function Home({
   onSignOut,
 }: Props) {
   const due = dueCount(progress)
+  // Nichts kommt zweimal am selben Tag. Ist alles abgearbeitet, sagt die
+  // Karte das — ein Knopf, der nichts tut, ist schlimmer als kein Knopf.
+  const dailyOpen = hasLessonToday({ items, progress, mode: 'daily' })
   const todayXp = xpToday(progress)
   const goalReached = todayXp >= progress.dailyGoal
   const week = currentWeekDays()
@@ -136,19 +140,28 @@ export function Home({
       <div className="goal-card">
         <Ring value={todayXp} max={progress.dailyGoal} label={goalReached ? '✓' : `${todayXp}`} />
         <div style={{ flex: 1 }}>
-          <h2>{goalReached ? 'Tagesziel geschafft' : 'Deine Lektion für heute'}</h2>
+          <h2>
+            {!dailyOpen
+              ? 'Für heute alles abgearbeitet'
+              : goalReached
+                ? 'Tagesziel geschafft'
+                : 'Deine Lektion für heute'}
+          </h2>
           <div className="small muted">
-            {goalReached
-              ? `${todayXp} von ${progress.dailyGoal} XP – alles Weitere ist Zugabe.`
-              : `${todayXp} von ${progress.dailyGoal} XP · rund 4 Minuten`}
+            {!dailyOpen
+              ? `${todayXp} XP heute – der Rest kommt morgen wieder.`
+              : goalReached
+                ? `${todayXp} von ${progress.dailyGoal} XP – alles Weitere ist Zugabe.`
+                : `${todayXp} von ${progress.dailyGoal} XP · rund 4 Minuten`}
           </div>
           <button
             className="btn btn--primary"
             data-testid="start-daily"
             style={{ marginTop: 'var(--gf-space-4)' }}
+            disabled={!dailyOpen}
             onClick={onStartDaily}
           >
-            {todayXp > 0 ? 'Weiterlernen' : 'Lektion starten'}
+            {!dailyOpen ? 'Heute erledigt' : todayXp > 0 ? 'Weiterlernen' : 'Lektion starten'}
           </button>
         </div>
       </div>

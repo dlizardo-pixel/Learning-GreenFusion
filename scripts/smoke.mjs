@@ -259,17 +259,24 @@ await page.waitForSelector('text=Heizungsheld')
 await page.screenshot({ path: `${OUT}/01-home.png`, fullPage: true })
 
 // Je Kurs eine Lektion, bis alle Aufgabentypen mindestens einmal dran waren.
+// Der Plan deckt die Aufgabentypen gezielt ab, statt sich darauf zu
+// verlassen, dass das Auffüllen aus dem Modul sie zufällig mitbringt.
 const plan = [
   ['m1-grundlagen', 'm1-u1'],
   ['m1-grundlagen', 'm1-u3'],
   ['m2-regelung', 'm2-u1'],
   ['m2-regelung', 'm2-u7'],
+  ['m3-produkt', 'm3-u1'],
   ['m3-produkt', 'm3-u5'],
   ['m4-recht', 'm4-u6'],
   ['m5-markt', 'm5-u3'],
   ['m8-praxis', 'm8-u1'],
+  // Eine optionale Lektion: sie steht in einem eigenen Abschnitt und muss
+  // sich trotzdem normal spielen lassen.
+  ['m6-wirtschaft', 'm6-u4'],
   // Modul 9 mitspielen, damit das neue Modul auch im Browser geprüft wird.
   ['m9-wohnungswirtschaft', 'm9-u3'],
+  ['m9-wohnungswirtschaft', 'm9-u8'],
 ]
 
 for (const [mod, unit] of plan) {

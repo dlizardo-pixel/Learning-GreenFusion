@@ -145,10 +145,20 @@ Aufgaben mit dieser `unitId` schreiben. Das `goal` ist wichtig: es steht im
 Lernpfad und ist das Versprechen der Lektion. Ein Satz, aktiv, aus Sicht
 der Lernenden.
 
-Drei Aufgaben genügen, weil eine Lektion bei Bedarf aus dem umgebenden
-Modul auffüllt — der Lehrplan gibt die Gliederung vor, nicht die
-Lektionsgrösse. Ein Modul braucht aber mindestens zwölf Aufgaben, sonst
-lässt sich keine Modulprüfung stellen; auch das prüft ein Test.
+Drei Aufgaben sind das geprüfte Minimum, gut sind fünf bis acht. Reicht
+das Material einer Lektion nicht für acht Aufgaben, füllt sie mit **noch
+nicht gesehenen** Aufgaben aus dem umgebenden Modul auf — nie mit schon
+beantworteten, sonst käme dieselbe Frage mehrfach an einem Tag. Ein Modul
+braucht mindestens zwölf Aufgaben, sonst lässt sich keine Modulprüfung
+stellen; auch das prüft ein Test.
+
+**Optionale Lektion:** in `modules.ts` mit `uOpt` statt `u` anlegen. Damit
+gehört sie nicht zum Zertifikat: sie kommt nicht in die Tageslektion, nicht
+in die Prüfungen, nicht in die Tagesaufgabe, füllt keine andere Lektion auf
+und zählt nicht zur Mastery. Gedacht für Stoff, der für einen Teil der
+Nutzenden zentral und für den anderen Ballast ist — heute Einwandbehandlung
+und Vertriebsmethodik. Achtung: ein Modul braucht **ohne** seine optionalen
+Lektionen noch zwölf Aufgaben für die Modulprüfung.
 
 **Modul:** neue Datei in `src/data/items/`, `ModuleId` in
 `src/engine/types.ts` erweitern, in `modules.ts` und `src/data/index.ts`

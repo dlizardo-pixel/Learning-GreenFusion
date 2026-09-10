@@ -1,5 +1,5 @@
 import type { Item, Progress, ModuleId } from './types'
-import { isDue } from './srs'
+import { isDue, today } from './srs'
 
 export type LessonMode = 'unit' | 'daily' | 'review'
 
@@ -12,18 +12,25 @@ export interface LessonRequest {
   size?: number
   /** Für reproduzierbare Tests. */
   random?: () => number
+  /** Für reproduzierbare Tests. */
+  now?: Date
 }
 
 /**
  * Eine Lektion ist kurz und gemischt.
  *
- * Zwei Entscheidungen, die den Lerneffekt tragen:
+ * Drei Entscheidungen, die den Lerneffekt tragen:
  * 1. **Interleaving** — Aufgabentypen wechseln sich ab, statt fünf
  *    Multiple-Choice in Folge. Gemischtes Üben schneidet in der
  *    Lernforschung durchweg besser ab als blockweises, auch wenn es sich
  *    beim Üben *schlechter* anfühlt.
  * 2. **Wiederholung zuerst** — fällige Items kommen vor neuen. Wer neues
  *    Material auf ein wackliges Fundament stapelt, verliert beides.
+ * 3. **Nichts zweimal am selben Tag** — was heute richtig beantwortet
+ *    wurde, ist heute erledigt. Der Abstand ist der Wirkstoff der
+ *    verteilten Wiederholung; eine sofortige Zweitabfrage bringt nichts
+ *    und wirkt wie ein Fehler in der App. Aufgefüllt wird deshalb nur mit
+ *    neuem Material, sonst bleibt die Lektion kurz.
  */
 export const DEFAULT_LESSON_SIZE = 8
 
@@ -32,51 +39,81 @@ export function buildLesson(req: LessonRequest): Item[] {
   const size = req.size ?? DEFAULT_LESSON_SIZE
   const rnd = req.random ?? Math.random
 
-  // Bei einer Lektions-Auswahl zählt die Lektion selbst; reicht ihr Material
-  // nicht für eine volle Lektion, wird aus dem umgebenden Modul aufgefüllt.
-  // Das ist besser, als Lektionen künstlich gross zu schneiden — der
-  // Lehrplan gibt die Gliederung vor, nicht die Lektionsgrösse.
-  const unitModule = unitId ? items.find((i) => i.unitId === unitId)?.moduleId : undefined
-  const scope = items.filter((i) => {
-    if (mode === 'unit') return i.unitId === unitId || i.moduleId === unitModule
+  const now = req.now ?? new Date()
+  const day = today(now)
+
+  // Bei einer Lektions-Auswahl zählt die Lektion selbst. Sie hat oft nur
+  // drei bis sechs Aufgaben — der Lehrplan gibt die Gliederung vor, nicht
+  // die Lektionsgrösse.
+  const core = items.filter((i) => {
+    if (mode === 'unit') return i.unitId === unitId
     if (moduleId) return i.moduleId === moduleId
     return true
   })
-  const inUnit = (i: Item) => i.unitId === unitId
 
   const seen = (i: Item) => progress.items[i.id]
-  const due = scope.filter((i) => {
+
+  // Heute schon gekonnt heisst heute nicht mehr. Ausnahme ist Box 0: eine
+  // falsche Antwort soll am selben Tag korrigiert werden, genau dafür ist
+  // die Box da.
+  const settledToday = (i: Item) => {
     const p = seen(i)
-    return p && isDue(p)
+    return !!p && p.lastSeenAt === day && p.box > 0
+  }
+
+  const due = core.filter((i) => {
+    const p = seen(i)
+    return p && isDue(p, now) && !settledToday(i)
   })
-  const fresh = scope.filter((i) => !seen(i))
+  const fresh = core.filter((i) => !seen(i))
 
   if (mode === 'review') return shuffle(due, rnd).slice(0, size)
 
   // Höchstens die Hälfte einer Lektion ist Wiederholung — sonst kommt man
   // im Lernpfad nie voran und die App fühlt sich wie eine Prüfung an.
   const reviewSlots = Math.min(due.length, Math.floor(size / 2))
-  // Neues Material zuerst aus der gewählten Lektion, dann aus dem Modul.
-  const freshOrdered =
-    mode === 'unit'
-      ? [...byLevel(fresh.filter(inUnit)), ...byLevel(fresh.filter((i) => !inUnit(i)))]
-      : byLevel(fresh)
   const picked = [
-    ...shuffle(due.filter((i) => mode !== 'unit' || inUnit(i)), rnd).slice(0, reviewSlots),
-    ...freshOrdered.slice(0, size - reviewSlots),
+    ...shuffle(due, rnd).slice(0, reviewSlots),
+    ...byLevel(fresh).slice(0, size - reviewSlots),
   ]
 
-  // Falls der Kurs noch keine neuen Items mehr hat, mit bereits Gelerntem
-  // auffüllen, damit eine Lektion immer vollständig ist.
+  // Freie Plätze zuerst mit weiteren fälligen Aufgaben der Lektion füllen.
   if (picked.length < size) {
     const rest = shuffle(
-      scope.filter((i) => !picked.includes(i)),
+      due.filter((i) => !picked.includes(i)),
       rnd,
     )
     picked.push(...rest.slice(0, size - picked.length))
   }
 
+  // Reicht das nicht, kommt *neues* Material aus dem umgebenden Modul dazu.
+  // Nur nie gesehenes: hier stand vorher "irgendetwas aus dem Modul", und
+  // dadurch kam eine Frage mehrfach am Tag, obwohl sie längst gekonnt war.
+  if (picked.length < size && mode === 'unit') {
+    const unitModule = items.find((i) => i.unitId === unitId)?.moduleId
+    const nearby = byLevel(
+      items.filter((i) => i.moduleId === unitModule && !seen(i) && !picked.includes(i)),
+    )
+    picked.push(...nearby.slice(0, size - picked.length))
+  }
+
+  // Ist alles gelernt und nichts fällig, ist freiwilliges Üben trotzdem
+  // sinnvoll: wer eine Lektion antippt, will sie üben. Nur nichts, was
+  // heute schon dran war.
+  if (picked.length === 0) {
+    const practice = shuffle(
+      core.filter((i) => seen(i)?.lastSeenAt !== day),
+      rnd,
+    )
+    picked.push(...practice.slice(0, size))
+  }
+
   return interleave(picked, rnd)
+}
+
+/** Hat diese Auswahl heute überhaupt noch Aufgaben? */
+export function hasLessonToday(req: LessonRequest): boolean {
+  return buildLesson(req).length > 0
 }
 
 /** Neue Items in didaktischer Reihenfolge: Einstieg vor Vertiefung. */

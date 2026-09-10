@@ -39,7 +39,7 @@ Deshalb übernehmen wir Duolingos **Motivationsmechanik** und ersetzen seine
 
 | Übernommen | Verändert |
 |---|---|
-| Kurze Lektionen (~4 Min, 8 Aufgaben) | Jede Antwort bekommt eine Erklärung mit Quelle |
+| Kurze Lektionen (~4 Min, bis 8 Aufgaben) | Jede Antwort bekommt eine Erklärung mit Quelle |
 | Serie, XP, Tagesziel | Keine Herzen, kein Rauswurf bei Fehlern |
 | Verteilte Wiederholung | Fehler kommen in derselben Lektion nochmal |
 | Gemischte Aufgabentypen | Aufgaben aus echten Kundengesprächen |
@@ -107,7 +107,35 @@ Lange Aufgaben (Lesetext, Zuordnung, Reihenfolge) landen nie an erster
 Stelle und nie direkt hintereinander. Eine Lektion soll mit einem schnellen
 Erfolg beginnen.
 
+**Nichts kommt zweimal am selben Tag.** Was heute richtig beantwortet
+wurde, ist heute erledigt — die einzige Ausnahme ist Box 0, also eine
+falsche Antwort, die am selben Tag korrigiert werden soll. Der Abstand ist
+der Wirkstoff der verteilten Wiederholung; eine sofortige Zweitabfrage
+bringt nichts und liest sich wie ein Fehler in der App.
+
+Eine Lektion nimmt deshalb zuerst ihre eigenen Aufgaben, füllt danach mit
+**neuem** Material aus ihrem Modul auf und bleibt sonst kurz. Früher stand
+an dieser Stelle „irgendetwas aus dem Modul" — dadurch kam eine Frage
+mehrfach an einem Tag, sobald ein Modul fast durchgelernt war. Ist eine
+Lektion für heute durch, zeigt der Lernpfad sie als „heute erledigt" statt
+sie erneut anzubieten.
+
 → `src/engine/lesson.ts`
+
+### 4b. Nicht jeder braucht jeden Stoff
+
+Drei Lektionen liegen in einer **optionalen Spur**: Einwandbehandlung,
+Vertriebsmethodik und die vollständige Gesprächssimulation. Sie kommen
+nicht in der Tageslektion, nicht in den Prüfungen und zählen nicht zur
+Mastery — sie erscheinen nur, wenn man sie selbst öffnet.
+
+Das ist eine Antwort auf echte Nutzung: derselbe Stoff war für eine Person
+das Nützlichste an der App und für eine andere Ballast. Eine Lernapp, die
+ungefragt Ballast in die Tageslektion mischt, wird nicht seltener
+geöffnet, sondern gar nicht mehr. Löschen wäre einfacher gewesen und
+falsch: das Material ist gut, es ist nur nicht für alle.
+
+→ `Unit.optional` in `src/engine/types.ts`, `coreItems` in `src/data/index.ts`
 
 ### 5. Kein gesperrter Lernpfad
 
